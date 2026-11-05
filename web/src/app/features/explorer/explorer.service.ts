@@ -5,10 +5,16 @@ import { Station } from '../../shared/models/station';
 import { FavoritesService } from '../../core/favorites/favorites.service';
 import { PlaybackService } from '../../core/playback/playback.service';
 import { MapArea } from '../../shared/stations/station-geometry';
+import { mapLocation } from '../../shared/stations/map-location.mjs';
 import { stationInArea } from '../../shared/stations/station-area.mjs';
 import { LocalizationService } from '../../core/localization/localization.service';
 import { COUNTRIES } from '../../shared/data/countries';
-import { filterStations, startupStation, adjacentStation } from './station-selection.mjs';
+import {
+  filterStations,
+  startupStation,
+  adjacentStation,
+  emptyStationMessage,
+} from './station-selection.mjs';
 
 @Injectable({ providedIn: 'root' })
 export class ExplorerService {
@@ -42,7 +48,21 @@ export class ExplorerService {
   readonly visible = computed(() => {
     const favoritesOnly = this.onlyFavorites();
     const area = this.area();
-    return this.mapStations().filter((s) => favoritesOnly || stationInArea(s, area));
+    if (this.selectedCountry()) return this.mapStations();
+    return this.mapStations().filter((s) => {
+      const location = mapLocation(s, COUNTRIES);
+      return favoritesOnly || stationInArea(location || s, area);
+    });
+  });
+  readonly emptyMessage = computed(() => {
+    const country = COUNTRIES.find((c) => c.code === this.selectedCountry());
+    const message = emptyStationMessage(
+      country ? this.i18n.country(country.name, country.code) : undefined,
+      this.onlyFavorites(),
+      this.catalog.loading(),
+      this.mapStations().length,
+    );
+    return this.i18n.t(message.key, ...message.args);
   });
   readonly selected = computed<Station | undefined>(
     () => this.player.active() || this.visible()[0] || this.catalog.stations()[0],
@@ -84,14 +104,19 @@ export class ExplorerService {
     this.pendingAutoplay.set(true);
   }
   onLocationSelected() {
-    this.selectedCountry.set(null);
     this.browseArea();
   }
   chooseCountry(code: string) {
-    this.browseArea();
+    this.beginAreaPlayback();
     this.selectedCountry.set(code);
+    void this.catalog.loadCountry(code);
   }
   browseArea() {
+    // Null removes the country restriction without moving the map to the world view.
+    this.selectedCountry.set(null);
+    this.beginAreaPlayback();
+  }
+  private beginAreaPlayback() {
     this.manualPlayback = true;
     this.pendingAutoplay.set(false);
     this.followArea.set(true);

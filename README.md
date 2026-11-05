@@ -97,3 +97,7 @@ server/
   metadata/            ICY parsing and metadata provider
   tests/               Unit and integration tests
 ```
+
+Country names for all 250 country/territory entries are bundled in `web/src/app/core/localization/country-names.json` for all eight supported languages. The dropdown and station country labels use this dictionary instead of relying on browser `Intl.DisplayNames` locale support. Regenerate from Node ICU/CLDR with `node scripts/generate-country-names.mjs`.
+
+Country selection is a temporary map filter: a manual pan or zoom removes the country restriction without resetting the viewport. Countries with no loaded stations show a localized empty state and an All countries action. While the catalog is still loading, the panel indicates that loading is ongoing instead of reporting a country as unavailable.

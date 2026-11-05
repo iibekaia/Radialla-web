@@ -93,5 +93,9 @@
   "serverRequired": "Bu istasyonu dinlemek için radyo sunucusuna bağlanın",
   "languageSession": "Dil yalnızca bu oturumda saklanacak",
   "countrySelect": "Ülke seçin",
-  "allCountries": "Tüm ülkeler"
+  "allCountries": "Tüm ülkeler",
+  "countryStationsLoading": "%@ için istasyonlar yükleniyor…",
+  "emptyCountryStations": "Yüklenen katalogda %@ için istasyon yok. Başka bir ülke seçin veya haritayı hareket ettirin.",
+  "approximateLocation": "Yaklaşık konum",
+  "countryLocationNotice": "Ülkenin merkezinde gösterilir; istasyonun kesin konumu bilinmiyor."
 }

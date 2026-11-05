@@ -35,3 +35,8 @@ export function translate(dictionaries, language, key, args = []) {
   let index = 0;
   return format.replace(/%@/g, () => String(args[index++] ?? ''));
 }
+
+export function translateCountry(names, language, code, fallback) {
+  const key = typeof code === 'string' ? code.toUpperCase() : '';
+  return names[language]?.[key] || names.en?.[key] || fallback;
+}

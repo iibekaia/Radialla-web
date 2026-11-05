@@ -17,3 +17,9 @@ export function adjacentStation(
   activeId: string | undefined,
   delta: number,
 ): Station | undefined;
+export function emptyStationMessage(
+  countryName: string | undefined,
+  favoritesOnly: boolean,
+  loading: boolean,
+  countryStationCount: number,
+): { key: string; args: string[] };

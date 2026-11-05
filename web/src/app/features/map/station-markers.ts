@@ -1,7 +1,11 @@
 import * as L from 'leaflet';
 import { Station } from '../../shared/models/station';
-import { hasCoordinates } from '../../shared/stations/station-geometry';
+import { mapLocation } from '../../shared/stations/map-location.mjs';
+import { COUNTRIES } from '../../shared/data/countries';
+
 import { LocalizationService } from '../../core/localization/localization.service';
+
+type Placement = { station: Station; latitude: number; longitude: number; approximate: boolean };
 
 /** Owns marker grouping, labels and selection; the map component owns navigation. */
 export class StationMarkers {
@@ -17,48 +21,85 @@ export class StationMarkers {
     this.markers.clearLayers();
     const map = this.map,
       bounds = map.getBounds().pad(0.1),
-      groups = new Map<string, Station[]>();
-    for (const s of stations.filter(hasCoordinates)) {
+      groups = new Map<string, Placement[]>();
+    for (const station of stations) {
+      const location = mapLocation(station, COUNTRIES);
+      if (!location) continue;
+      const s = { station, ...location };
       const longitude = s.longitude + 360 * Math.round((map.getCenter().lng - s.longitude) / 360);
       if (!bounds.contains([s.latitude, longitude])) continue;
       const p = map.latLngToContainerPoint([s.latitude, longitude]);
-      const key = s.id === active ? 'active' : `${Math.floor(p.x / 44)}:${Math.floor(p.y / 44)}`;
+      // Keep country placements separate from precise station clusters.
+      const key = s.approximate
+        ? `country:${s.latitude}:${s.longitude}`
+        : station.id === active
+          ? 'active'
+          : `${Math.floor(p.x / 44)}:${Math.floor(p.y / 44)}`;
       const group = groups.get(key) || [];
       group.push(s);
       groups.set(key, group);
     }
     for (const group of groups.values()) {
       const s = group[0];
-      if (!hasCoordinates(s)) continue;
       const cluster = group.length > 1;
-      const lat = group.reduce((n, s) => n + s.latitude!, 0) / group.length,
-        lon = group.reduce((n, s) => n + s.longitude!, 0) / group.length;
+      const lat = group.reduce((n, s) => n + s.latitude, 0) / group.length,
+        lon = group.reduce((n, s) => n + s.longitude, 0) / group.length;
+      const approximate = s.approximate;
+      const labelText =
+        (cluster ? this.i18n.t('%@ რადიოსადგური', group.length) : s.station.name) +
+        (approximate ? ` — ${this.i18n.t('approximateLocation')}` : '');
       const marker = L.marker([lat, lon + 360 * Math.round((map.getCenter().lng - lon) / 360)], {
-        title: cluster ? this.i18n.t('%@ რადიოსადგური — მიახლოება', group.length) : s.name,
-        alt: s.name,
+        title: labelText,
+        alt: labelText,
         icon: L.divIcon({
           className:
-            'station-pin' + (cluster ? ' cluster' : '') + (s.id === active ? ' active' : ''),
+            'station-pin' +
+            (cluster ? ' cluster' : '') +
+            (approximate ? ' approximate' : '') +
+            (group.some((s) => s.station.id === active) ? ' active' : ''),
           html: cluster ? `<span>${this.i18n.number(group.length)}</span>` : '<span></span>',
           iconSize: [36, 36],
           iconAnchor: [18, 18],
         }),
       });
       const label = document.createElement('span');
-      label.textContent = cluster ? this.i18n.t('%@ რადიოსადგური', group.length) : s.name;
-      marker
-        .bindTooltip(label, { direction: 'top' })
-        .on('click', () => {
+      label.textContent = labelText;
+      marker.bindTooltip(label, { direction: 'top' });
+      const colocated = group.every(
+        (point) => point.latitude === s.latitude && point.longitude === s.longitude,
+      );
+      if (approximate || (cluster && colocated)) {
+        // Coincident markers cannot be separated by zooming. Offer every station directly.
+        const content = document.createElement('div');
+        content.className = 'map-station-picker';
+        if (approximate) {
+          const note = document.createElement('p');
+          note.textContent = this.i18n.t('countryLocationNotice');
+          content.append(note);
+        }
+        for (const { station } of group) {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.textContent = station.name;
+          button.addEventListener('click', () => {
+            this.onSelect(station);
+            this.map.closePopup();
+          });
+          content.append(button);
+        }
+        // Opening the picker must not pan the map and trigger area autoplay.
+        marker.bindPopup(content, { maxHeight: 260, autoPan: false });
+      } else {
+        marker.on('click', () => {
           if (cluster) {
             map.fitBounds(
-              L.latLngBounds(
-                group.filter(hasCoordinates).map((s) => [s.latitude, s.longitude] as L.LatLngTuple),
-              ),
+              L.latLngBounds(group.map((s) => [s.latitude, s.longitude] as L.LatLngTuple)),
               { maxZoom: Math.min(18, map.getZoom() + 3), padding: [30, 30] },
             );
-          } else this.onSelect(s);
-        })
-        .addTo(this.markers);
+          } else this.onSelect(s.station);
+        });
+      }
+      marker.addTo(this.markers);
     }
   }
 

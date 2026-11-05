@@ -4,6 +4,7 @@ import {
   filterStations,
   startupStation,
   adjacentStation,
+  emptyStationMessage,
 } from '../../web/src/app/features/explorer/station-selection.mjs';
 const georgia = { code: 'GE', name: 'Georgia' };
 const stations = [
@@ -37,4 +38,35 @@ test('skip wraps the current area queue and handles stations outside it and empt
   assert.equal(adjacentStation(stations, 'other', 1), stations[0]);
   assert.equal(adjacentStation(stations, 'other', -1), stations[2]);
   assert.equal(adjacentStation([], 'ge-1', 1), undefined);
+});
+
+test('clearing a country restriction restores other countries while preserving local favorites', () => {
+  const restricted = filterStations(stations, georgia);
+  assert.equal(
+    restricted.some((s) => s.id === 'fr'),
+    false,
+  );
+  assert.equal(
+    filterStations(stations, undefined).some((s) => s.id === 'fr'),
+    true,
+  );
+  assert.deepEqual(
+    filterStations(stations, undefined, ['fr']).map((s) => s.id),
+    ['fr'],
+  );
+  assert.deepEqual(filterStations(stations, { code: 'VA', name: 'Vatican City' }), []);
+});
+
+test('empty countries distinguish ongoing catalog loading from no available results', () => {
+  assert.deepEqual(emptyStationMessage('Vatican City', false, true, 0), {
+    key: 'countryStationsLoading',
+    args: ['Vatican City'],
+  });
+  assert.deepEqual(emptyStationMessage('Vatican City', false, false, 0), {
+    key: 'emptyCountryStations',
+    args: ['Vatican City'],
+  });
+  assert.equal(emptyStationMessage('Georgia', false, false, 4).key, 'emptySearch');
+  assert.equal(emptyStationMessage('Georgia', true, false, 0).key, 'emptyFavorites');
+  assert.equal(emptyStationMessage(undefined, false, false, 0).key, 'emptySearch');
 });

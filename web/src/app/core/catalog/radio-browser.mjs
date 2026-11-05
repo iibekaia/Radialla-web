@@ -10,13 +10,11 @@ export function normalizeStation(raw) {
     return null;
   const latitude = raw.geo_lat,
     longitude = raw.geo_long;
-  if (
-    !Number.isFinite(latitude) ||
-    !Number.isFinite(longitude) ||
-    Math.abs(latitude) > 90 ||
-    Math.abs(longitude) > 180
-  )
-    return null;
+  const hasCoordinates =
+    Number.isFinite(latitude) &&
+    Number.isFinite(longitude) &&
+    Math.abs(latitude) <= 90 &&
+    Math.abs(longitude) <= 180;
   let streamUrl = null;
   try {
     const url = new URL(raw.url_resolved || raw.url);
@@ -46,8 +44,7 @@ export function normalizeStation(raw) {
     frequency,
     streamUrl,
     imageUrl,
-    latitude,
-    longitude,
+    ...(hasCoordinates ? { latitude, longitude } : {}),
   };
 }
 export async function fetchRadioPage(offset, limit = 500, country, fetcher = fetch) {
@@ -56,7 +53,6 @@ export async function fetchRadioPage(offset, limit = 500, country, fetcher = fet
     const url = new URL(`https://${host}/json/stations/search`);
     url.search = new URLSearchParams({
       hidebroken: 'true',
-      has_geo_info: 'true',
       order: 'name',
       limit: String(limit),
       offset: String(offset),

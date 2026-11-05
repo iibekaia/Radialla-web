@@ -17,8 +17,8 @@ test('real catalog normalization preserves IDs, stream and coordinates without i
   assert.equal(station.latitude, 41.7);
   assert.equal(station.frequency, '104.3');
   assert.equal(normalizeStation({ ...raw, name: 'Jazz Radio' }).frequency, '');
-  assert.equal(normalizeStation({ ...raw, geo_lat: null }), null);
-  assert.equal(normalizeStation({ ...raw, geo_long: 181 }), null);
+  assert.equal(normalizeStation({ ...raw, geo_lat: null }).latitude, undefined);
+  assert.equal(normalizeStation({ ...raw, geo_long: 181 }).longitude, undefined);
   assert.equal(normalizeStation({ ...raw, url_resolved: 'javascript:alert(1)' }).streamUrl, null);
 });
 test('pagination uses raw row count and fails over between mirrors', async () => {
@@ -32,9 +32,9 @@ test('pagination uses raw row count and fails over between mirrors', async () =>
   assert.equal(requests[1].hostname, 'nl1.api.radio-browser.info');
   assert.equal(requests[1].searchParams.get('offset'), '500');
   assert.equal(requests[1].searchParams.get('countrycode'), 'GE');
-  assert.equal(requests[1].searchParams.get('has_geo_info'), 'true');
+  assert.equal(requests[1].searchParams.has('has_geo_info'), false);
   assert.equal(result.count, 2);
-  assert.equal(result.stations.length, 1);
+  assert.equal(result.stations.length, 2);
 });
 test('invalid responses on both mirrors propagate a failure for local fallback', async () => {
   await assert.rejects(
@@ -64,5 +64,25 @@ test('station artwork preserves catalog photos and ignores missing or invalid UR
     'data:image/png;base64,test',
   ]) {
     assert.equal(normalizeStation({ ...raw, favicon }).imageUrl, null);
+  }
+});
+
+// Both countries currently have catalog entries without any geo coordinates.
+test('country queries retain Uzbekistan and Turkmenistan streams without inventing locations', async () => {
+  for (const countrycode of ['UZ', 'TM']) {
+    const result = await fetchRadioPage(0, 200, countrycode, async (url) => {
+      const query = new URL(url).searchParams;
+      assert.equal(query.get('countrycode'), countrycode);
+      assert.equal(query.has('has_geo_info'), false);
+      return {
+        ok: true,
+        json: async () => [{ ...raw, countrycode, geo_lat: null, geo_long: null }],
+      };
+    });
+    assert.equal(result.stations.length, 1);
+    assert.equal(result.stations[0].countryCode, countrycode);
+    assert.equal(result.stations[0].streamUrl, raw.url_resolved);
+    assert.equal(result.stations[0].latitude, undefined);
+    assert.equal(result.stations[0].longitude, undefined);
   }
 });

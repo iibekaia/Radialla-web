@@ -15,9 +15,10 @@ import * as L from 'leaflet';
 import { LocationPoint } from '../../core/playback/autoplay-station.mjs';
 import { Station } from '../../shared/models/station';
 import { IconComponent } from '../../shared/ui/icon.component';
-import { hasCoordinates, MapArea } from '../../shared/stations/station-geometry';
+import { MapArea } from '../../shared/stations/station-geometry';
 import { COUNTRIES } from '../../shared/data/countries';
 import { StationMarkers } from './station-markers';
+import { mapLocation } from '../../shared/stations/map-location.mjs';
 import { MapLocationController } from './map-location-controller';
 
 import { FOCUS_ZOOM, MAP_LAYERS } from './map-layers';
@@ -127,11 +128,18 @@ export class StationMapComponent implements AfterViewInit, OnDestroy {
   }
 
   focus(s: Station) {
-    if (this.map && hasCoordinates(s) && this.focusedStationId !== s.id) {
-      this.focusedStationId = s.id;
-      this.setAutomaticView([s.latitude, s.longitude]);
-    }
+    if (!this.map || this.focusedStationId === s.id) return;
+    const location = mapLocation(s, COUNTRIES);
+    if (!location) return;
+    this.focusedStationId = s.id;
+    if (location.approximate) {
+      const country = COUNTRIES.find((c) =>
+        s.countryCode ? c.code === s.countryCode.toUpperCase() : c.name === s.country,
+      );
+      if (country) this.focusCountry(country.code);
+    } else this.setAutomaticView([location.latitude, location.longitude]);
   }
+
   private focusCountry(code: string) {
     if (!this.map) return;
     const country = COUNTRIES.find((c) => c.code === code);
@@ -184,7 +192,7 @@ export class StationMapComponent implements AfterViewInit, OnDestroy {
   }
   private hasStationFocus() {
     const station = this.focusedStation();
-    return !!station && hasCoordinates(station);
+    return !!station && !!mapLocation(station, COUNTRIES);
   }
   locate() {
     this.location.locate();

@@ -64,9 +64,12 @@
         </button>
       </article>
     } @empty {
-      <p class="empty">
-        {{ vm.i18n.t(vm.onlyFavorites() ? 'emptyFavorites' : 'emptySearch') }}
-      </p>
+      <p class="empty" role="status">{{ vm.emptyMessage() }}</p>
+      @if (vm.selectedCountry() && !vm.onlyFavorites()) {
+        <button class="load-more" (click)="vm.chooseCountry('')">
+          {{ vm.i18n.t('allCountries') }}
+        </button>
+      }
     }
     @if (vm.visible().length > displayLimit()) {
       <button class="load-more" (click)="displayLimit.set(displayLimit() + 100)">

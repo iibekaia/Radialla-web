@@ -22,7 +22,11 @@ export class CatalogService {
   private setMode(key: string, count?: number) {
     this.status.set({ key, count });
   }
-  readonly loading = signal(false);
+  private readonly globalLoading = signal(false);
+  private readonly pendingCountries = signal(0);
+  readonly loading = computed(() => this.globalLoading() || this.pendingCountries() > 0);
+  private readonly loadedCountries = new Set<string>();
+  private readonly countryRequests = new Map<string, Promise<void>>();
   readonly playbackReady = signal(false);
   readonly isDemo = signal(true);
   private readonly cache = inject(CatalogCacheService);
@@ -51,7 +55,7 @@ export class CatalogService {
   async load() {
     if (this.started) return;
     this.started = true;
-    this.loading.set(true);
+    this.globalLoading.set(true);
     try {
       const saved = this.cache.read();
       if (this.valid(saved) && saved.length) {
@@ -84,16 +88,8 @@ export class CatalogService {
           }
         } catch {}
       this.setMode('რადიოები იტვირთება…');
-      // Prioritize Georgia without waiting for alphabetical worldwide pagination.
-      try {
-        let offset = 0;
-        while (true) {
-          const page = await fetchRadioPage(offset, 200, 'GE');
-          this.merge(page.stations);
-          offset += page.count;
-          if (page.count < 200) break;
-        }
-      } catch {}
+      // Country requests also serve the picker, independently of worldwide pagination.
+      await this.loadCountry('GE');
       let offset = 0;
       while (true) {
         const page = await fetchRadioPage(offset);
@@ -108,8 +104,35 @@ export class CatalogService {
       this.setMode(this.isDemo() ? 'catalogUnavailable' : 'catalogStopped', this.stations().length);
     } finally {
       this.playbackReady.set(true);
-      this.loading.set(false);
+      this.globalLoading.set(false);
       this.cache.write(this.stations());
+    }
+  }
+  loadCountry(code: string): Promise<void> {
+    if (!/^[A-Z]{2}$/.test(code) || this.loadedCountries.has(code)) return Promise.resolve();
+    const existing = this.countryRequests.get(code);
+    if (existing) return existing;
+    this.pendingCountries.update((count) => count + 1);
+    const request = this.fetchCountry(code).finally(() => {
+      this.countryRequests.delete(code);
+      this.pendingCountries.update((count) => count - 1);
+      this.cache.write(this.stations());
+    });
+    this.countryRequests.set(code, request);
+    return request;
+  }
+  private async fetchCountry(code: string) {
+    try {
+      let offset = 0;
+      while (true) {
+        const page = await fetchRadioPage(offset, 200, code);
+        this.merge(page.stations);
+        offset += page.count;
+        if (page.count < 200) break;
+      }
+      this.loadedCountries.add(code);
+    } catch {
+      // Retain local data and allow the next country selection to retry.
     }
   }
   private merge(page: Station[]) {

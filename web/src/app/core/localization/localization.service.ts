@@ -1,6 +1,7 @@
 import { Injectable, computed, effect, inject, signal, DestroyRef } from '@angular/core';
 import { LanguagePreferenceService } from '../storage/language-preference.service';
-import { LANGUAGES, resolveLanguage, translate } from './localization.mjs';
+import { LANGUAGES, resolveLanguage, translate, translateCountry } from './localization.mjs';
+import countryNames from './country-names.json';
 import en from './locales/en.json';
 import ka from './locales/ka.json';
 import ru from './locales/ru.json';
@@ -55,13 +56,7 @@ export class LocalizationService {
     return new Intl.NumberFormat(this.language()).format(value);
   }
   country(fallback: string, code?: string) {
-    try {
-      return code
-        ? new Intl.DisplayNames([this.language()], { type: 'region' }).of(code) || fallback
-        : fallback;
-    } catch {
-      return fallback;
-    }
+    return translateCountry(countryNames, this.language(), code, fallback);
   }
   choose(value: string) {
     if (value === 'auto' || LANGUAGES.some((l) => l.id === value)) this.preference.save(value);

@@ -93,5 +93,9 @@
   "serverRequired": "Connect to the radio server to play this station",
   "languageSession": "Language will be saved only for this session",
   "countrySelect": "Choose country",
-  "allCountries": "All countries"
+  "allCountries": "All countries",
+  "countryStationsLoading": "Loading stations for %@…",
+  "emptyCountryStations": "No stations for %@ are available in the loaded catalog. Choose another country or move the map.",
+  "approximateLocation": "Approximate location",
+  "countryLocationNotice": "Shown at the country center; the station’s exact location is unavailable."
 }

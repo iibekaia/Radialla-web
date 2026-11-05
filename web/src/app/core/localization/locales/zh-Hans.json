@@ -93,5 +93,9 @@
   "serverRequired": "播放此电台需要连接广播服务器",
   "languageSession": "语言设置仅在本次会话中保存",
   "countrySelect": "选择国家",
-  "allCountries": "所有国家"
+  "allCountries": "所有国家",
+  "countryStationsLoading": "正在加载%@的电台…",
+  "emptyCountryStations": "已加载的目录中没有%@的电台。请选择其他国家或移动地图。",
+  "approximateLocation": "大致位置",
+  "countryLocationNotice": "显示在国家中心；电台的确切位置未知。"
 }

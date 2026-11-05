@@ -24,3 +24,13 @@ export function adjacentStation(stations, activeId, delta) {
   if (index < 0) return delta > 0 ? stations[0] : stations[stations.length - 1];
   return stations[(((index + delta) % stations.length) + stations.length) % stations.length];
 }
+
+export function emptyStationMessage(countryName, favoritesOnly, loading, countryStationCount) {
+  if (favoritesOnly) return { key: 'emptyFavorites', args: [] };
+  if (countryName && countryStationCount === 0)
+    return {
+      key: loading ? 'countryStationsLoading' : 'emptyCountryStations',
+      args: [countryName],
+    };
+  return { key: 'emptySearch', args: [] };
+}

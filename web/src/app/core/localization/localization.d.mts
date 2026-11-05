@@ -6,3 +6,9 @@ export function translate(
   key: string,
   args?: Array<string | number>,
 ): string;
+export function translateCountry(
+  names: Record<string, Record<string, string>>,
+  language: string,
+  code: string | undefined,
+  fallback: string,
+): string;
