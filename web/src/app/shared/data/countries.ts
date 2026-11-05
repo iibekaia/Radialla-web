@@ -5,6 +5,7 @@ export interface Country {
   name: string;
   latitude: number;
   longitude: number;
+  capital?: { name: string; latitude: number; longitude: number };
   bounds: number[]; // west, south, east, north
 }
 export const COUNTRIES: Country[] = data;

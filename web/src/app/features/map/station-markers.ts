@@ -5,7 +5,13 @@ import { COUNTRIES } from '../../shared/data/countries';
 
 import { LocalizationService } from '../../core/localization/localization.service';
 
-type Placement = { station: Station; latitude: number; longitude: number; approximate: boolean };
+type Placement = {
+  station: Station;
+  latitude: number;
+  longitude: number;
+  approximate: boolean;
+  capital?: string;
+};
 
 /** Owns marker grouping, labels and selection; the map component owns navigation. */
 export class StationMarkers {
@@ -47,7 +53,9 @@ export class StationMarkers {
       const approximate = s.approximate;
       const labelText =
         (cluster ? this.i18n.t('%@ რადიოსადგური', group.length) : s.station.name) +
-        (approximate ? ` — ${this.i18n.t('approximateLocation')}` : '');
+        (approximate
+          ? ` — ${this.i18n.t('approximateLocation')}${s.capital ? ` (${s.capital})` : ''}`
+          : '');
       const marker = L.marker([lat, lon + 360 * Math.round((map.getCenter().lng - lon) / 360)], {
         title: labelText,
         alt: labelText,
@@ -74,7 +82,9 @@ export class StationMarkers {
         content.className = 'map-station-picker';
         if (approximate) {
           const note = document.createElement('p');
-          note.textContent = this.i18n.t('countryLocationNotice');
+          note.textContent = this.i18n.t(
+            s.capital ? 'countryLocationNotice' : 'countryAreaLocationNotice',
+          );
           content.append(note);
         }
         for (const { station } of group) {

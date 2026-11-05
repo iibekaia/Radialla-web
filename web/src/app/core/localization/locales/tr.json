@@ -97,5 +97,6 @@
   "countryStationsLoading": "%@ için istasyonlar yükleniyor…",
   "emptyCountryStations": "Yüklenen katalogda %@ için istasyon yok. Başka bir ülke seçin veya haritayı hareket ettirin.",
   "approximateLocation": "Yaklaşık konum",
-  "countryLocationNotice": "Ülkenin merkezinde gösterilir; istasyonun kesin konumu bilinmiyor."
+  "countryLocationNotice": "Ülkenin başkentinde gösterilir; istasyonun kesin konumu bilinmiyor.",
+  "countryAreaLocationNotice": "Ülkenin yaklaşık konumunda gösterilir; istasyonun kesin konumu bilinmiyor."
 }

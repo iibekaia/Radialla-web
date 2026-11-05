@@ -7,4 +7,5 @@ export function mapLocation(
   latitude: number;
   longitude: number;
   approximate: boolean;
+  capital?: string;
 } | null;

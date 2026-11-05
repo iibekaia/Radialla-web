@@ -97,5 +97,6 @@
   "countryStationsLoading": "%@ 방송국을 불러오는 중…",
   "emptyCountryStations": "불러온 목록에 %@ 방송국이 없습니다. 다른 국가를 선택하거나 지도를 이동하세요.",
   "approximateLocation": "대략적인 위치",
-  "countryLocationNotice": "국가 중심에 표시됩니다. 방송국의 정확한 위치는 알 수 없습니다."
+  "countryLocationNotice": "국가의 수도에 표시됩니다. 방송국의 정확한 위치는 알 수 없습니다.",
+  "countryAreaLocationNotice": "국가의 대략적인 위치에 표시됩니다. 방송국의 정확한 위치는 알 수 없습니다."
 }

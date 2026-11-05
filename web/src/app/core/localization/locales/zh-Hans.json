@@ -97,5 +97,6 @@
   "countryStationsLoading": "正在加载%@的电台…",
   "emptyCountryStations": "已加载的目录中没有%@的电台。请选择其他国家或移动地图。",
   "approximateLocation": "大致位置",
-  "countryLocationNotice": "显示在国家中心；电台的确切位置未知。"
+  "countryLocationNotice": "显示在该国首都；电台的确切位置未知。",
+  "countryAreaLocationNotice": "显示在该国的大致位置；电台的确切位置未知。"
 }

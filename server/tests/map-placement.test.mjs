@@ -41,3 +41,58 @@ test('precise positions are preserved and unknown countries do not invent a map 
     true,
   );
 });
+
+test('every supported country has a fallback marker visible in its focused map bounds', () => {
+  for (const country of countries) {
+    const station = Object.freeze({ countryCode: country.code });
+    const location = mapLocation(station, countries);
+    const [west, south, east, north] = country.bounds;
+    assert.equal(location.approximate, true, country.code);
+    assert.ok(Math.abs(location.latitude) <= 85, country.code);
+    assert.ok(Math.abs(location.longitude) <= 180, country.code);
+    assert.equal(stationInArea(location, { west, south, east, north }), true, country.code);
+    assert.equal(
+      stationInArea(location, { west: west + 360, south, east: east + 360, north }),
+      true,
+      country.code,
+    );
+  }
+});
+
+test('missing coordinates default to bundled capitals rather than country centers', () => {
+  for (const country of countries.filter((c) => c.capital)) {
+    const station = Object.freeze({ countryCode: country.code, latitude: null, longitude: null });
+    const location = mapLocation(station, countries);
+    assert.deepEqual(
+      location,
+      {
+        latitude: country.capital.latitude,
+        longitude: country.capital.longitude,
+        approximate: true,
+        capital: country.capital.name,
+      },
+      country.code,
+    );
+    assert.equal(station.latitude, null);
+    assert.equal(station.longitude, null);
+  }
+  const tashkent = mapLocation({ countryCode: 'UZ' }, countries);
+  assert.equal(tashkent.capital, 'Tashkent');
+  assert.ok(tashkent.latitude > 41 && tashkent.latitude < 42);
+  assert.ok(tashkent.longitude > 69 && tashkent.longitude < 70);
+  assert.equal(mapLocation({ countryCode: 'TM' }, countries).capital, 'Ashgabat');
+  assert.equal(mapLocation({ countryCode: 'LK' }, countries).capital, 'Sri Jayewardenepura Kotte');
+  assert.equal(mapLocation({ country: 'Uzbekistan' }, countries).capital, 'Tashkent');
+});
+
+test('areas without a capital retain explicitly approximate area markers', () => {
+  assert.deepEqual(
+    countries.filter((c) => !c.capital).map((c) => c.code),
+    ['AQ', 'BV', 'HM', 'UM'],
+  );
+  for (const code of ['AQ', 'BV', 'HM', 'UM']) {
+    const location = mapLocation({ countryCode: code }, countries);
+    assert.equal(location.approximate, true);
+    assert.equal(location.capital, undefined);
+  }
+});
