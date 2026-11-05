@@ -1,4 +1,6 @@
 import { Injectable, signal } from '@angular/core';
+import { Station } from '../../shared/models/station';
+import { toggleStationFavorite } from '../catalog/station-deduplication.mjs';
 @Injectable({ providedIn: 'root' })
 export class FavoritesService {
   readonly ids = signal<string[]>(this.restore());
@@ -11,8 +13,8 @@ export class FavoritesService {
       return [];
     }
   }
-  toggle(id: string) {
-    const next = this.ids().includes(id) ? this.ids().filter((x) => x !== id) : [...this.ids(), id];
+  toggle(station: Station) {
+    const next = toggleStationFavorite(this.ids(), station);
     this.ids.set(next);
     try {
       localStorage.setItem('radialla.favorites', JSON.stringify(next));

@@ -1,5 +1,6 @@
 export interface Station {
   id: string;
+  duplicateIds?: string[];
   name: string;
   country: string;
   countryCode?: string;

@@ -31,7 +31,7 @@
       (click)="vm.onlyFavorites.set(true)"
     >
       <app-icon name="heart" /> {{ vm.i18n.t('ფავორიტები') }}
-      <span>{{ vm.i18n.number(vm.favorites.ids().length) }}</span>
+      <span>{{ vm.i18n.number(vm.favoriteCount()) }}</span>
     </button>
   </div>
   <div class="list-heading">
@@ -55,10 +55,10 @@
           ></button
         ><button
           class="icon-button favorite"
-          [class.is-favorite]="vm.favorites.ids().includes(s.id)"
-          (click)="vm.favorites.toggle(s.id)"
+          [class.is-favorite]="vm.isFavorite(s)"
+          (click)="vm.favorites.toggle(s)"
           [attr.aria-label]="s.name + ' — ' + vm.i18n.t('ფავორიტის შეცვლა')"
-          [attr.aria-pressed]="vm.favorites.ids().includes(s.id)"
+          [attr.aria-pressed]="vm.isFavorite(s)"
         >
           <app-icon name="heart" />
         </button>

@@ -1,11 +1,12 @@
+import { stationIsFavorite } from '../../core/catalog/station-deduplication.mjs';
 import { autoplayStation } from '../../core/playback/autoplay-station.mjs';
 
 /** Filter the catalog without changing its order (the first result drives area playback). */
 export function filterStations(stations, country, favoriteIds) {
-  const favorites = favoriteIds ? new Set(favoriteIds) : null;
+  const favorites = favoriteIds;
   return stations.filter(
     (station) =>
-      (!favorites || favorites.has(station.id)) &&
+      (!favorites || stationIsFavorite(station, favorites)) &&
       (!country ||
         station.countryCode?.toUpperCase() === country.code ||
         (!station.countryCode && station.country === country.name)),

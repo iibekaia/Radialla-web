@@ -1,4 +1,8 @@
 import { Injectable, computed, effect, inject, signal, untracked } from '@angular/core';
+import {
+  deduplicateStations,
+  stationIsFavorite,
+} from '../../core/catalog/station-deduplication.mjs';
 import { CatalogService } from '../../core/catalog/catalog.service';
 import { LocationPoint } from '../../core/playback/autoplay-station.mjs';
 import { Station } from '../../shared/models/station';
@@ -36,11 +40,25 @@ export class ExplorerService {
   private autoplayStarted = false;
   private readonly pendingAutoplay = signal(!!this.player.active());
   private readonly location = signal<LocationPoint | null>(null);
+  readonly uniqueStations = computed(() =>
+    deduplicateStations(
+      this.catalog.stations(),
+      this.favorites.ids(),
+      this.player.active()?.id,
+      COUNTRIES,
+    ),
+  );
+  readonly favoriteCount = computed(
+    () => this.uniqueStations().filter((s) => this.isFavorite(s)).length,
+  );
+  isFavorite(station: Station) {
+    return stationIsFavorite(station, this.favorites.ids());
+  }
   readonly mapStations = computed(() => {
     const code = this.selectedCountry();
     const country = COUNTRIES.find((c) => c.code === code);
     return filterStations(
-      this.catalog.stations(),
+      this.uniqueStations(),
       country,
       this.onlyFavorites() ? this.favorites.ids() : undefined,
     );
