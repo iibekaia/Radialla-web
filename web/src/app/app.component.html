@@ -1,0 +1,39 @@
+<div class="explorer">
+  <header class="explorer-header">
+    <div class="brand">
+      <img src="radio-logo.png" alt="" width="40" height="40" />
+      <div>
+        <h1>Radialla</h1>
+        <p class="brand-caption">{{ vm.i18n.t('tagline') }}</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <app-language-picker />
+      <button
+        class="icon-button panel-toggle"
+        [attr.aria-expanded]="!vm.listCollapsed()"
+        aria-controls="station-panel"
+        [attr.aria-label]="vm.i18n.t(vm.listCollapsed() ? 'showList' : 'hideList')"
+        (click)="listCollapsed.set(!vm.listCollapsed())"
+      >
+        <app-icon [name]="vm.listCollapsed() ? 'radio' : 'down'" />
+      </button>
+    </div>
+  </header>
+  <app-station-map
+    [stations]="vm.mapStations()"
+    [activeId]="vm.selected()?.id"
+    [focusedStation]="vm.player.active()"
+    [autoFocus]="!vm.followArea()"
+    [countryCode]="vm.selectedCountry()"
+    (browseArea)="vm.browseArea()"
+    (locationSelected)="vm.onLocationSelected()"
+    [favoritesOnly]="vm.onlyFavorites()"
+    (areaChange)="area.set($event)"
+    (autoplayReady)="vm.requestAutoplay($event)"
+    (selectStation)="vm.choose($event)"
+    (toggleFavorites)="onlyFavorites.set(!vm.onlyFavorites())"
+  />
+  <app-station-panel />
+  <app-mini-player />
+</div>

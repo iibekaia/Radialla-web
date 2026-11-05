@@ -1,0 +1,80 @@
+<section
+    id="station-panel"
+    class="station-list"
+    [class.collapsed]="vm.listCollapsed()"
+    [attr.aria-label]="vm.i18n.t('stations')"
+    [attr.inert]="vm.listCollapsed() ? '' : null"
+  >
+    <label class="station-search">
+      <app-icon name="globe" />
+      <select
+        [attr.aria-label]="vm.i18n.t('countrySelect')"
+        [value]="vm.selectedCountry() || ''"
+        (change)="vm.chooseCountry($any($event.target).value)"
+      >
+        <option value="">{{ vm.i18n.t('allCountries') }}</option>
+        @for (country of vm.countries(); track country.code) {
+          <option [value]="country.code">{{ country.label }}</option>
+        }
+      </select>
+    </label>
+    <div class="station-tabs" [attr.aria-label]="vm.i18n.t('filters')">
+      <button
+        [class.active-tab]="!vm.onlyFavorites()"
+        [attr.aria-pressed]="!vm.onlyFavorites()"
+        (click)="onlyFavorites.set(false)"
+      >
+        <app-icon name="radio" /> {{ vm.i18n.t('all') }}</button
+      ><button
+        [class.active-tab]="vm.onlyFavorites()"
+        [attr.aria-pressed]="vm.onlyFavorites()"
+        (click)="onlyFavorites.set(true)"
+      >
+        <app-icon name="heart" /> {{ vm.i18n.t('ფავორიტები') }}
+        <span>{{ vm.i18n.number(vm.favorites.ids().length) }}</span>
+      </button>
+    </div>
+    <div class="list-heading">
+      <h2>{{ vm.i18n.t(vm.onlyFavorites() ? 'ფავორიტები' : 'სადგურები ამ არეში') }}</h2>
+      <span class="count">{{ vm.i18n.t('%@ სადგური', vm.visible().length) }}</span>
+    </div>
+    <p class="catalog-status">{{ vm.catalog.mode() }}</p>
+    <div class="station-scroll">
+      @for (s of vm.visible().slice(0, displayLimit()); track s.id) {
+        <article class="station-row" [class.selected-row]="vm.selected()?.id === s.id">
+          <button class="station-select" (click)="vm.choose(s)">
+            <app-station-image [imageUrl]="s.imageUrl" />
+            <span class="station-info"
+              ><strong>{{ s.name }}</strong
+              ><span class="station-detail"
+                >{{ vm.i18n.country(s.country, s.countryCode) }}
+                @if (s.frequency) {
+                  <span class="frequency">{{ s.frequency }} FM</span>
+                }
+              </span></span
+            ></button
+          ><button
+            class="icon-button favorite"
+            [class.is-favorite]="vm.favorites.ids().includes(s.id)"
+            (click)="vm.favorites.toggle(s.id)"
+            [attr.aria-label]="s.name + ' — ' + vm.i18n.t('ფავორიტის შეცვლა')"
+            [attr.aria-pressed]="vm.favorites.ids().includes(s.id)"
+          >
+            <app-icon name="heart" />
+          </button>
+        </article>
+      } @empty {
+        <p class="empty">
+          {{ vm.i18n.t(vm.onlyFavorites() ? 'emptyFavorites' : 'emptySearch') }}
+        </p>
+      }
+      @if (vm.visible().length > displayLimit()) {
+        <button class="load-more" (click)="displayLimit.set(displayLimit() + 100)">
+          {{ vm.i18n.t('more') }}
+        </button>
+      }
+    </div>
+    @if (vm.favorites.notice()) {
+      <p role="status" class="catalog-status">{{ vm.i18n.t(vm.favorites.notice()) }}</p>
+    }
+  </section>

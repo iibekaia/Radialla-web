@@ -1,0 +1,47 @@
+<div #canvas class="map-canvas" [attr.aria-label]="i18n.t('map')"></div>
+<div class="layer-control">
+  <button
+    class="map-button"
+    [attr.aria-label]="i18n.t('რუკის ფენის შეცვლა')"
+    [attr.aria-expanded]="layersOpen()"
+    (click)="layersOpen.set(!layersOpen())"
+  >
+    <app-icon name="layers" />
+  </button>
+  @if (layersOpen()) {
+    <div class="layer-menu">
+      @for (layer of layers; track layer.id) {
+        <button [class.chosen]="layer.id === layerId()" (click)="setLayer(layer.id)">
+          {{ i18n.t(layer.label) }}
+        </button>
+      }
+    </div>
+  }
+</div>
+<button
+  class="map-button favorites-control"
+  [class.chosen]="favoritesOnly()"
+  [attr.aria-pressed]="favoritesOnly()"
+  [attr.aria-label]="i18n.t('ფავორიტები')"
+  (click)="toggleFavorites.emit()"
+>
+  <app-icon name="heart" />
+</button>
+<div class="navigation-controls">
+  <div class="zoom-controls">
+    <button [attr.aria-label]="i18n.t('Zoom in')" (click)="zoom(1)"><app-icon name="plus" /></button
+    ><button [attr.aria-label]="i18n.t('Zoom out')" (click)="zoom(-1)">
+      <app-icon name="minus" />
+    </button>
+  </div>
+  <button
+    class="map-button"
+    [attr.aria-label]="i18n.t('ჩემს მდებარეობაზე მიახლოება')"
+    (click)="locate()"
+  >
+    <app-icon name="location" />
+  </button>
+</div>
+@if (notice()) {
+  <p class="map-notice" role="status">{{ i18n.t(notice()) }}</p>
+}

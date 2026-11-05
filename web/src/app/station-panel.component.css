@@ -1,0 +1,243 @@
+:host { display: contents; }
+.station-list {
+  position: absolute;
+  z-index: 10;
+  top: 110px;
+  left: 24px;
+  width: 360px;
+  bottom: 126px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 18px 14px 6px;
+  border-radius: 24px;
+  background: var(--material);
+  backdrop-filter: blur(24px);
+  box-shadow: 0 12px 50px #17252c1c;
+  border: 1px solid var(--line);
+  transition:
+    opacity 0.18s,
+    transform 0.18s;
+  max-height: 680px;
+}
+.station-list.collapsed {
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(-12px);
+  pointer-events: none;
+}
+.station-search {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 2px 14px;
+  background: var(--line);
+  border: 1px solid transparent;
+  border-radius: 13px;
+  padding: 0 11px;
+  min-height: 44px;
+  color: var(--secondary);
+  flex-shrink: 0;
+}
+.station-search:focus-within {
+  border-color: var(--accent);
+}
+.station-search app-icon {
+  width: 18px;
+  height: 18px;
+}
+.station-search select {
+  border: 0;
+  outline: none;
+  background: none;
+  min-width: 0;
+  width: 100%;
+  padding: 12px 0;
+  color: var(--text);
+  font: inherit;
+  font-size: 12px;
+}
+.station-search select {
+  cursor: pointer;
+}
+.station-search select option {
+  background: var(--surface);
+  color: var(--text);
+}
+.station-tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--line);
+  border-radius: 12px;
+  padding: 4px;
+  margin: 0 2px 20px;
+  flex-shrink: 0;
+}
+.station-tabs button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 6px;
+  flex: 1;
+  border: 0;
+  border-radius: 9px;
+  background: none;
+  color: var(--secondary);
+  font-size: 11px;
+  white-space: nowrap;
+}
+.station-tabs app-icon {
+  width: 15px;
+  height: 15px;
+}
+.station-tabs .active-tab {
+  background: var(--surface);
+  color: var(--accent);
+  box-shadow: 0 2px 5px #0000000a;
+}
+.station-tabs button > span {
+  font-size: 10px;
+  opacity: 0.7;
+}
+.list-heading {
+  padding: 0 6px;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.list-heading h2 {
+  font-size: 13px;
+  letter-spacing: -0.2px;
+}
+.count {
+  font-size: 10px;
+  padding: 5px 8px;
+}
+.catalog-status {
+  padding: 0 6px;
+  font-size: 10px;
+  margin: 8px 0 12px;
+}
+.station-scroll {
+  height: auto;
+  min-height: 0 !important;
+  max-height: none;
+  display: block;
+  flex: 1;
+  overflow: auto;
+  padding: 0 2px;
+  scrollbar-width: thin;
+}
+.station-row {
+  padding: 3px 6px;
+  border-radius: 13px;
+  min-height: 66px;
+  margin: 2px 0;
+  transition: background 0.15s;
+}
+.station-row:hover {
+  background: var(--line);
+}
+.selected-row {
+  background: #f15a220c;
+}
+.station-select {
+  gap: 10px;
+}
+.station-info strong {
+  font-size: 12px;
+}
+.station-detail {
+  font-size: 10px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.station-row .favorite {
+  width: 36px;
+  height: 40px;
+  padding: 9px;
+}
+.station-row .favorite app-icon {
+  width: 20px;
+  height: 20px;
+}
+.empty {
+  font-size: 11px;
+  padding: 16px 6px;
+}
+.load-more {
+  font-size: 11px;
+}
+@media (min-width: 1100px) {
+.station-list {
+    bottom: 24px;
+    max-height: 760px;
+  }
+}
+@media (max-width: 700px) {
+.station-list {
+    top: 94px;
+    left: 16px;
+    width: min(340px, calc(100% - 88px));
+    bottom: auto;
+    height: min(450px, calc(100dvh - 220px));
+    padding: 14px 10px 4px;
+    border-radius: 20px;
+  }
+.station-search {
+    margin-bottom: 10px;
+  }
+.station-tabs {
+    margin-bottom: 14px;
+  }
+.list-heading h2 {
+    font-size: 12px;
+  }
+.station-tabs button {
+    font-size: 10px;
+  }
+}
+@media (max-width: 430px) {
+.station-list {
+    width: calc(100% - 88px);
+  }
+.station-tabs app-icon {
+    display: none;
+  }
+.station-tabs button {
+    font-size: 9px;
+  }
+.list-heading {
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+}
+@media (max-height: 550px) {
+.station-list {
+    bottom: 106px;
+    height: auto;
+  }
+.station-search {
+    display: none;
+  }
+.station-tabs {
+    display: none;
+  }
+.catalog-status {
+    display: none;
+  }
+.station-scroll {
+    height: auto !important;
+  }
+.station-list {
+    top: 86px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+* {
+    transition: none !important;
+  }
+}

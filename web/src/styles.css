@@ -1,0 +1,369 @@
+@import 'leaflet/dist/leaflet.css';
+:root {
+  --accent: #f15a22;
+  --background: #f4f4f4;
+  --surface: #fff;
+  --text: #171719;
+  --secondary: #737376;
+  --material: #ffffffe6;
+  --line: #00000012;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: var(--text);
+  background: var(--background);
+  font-synthesis: none;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0d0e0f;
+    --surface: #2b2c2e;
+    --text: #f6f6f7;
+    --secondary: #a3a3a8;
+    --material: #2b2c2ee8;
+    --line: #ffffff16;
+    color-scheme: dark;
+  }
+  .leaflet-tile-pane {
+    filter: brightness(0.75) saturate(0.65);
+  }
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+button {
+  font: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+button:disabled {
+  cursor: default;
+  opacity: 0.35;
+}
+button:focus-visible,
+a:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+button {
+  color: inherit;
+}
+h1,
+h2,
+p {
+  margin: 0;
+}
+.explorer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  flex-shrink: 0;
+  min-height: 72px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.brand img {
+  border-radius: 12px;
+}
+.brand h1,
+.brand h2 {
+  font-size: 23px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+.icon-button {
+  width: 44px;
+  height: 44px;
+  display: inline-grid;
+  place-items: center;
+  border: 0;
+  background: none;
+  padding: 10px;
+  flex-shrink: 0;
+}
+.station-list {
+  margin: 0 10px;
+  padding: 0 18px 8px;
+  background: var(--surface);
+  border-radius: 28px;
+  flex-shrink: 0;
+}
+.list-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.list-heading h2 {
+  font-size: 17px;
+  font-weight: 650;
+}
+.count {
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  color: var(--accent);
+  background: #f15a221a;
+  white-space: nowrap;
+}
+.catalog-status {
+  font-size: 11px;
+  color: var(--secondary);
+  margin: 8px 0 4px;
+  line-height: 1.5;
+}
+.station-scroll {
+  overflow: auto;
+  max-height: calc(100dvh - 420px);
+  min-height: 75px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--secondary) transparent;
+}
+.station-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 62px;
+}
+.station-select {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 0;
+  background: none;
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+  padding: 6px 0;
+}
+.station-symbol {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #f15a2214;
+  color: var(--accent);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.station-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  min-width: 0;
+}
+.station-info strong {
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+.station-detail {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: var(--secondary);
+}
+.frequency {
+  font:
+    700 11px ui-monospace,
+    SFMono-Regular,
+    monospace;
+  background: var(--line);
+  color: var(--text);
+  border-radius: 12px;
+  padding: 3px 6px;
+  white-space: nowrap;
+}
+.favorite {
+  color: var(--accent);
+}
+.is-favorite svg {
+  fill: var(--accent);
+}
+.mini-player {
+  margin: 8px 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--material);
+  border-radius: 22px;
+  flex-shrink: 0;
+  box-shadow: 0 1px 0 var(--line);
+}
+.player-summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+  border: 0;
+  background: none;
+  padding: 0;
+}
+.player-summary img {
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+.playback-status {
+  font-size: 10px;
+  color: var(--secondary);
+  text-wrap: pretty;
+  line-height: 1.4;
+}
+.transport {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.transport .icon-button svg {
+  fill: currentColor;
+  stroke-width: 1;
+}
+.play-button {
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #000;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.play-button svg {
+  fill: currentColor;
+  stroke-width: 1;
+}
+.empty {
+  padding: 20px 0;
+  font-size: 12px;
+  color: var(--secondary);
+  line-height: 1.8;
+}
+.equalizer {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+  height: 22px;
+}
+.equalizer i {
+  height: 10px;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+.equalizer i:nth-child(2) {
+  height: 21px;
+}
+.equalizer i:nth-child(3) {
+  height: 15px;
+}
+.equalizer.animating i {
+  animation: equalize 0.8s ease-in-out infinite alternate;
+}
+.equalizer.animating i:nth-child(2) {
+  animation-delay: -0.5s;
+}
+.equalizer.animating i:nth-child(3) {
+  animation-delay: -0.2s;
+}
+@keyframes equalize {
+  to {
+    transform: scaleY(0.3);
+  }
+}
+.station-pin {
+  display: grid !important;
+  place-items: center;
+  background: #f15a2229;
+  border-radius: 50%;
+}
+.station-pin span {
+  display: block;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 1px 4px #0003;
+}
+.station-pin.active {
+  border: 2px solid #f15a2277;
+}
+.station-pin.active span {
+  width: 20px;
+  height: 20px;
+  border: 3px solid #fff;
+}
+.leaflet-container {
+  font: inherit;
+  background: #d9e3e8;
+}
+.leaflet-control-attribution {
+  font-size: 9px !important;
+}
+@media (max-width: 500px) {
+  .mini-player {
+    gap: 4px;
+  }
+  .transport {
+    gap: 0;
+  }
+  .transport .icon-button {
+    width: 36px;
+    padding: 8px;
+  }
+  .mini-player .playback-status {
+    max-width: 180px;
+  }
+  .station-detail {
+    font-size: 11px;
+  }
+  .station-info strong {
+    font-size: 13px;
+  }
+  .list-heading h2 {
+    font-size: 15px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+.station-pin.cluster span {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  color: #000;
+  font-size: 11px;
+  font-weight: 750;
+  box-shadow: 0 2px 8px #0003;
+}
+.load-more {
+  grid-column: 1/-1;
+  background: #f15a221a;
+  border: 0;
+  color: var(--accent);
+  padding: 12px;
+  border-radius: 12px;
+  width: 100%;
+  margin: 6px 0;
+}

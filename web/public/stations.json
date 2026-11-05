@@ -1,0 +1,62 @@
+[
+  {
+    "id": "0",
+    "name": "თბილისის ტალღა",
+    "country": "საქართველო",
+    "genre": "ეკლექტიკა",
+    "frequency": "104.3",
+    "streamUrl": null,
+    "latitude": 41.7151,
+    "longitude": 44.8271
+  },
+  {
+    "id": "1",
+    "name": "Midnight Jazz",
+    "country": "საფრანგეთი",
+    "genre": "ჯაზი",
+    "frequency": "89.7",
+    "streamUrl": null,
+    "latitude": 48.8566,
+    "longitude": 2.3522
+  },
+  {
+    "id": "2",
+    "name": "Coast FM",
+    "country": "პორტუგალია",
+    "genre": "ელექტრონული",
+    "frequency": "96.1",
+    "streamUrl": null,
+    "latitude": 38.7223,
+    "longitude": -9.1393
+  },
+  {
+    "id": "3",
+    "name": "Northern Soul",
+    "country": "შვედეთი",
+    "genre": "სოული",
+    "frequency": "102.6",
+    "streamUrl": null,
+    "latitude": 59.3293,
+    "longitude": 18.0686
+  },
+  {
+    "id": "4",
+    "name": "Tokyo Afterhours",
+    "country": "იაპონია",
+    "genre": "ჯაზი",
+    "frequency": "81.3",
+    "streamUrl": null,
+    "latitude": 35.6762,
+    "longitude": 139.6503
+  },
+  {
+    "id": "5",
+    "name": "Desert Radio",
+    "country": "მაროკო",
+    "genre": "ეკლექტიკა",
+    "frequency": "98.4",
+    "streamUrl": null,
+    "latitude": 31.6295,
+    "longitude": -7.9811
+  }
+]

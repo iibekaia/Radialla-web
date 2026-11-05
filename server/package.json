@@ -1,0 +1,11 @@
+{
+  "name": "@radialla/server",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node index.mjs"
+  },
+  "dependencies": {
+    "ipaddr.js": "2.2.0"
+  }
+}

@@ -1,0 +1,7 @@
+node_modules
+web/node_modules
+web/.angular
+web/dist
+.env
+
+server/node_modules

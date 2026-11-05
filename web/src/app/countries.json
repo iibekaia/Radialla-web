@@ -1,0 +1,1752 @@
+[
+  {
+    "code": "AD",
+    "name": "Andorra",
+    "latitude": 42.5,
+    "longitude": 1.5,
+    "bounds": [1.2356562397783475, 42.30510533646141, 1.7643437602216525, 42.69489466353859]
+  },
+  {
+    "code": "AE",
+    "name": "United Arab Emirates",
+    "latitude": 24,
+    "longitude": 54,
+    "bounds": [51.58, 22.5, 56.4, 26.06]
+  },
+  {
+    "code": "AF",
+    "name": "Afghanistan",
+    "latitude": 33,
+    "longitude": 65,
+    "bounds": [60.53, 29.32, 75.16, 38.49]
+  },
+  {
+    "code": "AG",
+    "name": "Antigua and Barbuda",
+    "latitude": 17.05,
+    "longitude": -61.8,
+    "bounds": [-61.99811068107427, 16.8605964320574, -61.60188931892572, 17.239403567942603]
+  },
+  {
+    "code": "AI",
+    "name": "Anguilla",
+    "latitude": 18.25,
+    "longitude": -63.16666666,
+    "bounds": [-63.25715897090674, 18.16405953140388, -63.07617434909326, 18.33594046859612]
+  },
+  {
+    "code": "AL",
+    "name": "Albania",
+    "latitude": 41,
+    "longitude": 20,
+    "bounds": [19.3, 39.62, 21.02, 42.69]
+  },
+  {
+    "code": "AM",
+    "name": "Armenia",
+    "latitude": 40,
+    "longitude": 45,
+    "bounds": [43.58, 38.74, 46.51, 41.25]
+  },
+  {
+    "code": "AO",
+    "name": "Angola",
+    "latitude": -12.5,
+    "longitude": 18.5,
+    "bounds": [11.64, -17.93, 24.08, -4.44]
+  },
+  {
+    "code": "AQ",
+    "name": "Antarctica",
+    "latitude": -90,
+    "longitude": 0,
+    "bounds": [-180.0, -90.0, 180.0, -63.27]
+  },
+  {
+    "code": "AR",
+    "name": "Argentina",
+    "latitude": -34,
+    "longitude": -64,
+    "bounds": [-73.42, -55.25, -53.63, -21.83]
+  },
+  {
+    "code": "AS",
+    "name": "American Samoa",
+    "latitude": -14.33333333,
+    "longitude": -170,
+    "bounds": [-170.13117081377146, -14.460421041528521, -169.86882918622854, -14.20624561847148]
+  },
+  {
+    "code": "AT",
+    "name": "Austria",
+    "latitude": 47.33333333,
+    "longitude": 13.33333333,
+    "bounds": [9.48, 46.43, 16.98, 49.04]
+  },
+  {
+    "code": "AU",
+    "name": "Australia",
+    "latitude": -27,
+    "longitude": 133,
+    "bounds": [113.34, -43.63, 153.57, -10.67]
+  },
+  {
+    "code": "AW",
+    "name": "Aruba",
+    "latitude": 12.5,
+    "longitude": -69.96666666,
+    "bounds": [-70.09046982875502, 12.379131460675687, -69.84286349124498, 12.620868539324313]
+  },
+  {
+    "code": "AX",
+    "name": "Åland Islands",
+    "latitude": 60.116667,
+    "longitude": 19.9,
+    "bounds": [19.181261583807927, 59.75856597451618, 20.61873841619207, 60.47476802548382]
+  },
+  {
+    "code": "AZ",
+    "name": "Azerbaijan",
+    "latitude": 40.5,
+    "longitude": 47.5,
+    "bounds": [44.79, 38.27, 50.39, 41.86]
+  },
+  {
+    "code": "BA",
+    "name": "Bosnia and Herzegovina",
+    "latitude": 44,
+    "longitude": 18,
+    "bounds": [15.75, 42.65, 19.6, 45.23]
+  },
+  {
+    "code": "BB",
+    "name": "Barbados",
+    "latitude": 13.16666666,
+    "longitude": -59.53333333,
+    "bounds": [-59.725191770843104, 12.979851873033084, -59.34147488915689, 13.353481446966917]
+  },
+  {
+    "code": "BD",
+    "name": "Bangladesh",
+    "latitude": 24,
+    "longitude": 90,
+    "bounds": [88.08, 20.67, 92.67, 26.45]
+  },
+  {
+    "code": "BE",
+    "name": "Belgium",
+    "latitude": 50.83333333,
+    "longitude": 4,
+    "bounds": [2.51, 49.53, 6.16, 51.48]
+  },
+  {
+    "code": "BF",
+    "name": "Burkina Faso",
+    "latitude": 13,
+    "longitude": -2,
+    "bounds": [-5.47, 9.61, 2.18, 15.12]
+  },
+  {
+    "code": "BG",
+    "name": "Bulgaria",
+    "latitude": 43,
+    "longitude": 25,
+    "bounds": [22.38, 41.23, 28.56, 44.23]
+  },
+  {
+    "code": "BH",
+    "name": "Bahrain",
+    "latitude": 26,
+    "longitude": 50.55,
+    "bounds": [50.27276532287888, 25.750823122775866, 50.82723467712111, 26.249176877224134]
+  },
+  {
+    "code": "BI",
+    "name": "Burundi",
+    "latitude": -3.5,
+    "longitude": 30,
+    "bounds": [29.02, -4.5, 30.75, -2.35]
+  },
+  {
+    "code": "BJ",
+    "name": "Benin",
+    "latitude": 9.5,
+    "longitude": 2.25,
+    "bounds": [0.77, 6.14, 3.8, 12.24]
+  },
+  {
+    "code": "BL",
+    "name": "Saint Barthélemy",
+    "latitude": 18.5,
+    "longitude": -63.41666666,
+    "bounds": [-63.46020081154591, 18.458715534279676, -63.373132508454084, 18.541284465720324]
+  },
+  {
+    "code": "BM",
+    "name": "Bermuda",
+    "latitude": 32.33333333,
+    "longitude": -64.75,
+    "bounds": [-64.8283506260692, 32.26713090451938, -64.6716493739308, 32.39953575548063]
+  },
+  {
+    "code": "BN",
+    "name": "Brunei",
+    "latitude": 4.5,
+    "longitude": 114.66666666,
+    "bounds": [114.2, 4.01, 115.45, 5.45]
+  },
+  {
+    "code": "BO",
+    "name": "Bolivia",
+    "latitude": -17,
+    "longitude": -65,
+    "bounds": [-69.59, -22.87, -57.5, -9.76]
+  },
+  {
+    "code": "BQ",
+    "name": "Caribbean Netherlands",
+    "latitude": 12.18,
+    "longitude": -68.25,
+    "bounds": [-68.41691747146056, 12.016839907420946, -68.08308252853944, 12.343160092579053]
+  },
+  {
+    "code": "BR",
+    "name": "Brazil",
+    "latitude": -10,
+    "longitude": -55,
+    "bounds": [-73.99, -33.77, -34.73, 5.24]
+  },
+  {
+    "code": "BS",
+    "name": "Bahamas",
+    "latitude": 24.25,
+    "longitude": -76,
+    "bounds": [-78.98, 23.71, -77.0, 27.04]
+  },
+  {
+    "code": "BT",
+    "name": "Bhutan",
+    "latitude": 27.5,
+    "longitude": 90.5,
+    "bounds": [88.81, 26.72, 92.1, 28.3]
+  },
+  {
+    "code": "BV",
+    "name": "Bouvet Island",
+    "latitude": -54.43333333,
+    "longitude": 3.4,
+    "bounds": [3.291578988021716, -54.496396393063065, 3.508421011978284, -54.37027026693694]
+  },
+  {
+    "code": "BW",
+    "name": "Botswana",
+    "latitude": -22,
+    "longitude": 24,
+    "bounds": [19.9, -26.83, 29.43, -17.66]
+  },
+  {
+    "code": "BY",
+    "name": "Belarus",
+    "latitude": 53,
+    "longitude": 28,
+    "bounds": [23.2, 51.32, 32.69, 56.17]
+  },
+  {
+    "code": "BZ",
+    "name": "Belize",
+    "latitude": 17.25,
+    "longitude": -88.75,
+    "bounds": [-89.23, 15.89, -88.11, 18.5]
+  },
+  {
+    "code": "CA",
+    "name": "Canada",
+    "latitude": 60,
+    "longitude": -95,
+    "bounds": [-141.0, 41.68, -52.65, 73.23]
+  },
+  {
+    "code": "CC",
+    "name": "Cocos (Keeling) Islands",
+    "latitude": -12.5,
+    "longitude": 96.83333333,
+    "bounds": [96.79880627584815, -12.53370862510607, 96.86786038415185, -12.46629137489393]
+  },
+  {
+    "code": "CD",
+    "name": "DR Congo",
+    "latitude": 0,
+    "longitude": 25,
+    "bounds": [12.18, -13.26, 31.17, 5.26]
+  },
+  {
+    "code": "CF",
+    "name": "Central African Republic",
+    "latitude": 7,
+    "longitude": 21,
+    "bounds": [14.46, 2.27, 27.37, 11.14]
+  },
+  {
+    "code": "CG",
+    "name": "Congo",
+    "latitude": -1,
+    "longitude": 15,
+    "bounds": [11.09, -5.04, 18.45, 3.73]
+  },
+  {
+    "code": "CH",
+    "name": "Switzerland",
+    "latitude": 47,
+    "longitude": 8,
+    "bounds": [6.02, 45.78, 10.44, 47.83]
+  },
+  {
+    "code": "CI",
+    "name": "Ivory Coast",
+    "latitude": 8,
+    "longitude": -5,
+    "bounds": [-8.6, 4.34, -2.56, 10.52]
+  },
+  {
+    "code": "CK",
+    "name": "Cook Islands",
+    "latitude": -21.23333333,
+    "longitude": -159.76666666,
+    "bounds": [-159.9151454217536, -21.37173235248412, -159.6181878982464, -21.09493430751588]
+  },
+  {
+    "code": "CL",
+    "name": "Chile",
+    "latitude": -30,
+    "longitude": -71,
+    "bounds": [-75.64, -55.61, -66.96, -17.58]
+  },
+  {
+    "code": "CM",
+    "name": "Cameroon",
+    "latitude": 6,
+    "longitude": 12,
+    "bounds": [8.49, 1.73, 16.01, 12.86]
+  },
+  {
+    "code": "CN",
+    "name": "China",
+    "latitude": 35,
+    "longitude": 105,
+    "bounds": [73.68, 18.2, 135.03, 53.46]
+  },
+  {
+    "code": "CO",
+    "name": "Colombia",
+    "latitude": 4,
+    "longitude": -72,
+    "bounds": [-78.99, -4.3, -66.88, 12.44]
+  },
+  {
+    "code": "CR",
+    "name": "Costa Rica",
+    "latitude": 10,
+    "longitude": -84,
+    "bounds": [-85.94, 8.23, -82.55, 11.22]
+  },
+  {
+    "code": "CU",
+    "name": "Cuba",
+    "latitude": 21.5,
+    "longitude": -80,
+    "bounds": [-84.97, 19.86, -74.18, 23.19]
+  },
+  {
+    "code": "CV",
+    "name": "Cape Verde",
+    "latitude": 16,
+    "longitude": -24,
+    "bounds": [-24.595181598127663, 15.427874727592526, -23.404818401872337, 16.572125272407476]
+  },
+  {
+    "code": "CW",
+    "name": "Curaçao",
+    "latitude": 12.116667,
+    "longitude": -68.933333,
+    "bounds": [-69.12748998604245, 11.9268354008495, -68.73917601395756, 12.3064985991505]
+  },
+  {
+    "code": "CX",
+    "name": "Christmas Island",
+    "latitude": -10.5,
+    "longitude": 105.66666666,
+    "bounds": [105.56020878751147, -10.604675225573173, 105.77312453248854, -10.395324774426827]
+  },
+  {
+    "code": "CY",
+    "name": "Cyprus",
+    "latitude": 35,
+    "longitude": 33,
+    "bounds": [32.26, 34.57, 34.0, 35.17]
+  },
+  {
+    "code": "CZ",
+    "name": "Czechia",
+    "latitude": 49.75,
+    "longitude": 15.5,
+    "bounds": [12.24, 48.56, 18.85, 51.12]
+  },
+  {
+    "code": "DE",
+    "name": "Germany",
+    "latitude": 51,
+    "longitude": 9,
+    "bounds": [5.99, 47.3, 15.02, 54.98]
+  },
+  {
+    "code": "DJ",
+    "name": "Djibouti",
+    "latitude": 11.5,
+    "longitude": 43,
+    "bounds": [41.66, 10.93, 43.32, 12.7]
+  },
+  {
+    "code": "DK",
+    "name": "Denmark",
+    "latitude": 56,
+    "longitude": 10,
+    "bounds": [8.09, 54.8, 12.69, 57.73]
+  },
+  {
+    "code": "DM",
+    "name": "Dominica",
+    "latitude": 15.41666666,
+    "longitude": -61.33333333,
+    "bounds": [-61.58943463662991, 15.169780360791988, -61.077232023370094, 15.663552959208014]
+  },
+  {
+    "code": "DO",
+    "name": "Dominican Republic",
+    "latitude": 19,
+    "longitude": -70.66666666,
+    "bounds": [-71.95, 17.6, -68.32, 19.88]
+  },
+  {
+    "code": "DZ",
+    "name": "Algeria",
+    "latitude": 28,
+    "longitude": 3,
+    "bounds": [-8.68, 19.06, 12.0, 37.12]
+  },
+  {
+    "code": "EC",
+    "name": "Ecuador",
+    "latitude": -2,
+    "longitude": -77.5,
+    "bounds": [-80.97, -4.96, -75.23, 1.38]
+  },
+  {
+    "code": "EE",
+    "name": "Estonia",
+    "latitude": 59,
+    "longitude": 26,
+    "bounds": [23.34, 57.47, 28.13, 59.61]
+  },
+  {
+    "code": "EG",
+    "name": "Egypt",
+    "latitude": 27,
+    "longitude": 30,
+    "bounds": [24.7, 22.0, 36.87, 31.59]
+  },
+  {
+    "code": "EH",
+    "name": "Western Sahara",
+    "latitude": 24.5,
+    "longitude": -13,
+    "bounds": [-18.106166017158564, 19.853586681719776, -7.893833982841434, 29.146413318280224]
+  },
+  {
+    "code": "ER",
+    "name": "Eritrea",
+    "latitude": 15,
+    "longitude": 39,
+    "bounds": [36.32, 12.46, 43.08, 18.0]
+  },
+  {
+    "code": "ES",
+    "name": "Spain",
+    "latitude": 40,
+    "longitude": -4,
+    "bounds": [-9.39, 35.95, 3.04, 43.75]
+  },
+  {
+    "code": "ET",
+    "name": "Ethiopia",
+    "latitude": 8,
+    "longitude": 38,
+    "bounds": [32.95, 3.42, 47.79, 14.96]
+  },
+  {
+    "code": "FI",
+    "name": "Finland",
+    "latitude": 64,
+    "longitude": 26,
+    "bounds": [20.65, 59.85, 31.52, 70.16]
+  },
+  {
+    "code": "FJ",
+    "name": "Fiji",
+    "latitude": -18,
+    "longitude": 175,
+    "bounds": [-180.0, -18.29, 180.0, -16.02]
+  },
+  {
+    "code": "FK",
+    "name": "Falkland Islands",
+    "latitude": -51.75,
+    "longitude": -59,
+    "bounds": [-61.2, -52.3, -57.75, -51.1]
+  },
+  {
+    "code": "FM",
+    "name": "Micronesia",
+    "latitude": 6.91666666,
+    "longitude": 158.25,
+    "bounds": [158.00955387850763, 6.677970420369517, 158.49044612149237, 7.155362899630482]
+  },
+  {
+    "code": "FO",
+    "name": "Faroe Islands",
+    "latitude": 62,
+    "longitude": -7,
+    "bounds": [-7.71621479563424, 61.66375752060321, -6.28378520436576, 62.33624247939679]
+  },
+  {
+    "code": "FR",
+    "name": "France",
+    "latitude": 46,
+    "longitude": 2,
+    "bounds": [-5.0, 42.5, 9.56, 51.15]
+  },
+  {
+    "code": "GA",
+    "name": "Gabon",
+    "latitude": -1,
+    "longitude": 11.75,
+    "bounds": [8.8, -3.98, 14.43, 2.33]
+  },
+  {
+    "code": "GB",
+    "name": "United Kingdom",
+    "latitude": 54,
+    "longitude": -2,
+    "bounds": [-7.57, 49.96, 1.68, 58.64]
+  },
+  {
+    "code": "GD",
+    "name": "Grenada",
+    "latitude": 12.11666666,
+    "longitude": -61.66666666,
+    "bounds": [-61.837566146328655, 11.949574434855933, -61.49576717367134, 12.283758885144067]
+  },
+  {
+    "code": "GE",
+    "name": "Georgia",
+    "latitude": 42,
+    "longitude": 43.5,
+    "bounds": [39.96, 41.06, 46.64, 43.55]
+  },
+  {
+    "code": "GF",
+    "name": "French Guiana",
+    "latitude": 4,
+    "longitude": -53,
+    "bounds": [-55.610164449903266, 1.3961937795102939, -50.389835550096734, 6.603806220489706]
+  },
+  {
+    "code": "GG",
+    "name": "Guernsey",
+    "latitude": 49.46666666,
+    "longitude": -2.58333333,
+    "bounds": [-2.7057623156006305, 49.38710124678984, -2.4609043443993692, 49.54623207321016]
+  },
+  {
+    "code": "GH",
+    "name": "Ghana",
+    "latitude": 8,
+    "longitude": -2,
+    "bounds": [-3.24, 4.71, 1.06, 11.1]
+  },
+  {
+    "code": "GI",
+    "name": "Gibraltar",
+    "latitude": 36.13333333,
+    "longitude": -5.35,
+    "bounds": [-5.387144942330139, 36.10333333, -5.31285505766986, 36.16333333]
+  },
+  {
+    "code": "GL",
+    "name": "Greenland",
+    "latitude": 72,
+    "longitude": -40,
+    "bounds": [-73.3, 60.04, -12.21, 83.65]
+  },
+  {
+    "code": "GM",
+    "name": "Gambia",
+    "latitude": 13.46666666,
+    "longitude": -16.56666666,
+    "bounds": [-16.84, 13.13, -13.84, 13.88]
+  },
+  {
+    "code": "GN",
+    "name": "Guinea",
+    "latitude": 11,
+    "longitude": -10,
+    "bounds": [-15.13, 7.31, -7.83, 12.59]
+  },
+  {
+    "code": "GP",
+    "name": "Guadeloupe",
+    "latitude": 16.25,
+    "longitude": -61.583333,
+    "bounds": [-61.961959001775035, 15.886500162129153, -61.20470699822497, 16.613499837870847]
+  },
+  {
+    "code": "GQ",
+    "name": "Equatorial Guinea",
+    "latitude": 2,
+    "longitude": 10,
+    "bounds": [9.31, 1.01, 11.29, 2.28]
+  },
+  {
+    "code": "GR",
+    "name": "Greece",
+    "latitude": 39,
+    "longitude": 22,
+    "bounds": [20.15, 34.92, 26.6, 41.83]
+  },
+  {
+    "code": "GS",
+    "name": "South Georgia",
+    "latitude": -54.5,
+    "longitude": -37,
+    "bounds": [-37.96921976124398, -55.06282878008783, -36.03078023875602, -53.93717121991217]
+  },
+  {
+    "code": "GT",
+    "name": "Guatemala",
+    "latitude": 15.5,
+    "longitude": -90.25,
+    "bounds": [-92.23, 13.74, -88.23, 17.82]
+  },
+  {
+    "code": "GU",
+    "name": "Guam",
+    "latitude": 13.46666666,
+    "longitude": 144.78333333,
+    "bounds": [144.56627767928106, 13.255578830921442, 145.00038898071895, 13.677754489078557]
+  },
+  {
+    "code": "GW",
+    "name": "Guinea-Bissau",
+    "latitude": 12,
+    "longitude": -15,
+    "bounds": [-16.68, 11.04, -13.7, 12.63]
+  },
+  {
+    "code": "GY",
+    "name": "Guyana",
+    "latitude": 5,
+    "longitude": -59,
+    "bounds": [-61.41, 1.27, -56.54, 8.37]
+  },
+  {
+    "code": "HK",
+    "name": "Hong Kong",
+    "latitude": 22.267,
+    "longitude": 114.188,
+    "bounds": [113.86454127673963, 21.967662203138087, 114.51145872326038, 22.566337796861912]
+  },
+  {
+    "code": "HM",
+    "name": "Heard Island and McDonald Islands",
+    "latitude": -53.1,
+    "longitude": 72.51666666,
+    "bounds": [72.21210844665285, -53.282862911082745, 72.82122487334715, -52.91713708891726]
+  },
+  {
+    "code": "HN",
+    "name": "Honduras",
+    "latitude": 15,
+    "longitude": -86.5,
+    "bounds": [-89.35, 12.98, -83.15, 16.01]
+  },
+  {
+    "code": "HR",
+    "name": "Croatia",
+    "latitude": 45.16666666,
+    "longitude": 15.5,
+    "bounds": [13.66, 42.48, 19.39, 46.5]
+  },
+  {
+    "code": "HT",
+    "name": "Haiti",
+    "latitude": 19,
+    "longitude": -72.41666666,
+    "bounds": [-74.46, 18.03, -71.62, 19.92]
+  },
+  {
+    "code": "HU",
+    "name": "Hungary",
+    "latitude": 47,
+    "longitude": 20,
+    "bounds": [16.2, 45.76, 22.71, 48.62]
+  },
+  {
+    "code": "ID",
+    "name": "Indonesia",
+    "latitude": -5,
+    "longitude": 120,
+    "bounds": [95.29, -10.36, 141.03, 5.48]
+  },
+  {
+    "code": "IE",
+    "name": "Ireland",
+    "latitude": 53,
+    "longitude": -8,
+    "bounds": [-9.98, 51.67, -6.03, 55.13]
+  },
+  {
+    "code": "IL",
+    "name": "Israel",
+    "latitude": 31.47,
+    "longitude": 35.13,
+    "bounds": [34.27, 29.5, 35.84, 33.28]
+  },
+  {
+    "code": "IM",
+    "name": "Isle of Man",
+    "latitude": 54.25,
+    "longitude": -4.5,
+    "bounds": [-4.868787814877533, 54.03453584246664, -4.131212185122467, 54.46546415753336]
+  },
+  {
+    "code": "IN",
+    "name": "India",
+    "latitude": 20,
+    "longitude": 77,
+    "bounds": [68.18, 7.97, 97.4, 35.49]
+  },
+  {
+    "code": "IO",
+    "name": "British Indian Ocean Territory",
+    "latitude": -6,
+    "longitude": 71.5,
+    "bounds": [71.42983212934733, -6.069783483715449, 71.57016787065267, -5.930216516284551]
+  },
+  {
+    "code": "IQ",
+    "name": "Iraq",
+    "latitude": 33,
+    "longitude": 44,
+    "bounds": [38.79, 29.1, 48.57, 37.39]
+  },
+  {
+    "code": "IR",
+    "name": "Iran",
+    "latitude": 32,
+    "longitude": 53,
+    "bounds": [44.11, 25.08, 63.32, 39.71]
+  },
+  {
+    "code": "IS",
+    "name": "Iceland",
+    "latitude": 65,
+    "longitude": -18,
+    "bounds": [-24.33, 63.5, -13.61, 66.53]
+  },
+  {
+    "code": "IT",
+    "name": "Italy",
+    "latitude": 42.83333333,
+    "longitude": 12.83333333,
+    "bounds": [6.75, 36.62, 18.48, 47.12]
+  },
+  {
+    "code": "JE",
+    "name": "Jersey",
+    "latitude": 49.25,
+    "longitude": -2.16666666,
+    "bounds": [-2.3153124613976397, 49.152970003475055, -2.0180208586023607, 49.347029996524945]
+  },
+  {
+    "code": "JM",
+    "name": "Jamaica",
+    "latitude": 18.25,
+    "longitude": -77.5,
+    "bounds": [-78.34, 17.7, -76.2, 18.52]
+  },
+  {
+    "code": "JO",
+    "name": "Jordan",
+    "latitude": 31,
+    "longitude": 36,
+    "bounds": [34.92, 29.2, 39.2, 33.38]
+  },
+  {
+    "code": "JP",
+    "name": "Japan",
+    "latitude": 36,
+    "longitude": 138,
+    "bounds": [129.41, 31.03, 145.54, 45.55]
+  },
+  {
+    "code": "KE",
+    "name": "Kenya",
+    "latitude": 1,
+    "longitude": 38,
+    "bounds": [33.89, -4.68, 41.86, 5.51]
+  },
+  {
+    "code": "KG",
+    "name": "Kyrgyzstan",
+    "latitude": 41,
+    "longitude": 75,
+    "bounds": [69.46, 39.28, 80.26, 43.3]
+  },
+  {
+    "code": "KH",
+    "name": "Cambodia",
+    "latitude": 13,
+    "longitude": 105,
+    "bounds": [102.35, 10.49, 107.61, 14.57]
+  },
+  {
+    "code": "KI",
+    "name": "Kiribati",
+    "latitude": 1.41666666,
+    "longitude": 173,
+    "bounds": [172.74336244158013, 1.1601075452991325, 173.25663755841987, 1.6732257747008674]
+  },
+  {
+    "code": "KM",
+    "name": "Comoros",
+    "latitude": -12.16666666,
+    "longitude": 44.25,
+    "bounds": [43.85232076757476, -12.555413489016063, 44.64767923242524, -11.777919830983938]
+  },
+  {
+    "code": "KN",
+    "name": "Saint Kitts and Nevis",
+    "latitude": 17.33333333,
+    "longitude": -62.75,
+    "bounds": [-62.90246897180311, 17.18778833521258, -62.59753102819689, 17.478878324787416]
+  },
+  {
+    "code": "KP",
+    "name": "North Korea",
+    "latitude": 40,
+    "longitude": 127,
+    "bounds": [124.27, 37.67, 130.78, 42.99]
+  },
+  {
+    "code": "KR",
+    "name": "South Korea",
+    "latitude": 37,
+    "longitude": 127.5,
+    "bounds": [126.12, 34.39, 129.47, 38.61]
+  },
+  {
+    "code": "KW",
+    "name": "Kuwait",
+    "latitude": 29.5,
+    "longitude": 45.75,
+    "bounds": [46.57, 28.53, 48.42, 30.06]
+  },
+  {
+    "code": "KY",
+    "name": "Cayman Islands",
+    "latitude": 19.5,
+    "longitude": -80.5,
+    "bounds": [-80.65528604643129, 19.353620929646198, -80.34471395356871, 19.646379070353802]
+  },
+  {
+    "code": "KZ",
+    "name": "Kazakhstan",
+    "latitude": 48,
+    "longitude": 68,
+    "bounds": [46.47, 40.66, 87.36, 55.39]
+  },
+  {
+    "code": "LA",
+    "name": "Laos",
+    "latitude": 18,
+    "longitude": 105,
+    "bounds": [100.12, 13.88, 107.56, 22.46]
+  },
+  {
+    "code": "LB",
+    "name": "Lebanon",
+    "latitude": 33.83333333,
+    "longitude": 35.83333333,
+    "bounds": [35.13, 33.09, 36.61, 34.64]
+  },
+  {
+    "code": "LC",
+    "name": "Saint Lucia",
+    "latitude": 13.88333333,
+    "longitude": -60.96666666,
+    "bounds": [-61.196993065243284, 13.659735606648812, -60.73634025475672, 14.106931053351186]
+  },
+  {
+    "code": "LI",
+    "name": "Liechtenstein",
+    "latitude": 47.26666666,
+    "longitude": 9.53333333,
+    "bounds": [9.365402124342749, 47.15271070828222, 9.70126453565725, 47.380622611717776]
+  },
+  {
+    "code": "LK",
+    "name": "Sri Lanka",
+    "latitude": 7,
+    "longitude": 81,
+    "bounds": [79.7, 5.97, 81.79, 9.82]
+  },
+  {
+    "code": "LR",
+    "name": "Liberia",
+    "latitude": 6.5,
+    "longitude": -9.5,
+    "bounds": [-11.44, 4.36, -7.54, 8.54]
+  },
+  {
+    "code": "LS",
+    "name": "Lesotho",
+    "latitude": -29.5,
+    "longitude": 28.5,
+    "bounds": [27.0, -30.65, 29.33, -28.65]
+  },
+  {
+    "code": "LT",
+    "name": "Lithuania",
+    "latitude": 56,
+    "longitude": 24,
+    "bounds": [21.06, 53.91, 26.59, 56.37]
+  },
+  {
+    "code": "LU",
+    "name": "Luxembourg",
+    "latitude": 49.75,
+    "longitude": 6.16666666,
+    "bounds": [5.67, 49.44, 6.24, 50.13]
+  },
+  {
+    "code": "LV",
+    "name": "Latvia",
+    "latitude": 57,
+    "longitude": 25,
+    "bounds": [21.06, 55.62, 28.18, 57.97]
+  },
+  {
+    "code": "LY",
+    "name": "Libya",
+    "latitude": 25,
+    "longitude": 17,
+    "bounds": [9.32, 19.58, 25.16, 33.14]
+  },
+  {
+    "code": "MA",
+    "name": "Morocco",
+    "latitude": 32,
+    "longitude": -5,
+    "bounds": [-17.02, 21.42, -1.12, 35.76]
+  },
+  {
+    "code": "MC",
+    "name": "Monaco",
+    "latitude": 43.73333333,
+    "longitude": 7.4,
+    "bounds": [7.3584812487590145, 43.70333333, 7.441518751240986, 43.76333333]
+  },
+  {
+    "code": "MD",
+    "name": "Moldova",
+    "latitude": 47,
+    "longitude": 29,
+    "bounds": [26.62, 45.49, 30.02, 48.47]
+  },
+  {
+    "code": "ME",
+    "name": "Montenegro",
+    "latitude": 42.5,
+    "longitude": 19.3,
+    "bounds": [18.45, 41.88, 20.34, 43.52]
+  },
+  {
+    "code": "MF",
+    "name": "Saint Martin",
+    "latitude": 18.08333333,
+    "longitude": -63.95,
+    "bounds": [-64.01899448477621, 18.017746754420894, -63.88100551522379, 18.148919905579103]
+  },
+  {
+    "code": "MG",
+    "name": "Madagascar",
+    "latitude": -20,
+    "longitude": 47,
+    "bounds": [43.25, -25.6, 50.48, -12.04]
+  },
+  {
+    "code": "MH",
+    "name": "Marshall Islands",
+    "latitude": 9,
+    "longitude": 168,
+    "bounds": [167.87728535889076, 8.878796179756092, 168.12271464110924, 9.121203820243908]
+  },
+  {
+    "code": "MK",
+    "name": "North Macedonia",
+    "latitude": 41.83333333,
+    "longitude": 22,
+    "bounds": [20.46, 40.84, 22.95, 42.32]
+  },
+  {
+    "code": "ML",
+    "name": "Mali",
+    "latitude": 17,
+    "longitude": -4,
+    "bounds": [-12.17, 10.1, 4.27, 24.97]
+  },
+  {
+    "code": "MM",
+    "name": "Myanmar",
+    "latitude": 22,
+    "longitude": 98,
+    "bounds": [92.3, 9.93, 101.18, 28.34]
+  },
+  {
+    "code": "MN",
+    "name": "Mongolia",
+    "latitude": 46,
+    "longitude": 105,
+    "bounds": [87.75, 41.6, 119.77, 52.05]
+  },
+  {
+    "code": "MO",
+    "name": "Macau",
+    "latitude": 22.16666666,
+    "longitude": 113.55,
+    "bounds": [113.49671753135385, 22.117322285449987, 113.60328246864614, 22.216011034550014]
+  },
+  {
+    "code": "MP",
+    "name": "Northern Mariana Islands",
+    "latitude": 15.2,
+    "longitude": 145.75,
+    "bounds": [145.54890499886636, 15.005940006950107, 145.95109500113364, 15.394059993049892]
+  },
+  {
+    "code": "MQ",
+    "name": "Martinique",
+    "latitude": 14.666667,
+    "longitude": -61,
+    "bounds": [-61.31276536649005, 14.364093024797358, -60.68723463350995, 14.969240975202643]
+  },
+  {
+    "code": "MR",
+    "name": "Mauritania",
+    "latitude": 20,
+    "longitude": -12,
+    "bounds": [-17.06, 14.62, -4.92, 27.4]
+  },
+  {
+    "code": "MS",
+    "name": "Montserrat",
+    "latitude": 16.75,
+    "longitude": -62.2,
+    "bounds": [-62.29501801609832, 16.659013469023765, -62.10498198390169, 16.840986530976235]
+  },
+  {
+    "code": "MT",
+    "name": "Malta",
+    "latitude": 35.83333333,
+    "longitude": 14.58333333,
+    "bounds": [14.385796594737146, 35.673185682841165, 14.780870065262855, 35.99348097715884]
+  },
+  {
+    "code": "MU",
+    "name": "Mauritius",
+    "latitude": -20.28333333,
+    "longitude": 57.55,
+    "bounds": [57.11619557021294, -20.690237466599505, 57.98380442978706, -19.876429193400497]
+  },
+  {
+    "code": "MV",
+    "name": "Maldives",
+    "latitude": 3.25,
+    "longitude": 73,
+    "bounds": [72.84370801770874, 3.0939593867055066, 73.15629198229126, 3.4060406132944934]
+  },
+  {
+    "code": "MW",
+    "name": "Malawi",
+    "latitude": -13.5,
+    "longitude": 34,
+    "bounds": [32.69, -16.8, 35.77, -9.23]
+  },
+  {
+    "code": "MX",
+    "name": "Mexico",
+    "latitude": 23,
+    "longitude": -102,
+    "bounds": [-117.13, 14.54, -86.81, 32.72]
+  },
+  {
+    "code": "MY",
+    "name": "Malaysia",
+    "latitude": 2.5,
+    "longitude": 112.5,
+    "bounds": [100.09, 0.77, 119.18, 6.93]
+  },
+  {
+    "code": "MZ",
+    "name": "Mozambique",
+    "latitude": -18.25,
+    "longitude": 35,
+    "bounds": [30.18, -26.74, 40.78, -10.32]
+  },
+  {
+    "code": "NA",
+    "name": "Namibia",
+    "latitude": -22,
+    "longitude": 17,
+    "bounds": [11.73, -29.05, 25.08, -16.94]
+  },
+  {
+    "code": "NC",
+    "name": "New Caledonia",
+    "latitude": -21.5,
+    "longitude": 165.5,
+    "bounds": [164.03, -22.4, 167.12, -20.11]
+  },
+  {
+    "code": "NE",
+    "name": "Niger",
+    "latitude": 16,
+    "longitude": 8,
+    "bounds": [0.3, 11.66, 15.9, 23.47]
+  },
+  {
+    "code": "NF",
+    "name": "Norfolk Island",
+    "latitude": -29.03333333,
+    "longitude": 167.95,
+    "bounds": [167.88817713007066, -29.087387384054054, 168.01182286992932, -28.97927927594595]
+  },
+  {
+    "code": "NG",
+    "name": "Nigeria",
+    "latitude": 10,
+    "longitude": 8,
+    "bounds": [2.69, 4.24, 14.58, 13.87]
+  },
+  {
+    "code": "NI",
+    "name": "Nicaragua",
+    "latitude": 13,
+    "longitude": -85,
+    "bounds": [-87.67, 10.73, -83.15, 15.02]
+  },
+  {
+    "code": "NL",
+    "name": "Netherlands",
+    "latitude": 52.5,
+    "longitude": 5.75,
+    "bounds": [3.31, 50.8, 7.09, 53.51]
+  },
+  {
+    "code": "NO",
+    "name": "Norway",
+    "latitude": 62,
+    "longitude": 10,
+    "bounds": [4.99, 58.08, 31.29, 70.92]
+  },
+  {
+    "code": "NP",
+    "name": "Nepal",
+    "latitude": 28,
+    "longitude": 84,
+    "bounds": [80.09, 26.4, 88.17, 30.42]
+  },
+  {
+    "code": "NR",
+    "name": "Nauru",
+    "latitude": -0.53333333,
+    "longitude": 166.91666666,
+    "bounds": [166.87538040563308, -0.5746177957203229, 166.95795291436693, -0.49204886427967715]
+  },
+  {
+    "code": "NU",
+    "name": "Niue",
+    "latitude": -19.03333333,
+    "longitude": -169.86666666,
+    "bounds": [-170.02033369463553, -19.17859923537475, -169.71299962536446, -18.888067424625252]
+  },
+  {
+    "code": "NZ",
+    "name": "New Zealand",
+    "latitude": -41,
+    "longitude": 174,
+    "bounds": [166.51, -46.64, 178.52, -34.45]
+  },
+  {
+    "code": "OM",
+    "name": "Oman",
+    "latitude": 21,
+    "longitude": 57,
+    "bounds": [52.0, 16.65, 59.81, 26.4]
+  },
+  {
+    "code": "PA",
+    "name": "Panama",
+    "latitude": 9,
+    "longitude": -80,
+    "bounds": [-82.97, 7.22, -77.24, 9.61]
+  },
+  {
+    "code": "PE",
+    "name": "Peru",
+    "latitude": -10,
+    "longitude": -76,
+    "bounds": [-81.41, -18.35, -68.67, -0.06]
+  },
+  {
+    "code": "PF",
+    "name": "French Polynesia",
+    "latitude": -15,
+    "longitude": -140,
+    "bounds": [-140.60206723521654, -15.581552291658108, -139.39793276478346, -14.418447708341892]
+  },
+  {
+    "code": "PG",
+    "name": "Papua New Guinea",
+    "latitude": -6,
+    "longitude": 147,
+    "bounds": [141.0, -10.65, 156.02, -2.5]
+  },
+  {
+    "code": "PH",
+    "name": "Philippines",
+    "latitude": 13,
+    "longitude": 122,
+    "bounds": [117.17, 5.58, 126.54, 18.51]
+  },
+  {
+    "code": "PK",
+    "name": "Pakistan",
+    "latitude": 30,
+    "longitude": 70,
+    "bounds": [60.87, 23.69, 77.84, 37.13]
+  },
+  {
+    "code": "PL",
+    "name": "Poland",
+    "latitude": 52,
+    "longitude": 20,
+    "bounds": [14.07, 49.03, 24.03, 54.85]
+  },
+  {
+    "code": "PM",
+    "name": "Saint Pierre and Miquelon",
+    "latitude": 46.83333333,
+    "longitude": -56.33333333,
+    "bounds": [-56.538190222407366, 46.6931860400351, -56.12847643759264, 46.9734806199649]
+  },
+  {
+    "code": "PN",
+    "name": "Pitcairn Islands",
+    "latitude": -25.06666666,
+    "longitude": -130.1,
+    "bounds": [-130.168184590006, -25.128429314057666, -130.03181540999398, -25.004904005942333]
+  },
+  {
+    "code": "PR",
+    "name": "Puerto Rico",
+    "latitude": 18.25,
+    "longitude": -66.5,
+    "bounds": [-67.24, 17.95, -65.59, 18.52]
+  },
+  {
+    "code": "PS",
+    "name": "Palestine",
+    "latitude": 31.9,
+    "longitude": 35.2,
+    "bounds": [34.93, 31.35, 35.55, 32.53]
+  },
+  {
+    "code": "PT",
+    "name": "Portugal",
+    "latitude": 39.5,
+    "longitude": -8,
+    "bounds": [-9.53, 36.84, -6.39, 42.28]
+  },
+  {
+    "code": "PW",
+    "name": "Palau",
+    "latitude": 7.5,
+    "longitude": 134.5,
+    "bounds": [134.3053229315422, 7.306988420850193, 134.6946770684578, 7.693011579149807]
+  },
+  {
+    "code": "PY",
+    "name": "Paraguay",
+    "latitude": -23,
+    "longitude": -58,
+    "bounds": [-62.69, -27.55, -54.29, -19.34]
+  },
+  {
+    "code": "QA",
+    "name": "Qatar",
+    "latitude": 25.5,
+    "longitude": 51.25,
+    "bounds": [50.74, 24.56, 51.61, 26.11]
+  },
+  {
+    "code": "RE",
+    "name": "Réunion",
+    "latitude": -21.15,
+    "longitude": 55.5,
+    "bounds": [55.01595382292543, -21.601440353742973, 55.98404617707457, -20.698559646257024]
+  },
+  {
+    "code": "RO",
+    "name": "Romania",
+    "latitude": 46,
+    "longitude": 25,
+    "bounds": [20.22, 43.69, 29.63, 48.22]
+  },
+  {
+    "code": "RS",
+    "name": "Serbia",
+    "latitude": 44,
+    "longitude": 21,
+    "bounds": [18.83, 42.25, 22.99, 46.17]
+  },
+  {
+    "code": "RU",
+    "name": "Russia",
+    "latitude": 60,
+    "longitude": 100,
+    "bounds": [-180.0, 41.15, 180.0, 81.25]
+  },
+  {
+    "code": "RW",
+    "name": "Rwanda",
+    "latitude": -2,
+    "longitude": 30,
+    "bounds": [29.02, -2.92, 30.82, -1.13]
+  },
+  {
+    "code": "SA",
+    "name": "Saudi Arabia",
+    "latitude": 25,
+    "longitude": 45,
+    "bounds": [34.63, 16.35, 55.67, 32.16]
+  },
+  {
+    "code": "SB",
+    "name": "Solomon Islands",
+    "latitude": -8,
+    "longitude": 159,
+    "bounds": [156.49, -10.83, 162.4, -6.6]
+  },
+  {
+    "code": "SC",
+    "name": "Seychelles",
+    "latitude": -4.58333333,
+    "longitude": 55.66666666,
+    "bounds": [55.474518041675516, -4.774867488788012, 55.85881527832448, -4.391799171211988]
+  },
+  {
+    "code": "SD",
+    "name": "Sudan",
+    "latitude": 15,
+    "longitude": 30,
+    "bounds": [21.94, 8.62, 38.41, 22.0]
+  },
+  {
+    "code": "SE",
+    "name": "Sweden",
+    "latitude": 62,
+    "longitude": 15,
+    "bounds": [11.03, 55.36, 23.9, 69.11]
+  },
+  {
+    "code": "SG",
+    "name": "Singapore",
+    "latitude": 1.36666666,
+    "longitude": 103.8,
+    "bounds": [103.55987921478112, 1.126614180820284, 104.04012078521887, 1.6067191391797158]
+  },
+  {
+    "code": "SH",
+    "name": "Saint Helena, Ascension and Tristan da Cunha",
+    "latitude": -15.95,
+    "longitude": -5.72,
+    "bounds": [-5.905983749680151, -16.128823722894406, -5.534016250319849, -15.771176277105592]
+  },
+  {
+    "code": "SI",
+    "name": "Slovenia",
+    "latitude": 46.11666666,
+    "longitude": 14.81666666,
+    "bounds": [13.7, 45.45, 16.56, 46.85]
+  },
+  {
+    "code": "SJ",
+    "name": "Svalbard and Jan Mayen",
+    "latitude": 78,
+    "longitude": 20,
+    "bounds": [19.855707969657676, 77.97, 20.144292030342324, 78.03]
+  },
+  {
+    "code": "SK",
+    "name": "Slovakia",
+    "latitude": 48.66666666,
+    "longitude": 19.5,
+    "bounds": [16.88, 47.76, 22.56, 49.57]
+  },
+  {
+    "code": "SL",
+    "name": "Sierra Leone",
+    "latitude": 8.5,
+    "longitude": -11.5,
+    "bounds": [-13.25, 6.79, -10.23, 10.05]
+  },
+  {
+    "code": "SM",
+    "name": "San Marino",
+    "latitude": 43.76666666,
+    "longitude": 12.41666666,
+    "bounds": [12.319233488727312, 43.69630405030715, 12.51409983127269, 43.83702926969285]
+  },
+  {
+    "code": "SN",
+    "name": "Senegal",
+    "latitude": 14,
+    "longitude": -14,
+    "bounds": [-17.63, 12.33, -11.47, 16.6]
+  },
+  {
+    "code": "SO",
+    "name": "Somalia",
+    "latitude": 10,
+    "longitude": 49,
+    "bounds": [40.98, -1.68, 51.13, 12.02]
+  },
+  {
+    "code": "SR",
+    "name": "Suriname",
+    "latitude": 4,
+    "longitude": -56,
+    "bounds": [-58.04, 1.82, -53.96, 6.03]
+  },
+  {
+    "code": "SS",
+    "name": "South Sudan",
+    "latitude": 7,
+    "longitude": 30,
+    "bounds": [23.89, 3.51, 35.3, 12.25]
+  },
+  {
+    "code": "ST",
+    "name": "São Tomé and Príncipe",
+    "latitude": 1,
+    "longitude": 7,
+    "bounds": [6.720242532190545, 0.7202851406079275, 7.279757467809455, 1.2797148593920724]
+  },
+  {
+    "code": "SV",
+    "name": "El Salvador",
+    "latitude": 13.83333333,
+    "longitude": -88.91666666,
+    "bounds": [-90.1, 13.15, -87.72, 14.42]
+  },
+  {
+    "code": "SX",
+    "name": "Sint Maarten",
+    "latitude": 18.033333,
+    "longitude": -63.05,
+    "bounds": [-63.105244917529156, 17.98080190184824, -62.99475508247084, 18.08586409815176]
+  },
+  {
+    "code": "SY",
+    "name": "Syria",
+    "latitude": 35,
+    "longitude": 38,
+    "bounds": [35.7, 32.31, 42.35, 37.23]
+  },
+  {
+    "code": "SZ",
+    "name": "Eswatini",
+    "latitude": -26.5,
+    "longitude": 31.5,
+    "bounds": [30.68, -27.29, 32.07, -25.66]
+  },
+  {
+    "code": "TC",
+    "name": "Turks and Caicos Islands",
+    "latitude": 21.75,
+    "longitude": -71.58333333,
+    "bounds": [-71.88197782685519, 21.472616138408277, -71.28468883314481, 22.027383861591723]
+  },
+  {
+    "code": "TD",
+    "name": "Chad",
+    "latitude": 15,
+    "longitude": 19,
+    "bounds": [13.54, 7.42, 23.89, 23.41]
+  },
+  {
+    "code": "TF",
+    "name": "French Southern and Antarctic Lands",
+    "latitude": -49.25,
+    "longitude": 69.167,
+    "bounds": [68.72, -49.78, 70.56, -48.63]
+  },
+  {
+    "code": "TG",
+    "name": "Togo",
+    "latitude": 8,
+    "longitude": 1.16666666,
+    "bounds": [-0.05, 5.93, 1.87, 11.02]
+  },
+  {
+    "code": "TH",
+    "name": "Thailand",
+    "latitude": 15,
+    "longitude": 100,
+    "bounds": [97.38, 5.69, 105.59, 20.42]
+  },
+  {
+    "code": "TJ",
+    "name": "Tajikistan",
+    "latitude": 39,
+    "longitude": 71,
+    "bounds": [67.44, 36.74, 74.98, 40.96]
+  },
+  {
+    "code": "TK",
+    "name": "Tokelau",
+    "latitude": -9,
+    "longitude": -172,
+    "bounds": [-172.03159713583344, -9.0312081226589, -171.96840286416656, -8.9687918773411]
+  },
+  {
+    "code": "TL",
+    "name": "Timor-Leste",
+    "latitude": -8.83333333,
+    "longitude": 125.91666666,
+    "bounds": [124.97, -9.39, 127.34, -8.27]
+  },
+  {
+    "code": "TM",
+    "name": "Turkmenistan",
+    "latitude": 40,
+    "longitude": 60,
+    "bounds": [52.5, 35.27, 66.55, 42.75]
+  },
+  {
+    "code": "TN",
+    "name": "Tunisia",
+    "latitude": 34,
+    "longitude": 9,
+    "bounds": [7.52, 30.31, 11.49, 37.35]
+  },
+  {
+    "code": "TO",
+    "name": "Tonga",
+    "latitude": -20,
+    "longitude": -175,
+    "bounds": [-175.2620302949336, -20.24622793457147, -174.7379697050664, -19.75377206542853]
+  },
+  {
+    "code": "TR",
+    "name": "Türkiye",
+    "latitude": 39,
+    "longitude": 35,
+    "bounds": [26.04, 35.82, 44.79, 42.14]
+  },
+  {
+    "code": "TT",
+    "name": "Trinidad and Tobago",
+    "latitude": 11,
+    "longitude": -61,
+    "bounds": [-61.95, 10.0, -60.9, 10.89]
+  },
+  {
+    "code": "TV",
+    "name": "Tuvalu",
+    "latitude": -8,
+    "longitude": 178,
+    "bounds": [177.95361143695823, -8.04593711273507, 178.04638856304177, -7.9540628872649295]
+  },
+  {
+    "code": "TW",
+    "name": "Taiwan",
+    "latitude": 23.5,
+    "longitude": 121,
+    "bounds": [120.11, 21.97, 121.95, 25.3]
+  },
+  {
+    "code": "TZ",
+    "name": "Tanzania",
+    "latitude": -6,
+    "longitude": 35,
+    "bounds": [29.34, -11.72, 40.32, -0.95]
+  },
+  {
+    "code": "UA",
+    "name": "Ukraine",
+    "latitude": 49,
+    "longitude": 32,
+    "bounds": [22.09, 44.36, 40.08, 52.34]
+  },
+  {
+    "code": "UG",
+    "name": "Uganda",
+    "latitude": 1,
+    "longitude": 32,
+    "bounds": [29.58, -1.44, 35.04, 4.25]
+  },
+  {
+    "code": "UM",
+    "name": "United States Minor Outlying Islands",
+    "latitude": 19.3,
+    "longitude": 166.633333,
+    "bounds": [166.57751045103092, 19.247314625163195, 166.68915554896907, 19.352685374836806]
+  },
+  {
+    "code": "US",
+    "name": "United States",
+    "latitude": 38,
+    "longitude": -97,
+    "bounds": [-125.0, 25.0, -66.96, 49.5]
+  },
+  {
+    "code": "UY",
+    "name": "Uruguay",
+    "latitude": -33,
+    "longitude": -56,
+    "bounds": [-58.43, -34.95, -53.21, -30.11]
+  },
+  {
+    "code": "UZ",
+    "name": "Uzbekistan",
+    "latitude": 41,
+    "longitude": 64,
+    "bounds": [55.93, 37.14, 73.06, 45.59]
+  },
+  {
+    "code": "VA",
+    "name": "Vatican City",
+    "latitude": 41.9,
+    "longitude": 12.45,
+    "bounds": [12.409694297163727, 41.87, 12.490305702836272, 41.93]
+  },
+  {
+    "code": "VC",
+    "name": "Saint Vincent and the Grenadines",
+    "latitude": 13.25,
+    "longitude": -61.2,
+    "bounds": [-61.38254491268144, 13.072314568258415, -61.01745508731857, 13.427685431741585]
+  },
+  {
+    "code": "VE",
+    "name": "Venezuela",
+    "latitude": 8,
+    "longitude": -66,
+    "bounds": [-73.3, 0.72, -59.76, 12.16]
+  },
+  {
+    "code": "VG",
+    "name": "British Virgin Islands",
+    "latitude": 18.431383,
+    "longitude": -64.62305,
+    "bounds": [-64.739740427684, 18.320678443896895, -64.50635957231601, 18.542087556103105]
+  },
+  {
+    "code": "VI",
+    "name": "United States Virgin Islands",
+    "latitude": 18.35,
+    "longitude": -64.933333,
+    "bounds": [-65.11014282750256, 18.18218075666489, -64.75652317249745, 18.51781924333511]
+  },
+  {
+    "code": "VN",
+    "name": "Vietnam",
+    "latitude": 16.16666666,
+    "longitude": 107.83333333,
+    "bounds": [102.17, 8.6, 109.34, 23.35]
+  },
+  {
+    "code": "VU",
+    "name": "Vanuatu",
+    "latitude": -16,
+    "longitude": 167,
+    "bounds": [166.63, -16.6, 167.84, -14.63]
+  },
+  {
+    "code": "WF",
+    "name": "Wallis and Futuna",
+    "latitude": -13.3,
+    "longitude": -176.2,
+    "bounds": [-176.31031346376878, -13.40735473232264, -176.0896865362312, -13.192645267677362]
+  },
+  {
+    "code": "WS",
+    "name": "Samoa",
+    "latitude": -13.58333333,
+    "longitude": -172.33333333,
+    "bounds": [-172.8274274383071, -14.063607309649075, -171.83923922169288, -13.103059350350925]
+  },
+  {
+    "code": "XK",
+    "name": "Kosovo",
+    "latitude": 42.666667,
+    "longitude": 21.166667,
+    "bounds": [19.887050882145136, 41.725753746728145, 22.446283117854865, 43.60758025327185]
+  },
+  {
+    "code": "YE",
+    "name": "Yemen",
+    "latitude": 15,
+    "longitude": 48,
+    "bounds": [42.6, 12.59, 53.11, 19.0]
+  },
+  {
+    "code": "YT",
+    "name": "Mayotte",
+    "latitude": -12.83333333,
+    "longitude": 45.16666666,
+    "bounds": [44.987977105718805, -13.007559272394719, 45.34535621428119, -12.659107387605282]
+  },
+  {
+    "code": "ZA",
+    "name": "South Africa",
+    "latitude": -29,
+    "longitude": 24,
+    "bounds": [16.34, -34.82, 32.83, -22.09]
+  },
+  {
+    "code": "ZM",
+    "name": "Zambia",
+    "latitude": -15,
+    "longitude": 30,
+    "bounds": [21.89, -17.96, 33.49, -8.24]
+  },
+  {
+    "code": "ZW",
+    "name": "Zimbabwe",
+    "latitude": -20,
+    "longitude": 30,
+    "bounds": [25.26, -22.27, 32.85, -15.51]
+  }
+]
