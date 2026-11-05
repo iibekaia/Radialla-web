@@ -9,9 +9,9 @@
     "build": "npm run build -w web",
     "start": "npm start -w server",
     "dev": "npm run start -w web",
-    "test": "node --test server/*.test.mjs",
-    "format": "prettier --write \"web/src/**/*.{ts,mts,mjs,html,css}\" \"server/*.mjs\"",
-    "format:check": "prettier --check \"web/src/**/*.{ts,mts,mjs,html,css}\" \"server/*.mjs\""
+    "test": "node --test server/tests/*.test.mjs",
+    "format": "prettier --write \"web/src/**/*.{ts,mts,mjs,html,css}\" \"server/**/*.mjs\"",
+    "format:check": "prettier --check \"web/src/**/*.{ts,mts,mjs,html,css}\" \"server/**/*.mjs\""
   },
   "engines": {
     "node": ">=22.12 <23"

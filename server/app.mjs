@@ -1,8 +1,8 @@
 import { readFile } from 'node:fs/promises';
 import { resolve, extname, sep } from 'node:path';
 import { createServer } from 'node:http';
-import { createMetadataProvider } from './stream-metadata.mjs';
-import { createStreamRelay } from './stream-relay.mjs';
+import { createMetadataProvider } from './metadata/stream-metadata.mjs';
+import { createStreamRelay } from './streaming/stream-relay.mjs';
 export function createApp(stations, config = {}) {
   const metadata = config.metadataProvider || createMetadataProvider();
   const relay = createStreamRelay(config.streamRelay);

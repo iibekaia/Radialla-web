@@ -71,8 +71,7 @@ p {
 .brand img {
   border-radius: 12px;
 }
-.brand h1,
-.brand h2 {
+.brand h1 {
   font-size: 23px;
   font-weight: 700;
   letter-spacing: -0.5px;
@@ -141,16 +140,6 @@ p {
   min-width: 0;
   text-align: left;
   padding: 6px 0;
-}
-.station-symbol {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: #f15a2214;
-  color: var(--accent);
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
 }
 .station-info {
   display: flex;
@@ -254,38 +243,6 @@ p {
   color: var(--secondary);
   line-height: 1.8;
 }
-.equalizer {
-  display: flex;
-  gap: 3px;
-  align-items: center;
-  height: 22px;
-}
-.equalizer i {
-  height: 10px;
-  width: 3px;
-  border-radius: 2px;
-  background: var(--accent);
-}
-.equalizer i:nth-child(2) {
-  height: 21px;
-}
-.equalizer i:nth-child(3) {
-  height: 15px;
-}
-.equalizer.animating i {
-  animation: equalize 0.8s ease-in-out infinite alternate;
-}
-.equalizer.animating i:nth-child(2) {
-  animation-delay: -0.5s;
-}
-.equalizer.animating i:nth-child(3) {
-  animation-delay: -0.2s;
-}
-@keyframes equalize {
-  to {
-    transform: scaleY(0.3);
-  }
-}
 .station-pin {
   display: grid !important;
   place-items: center;
@@ -340,7 +297,7 @@ p {
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  *,
+  *:not(.playback-spinner),
   *::before,
   *::after {
     animation: none !important;

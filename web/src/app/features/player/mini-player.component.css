@@ -1,0 +1,243 @@
+:host {
+  display: contents;
+}
+.mini-player {
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+  right: 24px;
+  width: auto;
+  max-width: 960px;
+  min-height: 80px;
+  margin: 0 auto;
+  z-index: 10;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  padding: 14px 18px;
+  gap: 20px;
+  background: var(--material);
+  backdrop-filter: blur(24px);
+  box-shadow: 0 12px 50px #17252c29;
+}
+.mini-player .player-summary {
+  max-width: none;
+  gap: 12px;
+}
+.mini-player .player-summary app-station-image {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+}
+.mini-player .station-info strong {
+  font-size: 14px;
+}
+.mini-player .playback-status {
+  max-width: 440px;
+  font-size: 10px;
+}
+.mini-player .transport {
+  margin: 0;
+  gap: 10px;
+}
+.mini-player .play-button {
+  width: 48px;
+  height: 48px;
+}
+.dock-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 10px;
+  color: var(--secondary);
+  white-space: nowrap;
+  padding: 0 20px;
+  border-right: 1px solid var(--line);
+}
+.dock-label span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+@media (min-width: 1100px) {
+  .mini-player {
+    left: 410px;
+    right: 100px;
+  }
+}
+@media (max-width: 700px) {
+  .mini-player {
+    left: 12px;
+    right: 12px;
+    bottom: max(16px, env(safe-area-inset-bottom));
+    padding: 12px;
+    min-height: 76px;
+    gap: 6px;
+    border-radius: 20px;
+  }
+  .mini-player .player-summary {
+    gap: 9px;
+  }
+  .mini-player .player-summary app-station-image {
+    width: 40px;
+    height: 40px;
+  }
+  .mini-player .station-info strong {
+    font-size: 12px;
+  }
+  .mini-player .playback-status {
+    max-width: 220px;
+    font-size: 9px;
+  }
+  .mini-player .transport {
+    gap: 0;
+  }
+  .mini-player .play-button {
+    width: 42px;
+    height: 42px;
+  }
+  .dock-label {
+    display: none;
+  }
+}
+@media (max-width: 430px) {
+  .mini-player .transport .icon-button {
+    width: 30px;
+    padding: 7px;
+  }
+  .mini-player .station-info strong {
+    font-size: 11px;
+  }
+  .mini-player .playback-status {
+    max-width: 160px;
+  }
+}
+@media (max-height: 550px) {
+  .mini-player {
+    bottom: 12px;
+    min-height: 70px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
+.now-playing {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  max-width: 100%;
+}
+.track-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9px;
+  color: var(--accent);
+}
+.track-text {
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+  line-height: 1.5;
+}
+.track-artist {
+  color: var(--secondary);
+}
+.track-bars {
+  display: flex;
+  gap: 2px;
+  align-items: center;
+  height: 10px;
+}
+.track-bars i {
+  transform-origin: center bottom;
+  animation: equalizer-bounce 0.8s ease-in-out infinite alternate;
+  width: 2px;
+  height: 7px;
+  border-radius: 2px;
+  background: currentColor;
+}
+.track-bars i:nth-child(2) {
+  animation-duration: 0.65s;
+  animation-delay: -0.3s;
+  height: 10px;
+}
+.track-bars i:nth-child(3) {
+  animation-duration: 0.95s;
+  animation-delay: -0.55s;
+  height: 5px;
+}
+@keyframes equalizer-bounce {
+  0% {
+    transform: scaleY(0.35);
+  }
+  40% {
+    transform: scaleY(0.85);
+  }
+  70% {
+    transform: scaleY(0.5);
+  }
+  100% {
+    transform: scaleY(1);
+  }
+}
+.player-summary > .station-info {
+  flex: 1;
+}
+.mini-player:has(.now-playing) .frequency {
+  display: none;
+}
+@media (max-width: 700px) {
+  .track-text {
+    font-size: 10px;
+  }
+  .track-label {
+    font-size: 8px;
+  }
+  .mini-player:has(.now-playing) {
+    min-height: 86px;
+  }
+}
+.mini-player .play-button {
+  position: relative;
+}
+.playback-spinner {
+  position: absolute;
+  inset: 4px;
+  border: 2px solid rgb(255 255 255 / 30%);
+  border-top-color: #fff;
+  border-right-color: #fff;
+  border-radius: 50%;
+  animation: playback-spin 0.85s linear infinite;
+  pointer-events: none;
+}
+.dock-label.is-loading > span {
+  animation: playback-pulse 1s ease-in-out infinite alternate;
+}
+@keyframes playback-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes playback-pulse {
+  to {
+    opacity: 0.3;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* Keep the requested loading feedback visible at a gentler speed. */
+  .mini-player .play-button .playback-spinner {
+    animation-duration: 2.4s;
+  }
+  .track-bars i {
+    animation: none;
+  }
+  .dock-label.is-loading > span {
+    animation: none;
+  }
+}

@@ -11,7 +11,7 @@ npm ci
 npm run dev
 ```
 
-Open http://localhost:4200. Run `npm start` in a second terminal for automatic song metadata and HTTP station playback; the dev server proxies `/api` to port 3000 (restart the dev server after changing its proxy configuration). This works with the bundled demo catalog even without the API. Favorites and the most recent API catalog use browser localStorage, with an in-memory fallback if storage is blocked. Map viewport and favorite filters run locally. The web explorer uses a full-viewport map with a collapsible station panel at the upper left and a floating bottom player with inline playback controls. The panel includes search within the current map area and a local favorites filter. On smaller screens it narrows to preserve access to map controls. The orange accent and logo match the app. Leaflet uses OpenStreetMap for standard maps and Esri imagery/topography for other layers; these differ from native Apple Maps and do not provide 3D terrain. External map tiles require internet, while the station list and favorites continue working if tiles fail. Optional `latitude` and `longitude` fields place catalog stations on the map; entries without coordinates remain in the list. Demo coordinates are illustrative city locations. This is backend-independent behavior, not a fully offline PWA: a first page load still requires hosting and live audio requires internet. The demo fallback has fictional names/frequencies and no playable streams. The web client now loads the same Radio Browser catalog as iOS, prioritizing Georgia and then paging through worldwide geolocated stations in batches of 500, with mirror failover. Real station UUIDs, coordinates and resolved stream URLs are retained; favorites stay local. Cached real stations remain available during refresh or network failure. The map groups nearby markers, and the list offers further rows in batches of 100. HTTPS streams play directly. HTTP-only stations play through the Node API at `/api/stream?station=<Radio Browser UUID>`, so the browser receives audio over the site’s HTTPS connection. This requires the API to be running; static-only hosting still supports direct HTTPS playback. Browser codec support and upstream availability still apply. The relay supports continuous audio (for example MP3/AAC/Ogg), not HLS or playlist rewriting. It resolves station UUIDs through Radio Browser and validates public destinations on every redirect, without accepting client stream URLs. Listener disconnects cancel the upstream stream; connection timeouts and a 64-listener limit bound resources. Relayed audio uses server bandwidth.
+Open http://localhost:4200. Run `npm start` in a second terminal for automatic song metadata and HTTP station playback; the dev server proxies `/api` to port 3000 (restart the dev server after changing its proxy configuration). This works with the bundled demo catalog even without the API. Favorites and the most recent API catalog use browser localStorage, with an in-memory fallback if storage is blocked. Map viewport and favorite filters run locally. The web explorer uses a full-viewport map with a collapsible station panel at the upper left and a floating bottom player with inline playback controls. The panel includes a country selector and a local favorites filter. On smaller screens it narrows to preserve access to map controls. The orange accent and logo match the app. Leaflet uses OpenStreetMap for standard maps and Esri imagery/topography for other layers; these differ from native Apple Maps and do not provide 3D terrain. External map tiles require internet, while the station list and favorites continue working if tiles fail. Optional `latitude` and `longitude` fields place catalog stations on the map; entries without coordinates remain in the list. Demo coordinates are illustrative city locations. This is backend-independent behavior, not a fully offline PWA: a first page load still requires hosting and live audio requires internet. The demo fallback has fictional names/frequencies and no playable streams. The web client now loads the same Radio Browser catalog as iOS, prioritizing Georgia and then paging through worldwide geolocated stations in batches of 500, with mirror failover. Real station UUIDs, coordinates and resolved stream URLs are retained; favorites stay local. Cached real stations remain available during refresh or network failure. The map groups nearby markers, and the list offers further rows in batches of 100. HTTPS streams play directly. HTTP-only stations play through the Node API at `/api/stream?station=<Radio Browser UUID>`, so the browser receives audio over the site’s HTTPS connection. This requires the API to be running; static-only hosting still supports direct HTTPS playback. Browser codec support and upstream availability still apply. The relay supports continuous audio (for example MP3/AAC/Ogg), not HLS or playlist rewriting. It resolves station UUIDs through Radio Browser and validates public destinations on every redirect, without accepting client stream URLs. Listener disconnects cancel the upstream stream; connection timeouts and a 64-listener limit bound resources. Relayed audio uses server bandwidth.
 
 For the complete production-style app:
 
@@ -58,3 +58,42 @@ Manual language selection is saved under `radialla.language` and takes priority 
 The player remembers the last successfully played station in browser localStorage (`radialla.lastStation`). On the next visit it restores that station immediately and attempts playback after configuration is ready, ahead of location-based station selection. The saved station remains available when catalog refresh fails; refreshed catalog data is preferred when available. Browser autoplay restrictions still apply. Corrupt or blocked storage falls back to the normal station selection.
 
 The station panel includes a localized country selector with 250 countries and territories, bundled for offline availability. Selecting a country filters stations and fits its map bounds; clearing the selection shows all countries in the current map area and resets the map to the world view. Country names and coordinates are derived from [mledoze/countries (ODbL)](https://github.com/mledoze/countries); map bounds are from [sandstrom/country-bounding-boxes (public domain)](https://github.com/sandstrom/country-bounding-boxes), with approximate local bounds for smaller territories absent from that dataset.
+
+## Code structure
+
+- `app.component` composes the header, map, station panel and mini player.
+- `station-panel.component` owns the list UI and pagination; `mini-player.component` owns playback presentation, loading and equalizer styles.
+- `explorer.service` coordinates catalog filters, selection, map browsing and autoplay. Pure selection/queue rules live in `station-selection.mjs`.
+- `station-map.component` owns Leaflet navigation. `station-markers` renders groups and labels, `map-location-controller` manages location permissions and request lifetimes, and `map-layers` holds tile configuration and focus zoom.
+- `catalog`, `playback`, `now-playing`, favorites and storage modules retain separate responsibilities and browser-local persistence.
+- Server `public-stream.mjs` validates public network destinations, `station-stream.mjs` resolves catalog IDs, `icy-metadata.mjs` parses stream metadata, and `stream-metadata.mjs` coordinates metadata caching/polling. The audio relay remains in `stream-relay.mjs`.
+
+Run `npm run build`, `npm test`, and `npm run format:check` after refactoring.
+
+### Folder layout
+
+```text
+web/src/app/
+  app.component.*       Application shell
+  core/
+    catalog/            Catalog loading and Radio Browser access
+    favorites/          Favorite station state
+    localization/       Translations, locale dictionaries and language picker
+    playback/           Audio session, playback and now-playing metadata
+    storage/            Browser-local persistence
+  features/
+    explorer/           Filters, selection and autoplay coordination
+    map/                Map component, markers, layers and geolocation
+    player/             Mini player template and styles
+    stations/           Station list template, pagination and styles
+  shared/
+    data/               Country list and map bounds
+    models/             Station model
+    stations/           Coordinate and viewport helpers
+    ui/                 Reusable icons and station images
+server/
+  app.mjs, index.mjs    HTTP routes and server entry point
+  streaming/           Public stream access, catalog lookup and audio relay
+  metadata/            ICY parsing and metadata provider
+  tests/               Unit and integration tests
+```

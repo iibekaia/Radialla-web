@@ -14,7 +14,7 @@
         [attr.aria-expanded]="!vm.listCollapsed()"
         aria-controls="station-panel"
         [attr.aria-label]="vm.i18n.t(vm.listCollapsed() ? 'showList' : 'hideList')"
-        (click)="listCollapsed.set(!vm.listCollapsed())"
+        (click)="vm.listCollapsed.set(!vm.listCollapsed())"
       >
         <app-icon [name]="vm.listCollapsed() ? 'radio' : 'down'" />
       </button>
@@ -29,10 +29,10 @@
     (browseArea)="vm.browseArea()"
     (locationSelected)="vm.onLocationSelected()"
     [favoritesOnly]="vm.onlyFavorites()"
-    (areaChange)="area.set($event)"
+    (areaChange)="vm.area.set($event)"
     (autoplayReady)="vm.requestAutoplay($event)"
     (selectStation)="vm.choose($event)"
-    (toggleFavorites)="onlyFavorites.set(!vm.onlyFavorites())"
+    (toggleFavorites)="vm.onlyFavorites.set(!vm.onlyFavorites())"
   />
   <app-station-panel />
   <app-mini-player />
