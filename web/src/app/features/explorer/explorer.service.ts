@@ -1,4 +1,4 @@
-import { Injectable, computed, effect, inject, signal, untracked } from '@angular/core';
+import { DestroyRef, Injectable, computed, effect, inject, signal, untracked } from '@angular/core';
 import {
   deduplicateStations,
   stationIsFavorite,
@@ -8,6 +8,7 @@ import { LocationPoint } from '../../core/playback/autoplay-station.mjs';
 import { Station } from '../../shared/models/station';
 import { FavoritesService } from '../../core/favorites/favorites.service';
 import { PlaybackService } from '../../core/playback/playback.service';
+import { StationFailoverController } from '../../core/playback/station-failover.mjs';
 import { MapArea } from '../../shared/stations/station-geometry';
 import { mapLocation } from '../../shared/stations/map-location.mjs';
 import { stationInArea } from '../../shared/stations/station-area.mjs';
@@ -91,7 +92,25 @@ export class ExplorerService {
   readonly selected = computed<Station | undefined>(
     () => this.player.active() || this.visible()[0] || this.catalog.stations()[0],
   );
+  private readonly failover = new StationFailoverController({
+    state: () => ({
+      id: this.player.active()?.id || null,
+      failed: this.player.message() === 'streamError',
+      playing: this.player.playing(),
+    }),
+    stations: () => this.visible(),
+    relayAvailable: () => !!this.catalog.config().apiBaseUrl,
+    play: (station) => this.playSelection(station),
+  });
   constructor() {
+    inject(DestroyRef).onDestroy(() => this.failover.destroy());
+    effect(() =>
+      this.failover.update({
+        id: this.player.active()?.id || null,
+        failed: this.player.message() === 'streamError',
+        playing: this.player.playing(),
+      }),
+    );
     void this.catalog.load();
     effect(() => {
       const area = this.area();
@@ -146,17 +165,23 @@ export class ExplorerService {
     this.beginAreaPlayback();
   }
   private beginAreaPlayback() {
+    this.failover.reset();
     this.manualPlayback = true;
     this.pendingAutoplay.set(false);
     this.followArea.set(true);
   }
   choose(s: Station) {
+    this.failover.reset();
+    this.playSelection(s);
+  }
+  private playSelection(s: Station) {
     this.followArea.set(false);
     this.manualPlayback = true;
     this.pendingAutoplay.set(false);
     void this.player.play(s);
   }
   togglePlayback() {
+    this.failover.reset();
     this.followArea.set(false);
     this.manualPlayback = true;
     this.pendingAutoplay.set(false);

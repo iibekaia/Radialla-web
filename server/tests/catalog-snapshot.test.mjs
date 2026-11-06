@@ -1,6 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { compactCatalogSnapshot } from '../../web/src/app/core/storage/catalog-snapshot.mjs';
+import {
+  compactCatalogSnapshot,
+  restoreCatalogSnapshot,
+} from '../../web/src/app/core/storage/catalog-snapshot.mjs';
 const station = (id, countryCode) => ({
   id,
   countryCode,
@@ -41,4 +44,35 @@ test('legacy stations and small countries remain available offline without dupli
   const result = compactCatalogSnapshot({ ...snapshot, countries: { 'GE:2': 10 } }, ['one']);
   assert.equal(result.stations.length, 2);
   assert.equal(result.countries['GE:2'], 10);
+});
+
+test('cache migration preserves old station data but never treats static revisions as fresh', () => {
+  const rows = [station('one', 'GE')];
+  for (const value of [rows, { version: 2, stations: rows, files: { 'GE-static.json': 100 } }]) {
+    const result = restoreCatalogSnapshot(value);
+    assert.deepEqual(result.stations, rows);
+    assert.deepEqual(result.countries, {});
+    assert.equal(result.index, null);
+  }
+});
+
+test('cache restoration rejects malformed stations and sanitizes freshness metadata', () => {
+  for (const value of [
+    null,
+    false,
+    'bad',
+    {},
+    { stations: [null] },
+    { stations: [{ id: 'bad' }] },
+    { stations: [{ ...station('one', 'GE'), name: '   ' }] },
+  ])
+    assert.equal(restoreCatalogSnapshot(value), null);
+  const result = restoreCatalogSnapshot({
+    version: 3,
+    stations: [station('one', 'GE')],
+    countries: { 'GE:1': 100, 'JP:2': '100', '../file': 100 },
+    index: { version: 2, countries: [null] },
+  });
+  assert.deepEqual(result.countries, { 'GE:1': 100 });
+  assert.equal(result.index, null);
 });

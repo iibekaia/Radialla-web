@@ -1,3 +1,31 @@
+import { validCatalogIndex } from '../catalog/viewport-catalog.mjs';
+import { validStationCatalog } from '../catalog/live-catalog.mjs';
+
+/** Older catalogs remain usable offline, but only the current format can be fresh. */
+export function restoreCatalogSnapshot(value) {
+  const stations = Array.isArray(value) ? value : value?.stations;
+  if (!validStationCatalog(stations)) return null;
+  const current = value?.version === 3;
+  const metadata =
+    current &&
+    value.countries &&
+    typeof value.countries === 'object' &&
+    !Array.isArray(value.countries)
+      ? value.countries
+      : {};
+  const countries = Object.fromEntries(
+    Object.entries(metadata).filter(
+      ([key, time]) => /^[A-Z]{2}:(?:[0-9]+|unknown)$/.test(key) && Number.isFinite(time),
+    ),
+  );
+  return {
+    version: 3,
+    stations,
+    countries,
+    index: current && validCatalogIndex(value.index) ? value.index : null,
+  };
+}
+
 /** Bound localStorage usage; retain favorite metadata and the most recently loaded countries. */
 export function compactCatalogSnapshot(snapshot, pinnedIds = [], maxBytes = 3_000_000) {
   const pinned = new Set(pinnedIds);
@@ -26,17 +54,17 @@ export function compactCatalogSnapshot(snapshot, pinnedIds = [], maxBytes = 3_00
     groups.set(code, group);
   }
   const retained = new Set();
-  for (const [file, timestamp] of Object.entries(snapshot.countries).sort((a, b) => b[1] - a[1])) {
-    const code = file.slice(0, 2);
+  for (const [key, timestamp] of Object.entries(snapshot.countries).sort((a, b) => b[1] - a[1])) {
+    const code = key.slice(0, 2);
     if (retained.has(code)) continue;
     const group = groups.get(code) || [];
     const cost =
-      group.reduce((n, s) => n + (stations.has(s.id) ? 0 : size(s) + 1), 0) + file.length + 32;
+      group.reduce((n, s) => n + (stations.has(s.id) ? 0 : size(s) + 1), 0) + key.length + 32;
     if (bytes + cost > maxBytes) continue;
     for (const station of group) add(station);
-    countries[file] = timestamp;
+    countries[key] = timestamp;
     retained.add(code);
-    bytes += file.length + 32;
+    bytes += key.length + 32;
   }
   // Legacy cached stations can still provide an offline catalog after migration.
   for (const station of snapshot.stations) add(station);

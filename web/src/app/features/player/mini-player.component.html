@@ -37,6 +37,17 @@
             }
             {{ track.title }}</span
           >
+          @if (youtubeSearch(); as search) {
+            <a
+              class="youtube-link"
+              [href]="search.url"
+              target="_blank"
+              rel="noopener noreferrer"
+              [attr.aria-label]="vm.i18n.t('findOnYouTube', search.query)"
+              [title]="vm.i18n.t('findOnYouTube', search.query)"
+              ><app-icon name="youtube"
+            /></a>
+          }
         </span>
       } @else if (vm.player.active() && !vm.player.playing()) {
         <span class="playback-status" role="status">{{ vm.i18n.t(vm.player.message()) }}</span>

@@ -357,3 +357,8 @@ p {
 .map-station-picker button:focus-visible {
   background: #eef4ff;
 }
+
+.ng-select.ng-select-focused:not(.ng-select-opened) > .ng-select-container {
+  border: 0;
+  box-shadow: none;
+}

@@ -168,8 +168,8 @@
 }
 .now-playing {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  align-items: center;
+  gap: 6px;
   min-width: 0;
   max-width: 100%;
 }
@@ -181,12 +181,32 @@
   color: var(--accent);
 }
 .track-text {
+  min-width: 0;
   font-size: 12px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   max-width: 100%;
   line-height: 1.5;
+}
+.youtube-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  margin-block: -4px;
+  border-radius: 6px;
+  color: #e62117;
+  text-decoration: none;
+}
+.youtube-link:hover {
+  background: #e6211714;
+}
+.youtube-link app-icon {
+  width: 20px;
+  height: 20px;
 }
 .track-artist {
   color: var(--secondary);

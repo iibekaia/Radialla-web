@@ -6,6 +6,7 @@ export interface CatalogSnapshot {
   countries: Record<string, number>;
   index: MapCatalogIndex | null;
 }
+export function restoreCatalogSnapshot(value: unknown): CatalogSnapshot | null;
 export function compactCatalogSnapshot(
   snapshot: CatalogSnapshot,
   pinnedIds?: readonly string[],

@@ -107,20 +107,31 @@ test('geographic lookup covers new locations, islands and countries lacking a st
   );
 });
 
-test('country counts fail over mirrors and reject invalid counts', async () => {
+test('invalid country counts fail over rather than hiding countries as empty', async () => {
   let calls = 0;
-  const index = await fetchLiveIndex(countries, regions, async () => {
-    if (++calls === 1) throw Error('Offline');
-    return {
-      ok: true,
-      json: async () => [
-        { name: 'GE', stationcount: '2' },
-        { name: 'JP', stationcount: -1 },
-        { name: 'FR', stationcount: 'bad' },
-      ],
-    };
-  });
+  const index = await fetchLiveIndex(countries, regions, async () => ({
+    ok: true,
+    json: async () =>
+      ++calls === 1
+        ? [{ name: 'GE', stationcount: 'bad' }]
+        : [
+            { name: 'GE', stationcount: '2' },
+            { name: 'FR', stationcount: 4 },
+          ],
+  }));
   assert.equal(calls, 2);
   assert.equal(index.countries.find((c) => c.code === 'GE').count, 2);
-  assert.equal(index.countries.find((c) => c.code === 'FR').count, 0);
+  assert.equal(index.countries.find((c) => c.code === 'FR').count, 4);
+});
+
+test('missing, boolean, negative and malformed counts are never coerced to valid zero counts', async () => {
+  for (const stationcount of [null, undefined, false, '', -1, 'bad', Infinity]) {
+    await assert.rejects(
+      fetchLiveIndex(countries, regions, async () => ({
+        ok: true,
+        json: async () => [{ name: 'GE', stationcount }],
+      })),
+      /Invalid country counts/,
+    );
+  }
 });

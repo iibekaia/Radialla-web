@@ -47,7 +47,7 @@ export function normalizeStation(raw) {
     ...(hasCoordinates ? { latitude, longitude } : {}),
   };
 }
-async function radioJson(path, parameters, fetcher, signal) {
+async function radioJson(path, parameters, fetcher, signal, parse = (rows) => rows) {
   let lastError;
   for (const host of RADIO_HOSTS) {
     const url = new URL(`https://${host}/json/${path}`);
@@ -61,7 +61,7 @@ async function radioJson(path, parameters, fetcher, signal) {
       if (!response.ok) throw Error('HTTP ' + response.status);
       const rows = await response.json();
       if (!Array.isArray(rows)) throw Error('Invalid radio catalog');
-      return rows;
+      return parse(rows);
     } catch (error) {
       if (signal?.aborted) throw error;
       lastError = error;
@@ -87,17 +87,17 @@ export async function fetchRadioPage(offset, limit = 500, country, fetcher = fet
 }
 
 export async function fetchCountryCounts(fetcher = fetch, signal) {
-  const rows = await radioJson(
-    'countrycodes',
-    { hidebroken: 'true', limit: '1000' },
-    fetcher,
-    signal,
+  return radioJson('countrycodes', { hidebroken: 'true', limit: '1000' }, fetcher, signal, (rows) =>
+    rows.map((row) => {
+      const code = typeof row?.name === 'string' ? row.name.trim().toUpperCase() : '';
+      const value = row?.stationcount;
+      const count =
+        typeof value === 'number' || (typeof value === 'string' && /^\d+$/.test(value))
+          ? Number(value)
+          : NaN;
+      if (!/^[A-Z]{2}$/.test(code) || !Number.isSafeInteger(count) || count < 0)
+        throw Error('Invalid country counts');
+      return { code, count };
+    }),
   );
-  return rows.flatMap((row) => {
-    const code = typeof row?.name === 'string' ? row.name.toUpperCase() : '';
-    const count = Number(row?.stationcount);
-    return /^[A-Z]{2}$/.test(code) && Number.isSafeInteger(count) && count >= 0
-      ? [{ code, count }]
-      : [];
-  });
 }

@@ -1,6 +1,7 @@
 import type { Country } from '../../shared/data/countries';
 import type { Station } from '../../shared/models/station';
 import type { MapCatalogIndex } from './viewport-catalog.mjs';
+export function validStationCatalog(value: unknown): value is Station[];
 export function createLiveIndex(
   countries: Country[],
   regions: Record<string, number[][]>,

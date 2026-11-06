@@ -42,9 +42,6 @@
   color: var(--secondary);
   flex-shrink: 0;
 }
-.station-search:focus-within {
-  border-color: var(--accent);
-}
 .station-search app-icon {
   width: 18px;
   height: 18px;

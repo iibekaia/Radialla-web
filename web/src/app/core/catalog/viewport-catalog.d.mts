@@ -16,6 +16,7 @@ export interface MapCatalogIndex {
 }
 export const CATALOG_TTL: number;
 export const INDEX_TTL: number;
+export function freshTimestamp(timestamp: number, ttl: number, now?: number): boolean;
 export function validCatalogIndex(value: unknown): value is MapCatalogIndex;
 export function overviewArea(area: MapArea | null): boolean;
 export function countriesInArea(entries: CatalogEntry[], area: MapArea | null): CatalogEntry[];
@@ -23,8 +24,8 @@ export class ViewportCatalogLoader {
   constructor(
     callbacks: {
       fetch(entry: CatalogEntry, signal: AbortSignal): Promise<Station[]>;
-      cached(entry: CatalogEntry): Station[] | null;
-      received(entry: CatalogEntry, stations: Station[], fresh: boolean): void;
+      isCached(entry: CatalogEntry): boolean;
+      received(entry: CatalogEntry, stations: Station[]): void;
       loading(value: boolean): void;
       failed(): void;
     },

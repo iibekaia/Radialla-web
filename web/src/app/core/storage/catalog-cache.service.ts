@@ -1,5 +1,9 @@
 import { Injectable } from '@angular/core';
-import { CatalogSnapshot, compactCatalogSnapshot } from './catalog-snapshot.mjs';
+import {
+  CatalogSnapshot,
+  compactCatalogSnapshot,
+  restoreCatalogSnapshot,
+} from './catalog-snapshot.mjs';
 @Injectable({ providedIn: 'root' })
 export class CatalogCacheService {
   private json(key: string): unknown {
@@ -9,8 +13,8 @@ export class CatalogCacheService {
       return null;
     }
   }
-  read(): unknown {
-    return this.json('radialla.catalog');
+  read(): CatalogSnapshot | null {
+    return restoreCatalogSnapshot(this.json('radialla.catalog'));
   }
   write(snapshot: CatalogSnapshot) {
     try {

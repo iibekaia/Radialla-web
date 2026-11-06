@@ -1,5 +1,8 @@
 export const CATALOG_TTL = 15 * 60 * 1000;
 export const INDEX_TTL = 5 * 60 * 1000;
+export function freshTimestamp(timestamp, ttl, now = Date.now()) {
+  return Number.isFinite(timestamp) && timestamp <= now && now - timestamp < ttl;
+}
 export function validCatalogIndex(value) {
   return (
     value?.version === 2 &&
@@ -61,6 +64,7 @@ export class ViewportCatalogLoader {
     this.wanted = [];
     this.timer = null;
     this.destroyed = false;
+    this.failed = new Set();
   }
   update(entries) {
     if (this.destroyed) return;
@@ -68,9 +72,9 @@ export class ViewportCatalogLoader {
     this.failed = new Set();
     if (this.timer !== null) this.timers.clearTimeout(this.timer);
     this.timer = null;
-    const files = new Set(entries.map((e) => e.cacheKey));
-    for (const [file, controller] of this.active) if (!files.has(file)) controller.abort();
-    this.callbacks.loading(entries.some((e) => !this.callbacks.cached(e)));
+    const keys = new Set(entries.map((e) => e.cacheKey));
+    for (const [key, controller] of this.active) if (!keys.has(key)) controller.abort();
+    this.callbacks.loading(entries.some((e) => !this.callbacks.isCached(e)));
     this.timer = this.timers.setTimeout(() => {
       this.timer = null;
       this.drain();
@@ -80,23 +84,19 @@ export class ViewportCatalogLoader {
     if (this.destroyed || this.timer !== null) return;
     for (const entry of this.wanted) {
       if (this.active.size >= 2) break;
-      if (this.active.has(entry.cacheKey) || this.failed?.has(entry.cacheKey)) continue;
-      const cached = this.callbacks.cached(entry);
-      if (cached) {
-        continue;
-      }
+      if (this.active.has(entry.cacheKey) || this.failed.has(entry.cacheKey)) continue;
+      if (this.callbacks.isCached(entry)) continue;
       const controller = new AbortController();
       this.active.set(entry.cacheKey, controller);
       void this.callbacks
         .fetch(entry, controller.signal)
         .then((stations) => {
           if (this.destroyed || controller.signal.aborted) return;
-          this.callbacks.received(entry, stations, true);
+          this.callbacks.received(entry, stations);
         })
         .catch(() => {
           // Fail once per navigation; a new selection can retry without a tight retry loop.
           if (!controller.signal.aborted && !this.destroyed) {
-            this.failed ||= new Set();
             this.failed.add(entry.cacheKey);
             this.callbacks.failed();
           }
@@ -107,7 +107,9 @@ export class ViewportCatalogLoader {
             this.drain();
             this.callbacks.loading(
               this.active.size > 0 ||
-                this.wanted.some((e) => !this.failed?.has(e.cacheKey) && !this.callbacks.cached(e)),
+                this.wanted.some(
+                  (e) => !this.failed.has(e.cacheKey) && !this.callbacks.isCached(e),
+                ),
             );
           }
         });

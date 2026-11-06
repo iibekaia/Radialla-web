@@ -40,5 +40,7 @@ export class IconComponent {
     muted: 'M11 4L6 8H3v8h3l5 4V4ZM16 9l6 6M22 9l-6 6',
     pip: 'M3 4h18v16H3ZM12 11h7v7h-7Z',
     return: 'M9 5l-6 6 6 6M3 11h12a6 6 0 0 1 6 6v2',
+    youtube:
+      'M6 5h12a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V8a3 3 0 0 1 3-3ZM10 9l5 3-5 3V9Z',
   };
 }

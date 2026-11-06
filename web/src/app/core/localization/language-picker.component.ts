@@ -53,11 +53,6 @@ import { LocalizationService } from './localization.service';
         cursor: pointer;
         font: inherit;
       }
-      .language-picker:focus-within {
-        outline: 2px solid var(--accent);
-        outline-offset: 2px;
-        border-radius: 10px;
-      }
       .language-notice {
         position: absolute;
         top: 42px;

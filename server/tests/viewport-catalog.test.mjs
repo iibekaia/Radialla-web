@@ -4,7 +4,8 @@ import {
   ViewportCatalogLoader,
   countriesInArea,
   overviewArea,
-  validCatalogIndex,
+  freshTimestamp,
+  CATALOG_TTL,
 } from '../../web/src/app/core/catalog/viewport-catalog.mjs';
 const entry = (code, regions = [[44, 40, 46, 42]]) => ({
   code,
@@ -25,15 +26,15 @@ function fixture(cached = new Map()) {
     failures = 0;
   const loader = new ViewportCatalogLoader(
     {
-      cached: (e) => cached.get(e.cacheKey) || null,
+      isCached: (e) => cached.has(e.cacheKey),
       fetch: (e, signal) =>
         new Promise((resolve, reject) => {
           requests.push({ entry: e, signal, resolve, reject });
           signal.addEventListener('abort', () => reject(Error('Aborted')), { once: true });
         }),
-      received: (e, stations, fresh) => {
-        received.push({ entry: e, stations, fresh });
-        if (fresh) cached.set(e.cacheKey, stations);
+      received: (e, stations) => {
+        received.push({ entry: e, stations });
+        cached.set(e.cacheKey, stations);
       },
       loading: (value) => loading.push(value),
       failed: () => failures++,
@@ -183,4 +184,13 @@ test('a changed country count invalidates its cached details immediately', async
   await settle();
   assert.equal(f.received.at(-1).stations.length, 2);
   f.loader.destroy();
+});
+
+test('freshness expires at its deadline and rejects future or invalid timestamps', () => {
+  const now = 2 * CATALOG_TTL;
+  assert.equal(freshTimestamp(now, CATALOG_TTL, now), true);
+  assert.equal(freshTimestamp(now - CATALOG_TTL + 1, CATALOG_TTL, now), true);
+  assert.equal(freshTimestamp(now - CATALOG_TTL, CATALOG_TTL, now), false);
+  for (const timestamp of [now + 1, NaN, undefined, '100'])
+    assert.equal(freshTimestamp(timestamp, CATALOG_TTL, now), false);
 });

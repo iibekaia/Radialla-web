@@ -104,5 +104,6 @@
   "unmute": "取消静音",
   "returnToTab": "返回标签页",
   "returnPlayer": "将播放器移回此标签页",
-  "countryOverview": "%@ 个目录条目 — 点击加载此国家"
+  "countryOverview": "%@ 个目录条目 — 点击加载此国家",
+  "findOnYouTube": "在 YouTube 上搜索 %@"
 }
