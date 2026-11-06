@@ -4,11 +4,14 @@ import { createServer } from 'node:http';
 import { createMetadataProvider } from './metadata/stream-metadata.mjs';
 import { createStreamRelay } from './streaming/stream-relay.mjs';
 import { createPairingRoutes } from './pairing/routes.mjs';
+import { createPairingCoordinator } from './pairing/coordinator.mjs';
+import { attachPairingWebSocket } from './pairing/websocket.mjs';
 export function createApp(stations, config = {}) {
   const metadata = config.metadataProvider || createMetadataProvider();
   const relay = createStreamRelay(config.streamRelay);
-  const pairing = createPairingRoutes(config.pairing);
-  return createServer(async (req, res) => {
+  const coordinator = config.pairing?.coordinator || createPairingCoordinator();
+  const pairing = createPairingRoutes({ ...config.pairing, coordinator });
+  const server = createServer(async (req, res) => {
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
     res.setHeader('X-Content-Type-Options', 'nosniff');
     if (config.webOrigin && req.headers.origin === config.webOrigin) {
@@ -92,4 +95,6 @@ export function createApp(stations, config = {}) {
     res.writeHead(404);
     res.end(JSON.stringify({ error: 'Not found' }));
   });
+  attachPairingWebSocket(server, coordinator, config.webOrigin);
+  return server;
 }

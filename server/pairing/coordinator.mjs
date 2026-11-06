@@ -137,6 +137,12 @@ export function createPairingCoordinator({ now = Date.now, maxGroups = 500 } = {
       g.listeners.add(listener);
       return () => g.listeners.delete(listener);
     },
+    subscribe(token, listener) {
+      const g = member(token);
+      if (g.listeners.size >= 16) fail(429, 'Too many connections');
+      g.listeners.add(listener);
+      return () => g.listeners.delete(listener);
+    },
     snapshot(token) {
       return state(member(token));
     },

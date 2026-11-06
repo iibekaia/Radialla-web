@@ -68,10 +68,11 @@ other connected players. Loading, autoplay denial, and failed streams do not
 claim playback. Browser tabs have distinct playback IDs, even if they share a
 stored device credential.
 
-Updates use authenticated HTTP long polling (up to 25 seconds per request),
-so an ownership change returns immediately while a request is connected.
-Network loss and OS/browser suspension can delay delivery; this is best-effort
-coordination while online, not an offline exclusivity guarantee. Pairing
+The web receives paired-device updates through an authenticated WebSocket at
+`/api/pairing/socket`, with heartbeats and automatic reconnect. Hosting proxies
+must forward WebSocket Upgrade requests. HTTP commands and the legacy native
+`/api/pairing/wait` endpoint remain compatible; the web never polls for updates.
+Network loss and OS/browser suspension can delay delivery. Pairing
 failure leaves normal radio playback, demo catalog and local favorites usable.
 Invites are single-use and expire after five minutes. There are at most four
 credentials per group; the server bounds groups, listeners and request rates.

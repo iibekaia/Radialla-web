@@ -5,6 +5,8 @@ import { createApp } from '../app.mjs';
 import { PairingClient } from '../../web/src/app/core/pairing/pairing-client.mjs';
 import { readPairing, writePairing } from '../../web/src/app/core/storage/pairing.mjs';
 import { pairingPayload } from '../../web/src/app/core/pairing/pairing-qr.mjs';
+import { WebSocket as TestSocket } from 'ws';
+import { once } from 'node:events';
 
 test('codes expire, are single use, and replacement codes revoke the old code', () => {
   let clock = 0;
@@ -112,7 +114,15 @@ async function until(check) {
 test('remote controls reach the web without playback claims stopping either client', () =>
   withServer(async (base) => {
     let pauses = 0;
-    const web = new PairingClient({ base, pause: () => pauses++ });
+    const requests = [];
+    const web = new PairingClient({
+      base,
+      pause: () => pauses++,
+      fetcher: (url, options) => {
+        requests.push(url);
+        return fetch(url, options);
+      },
+    });
     const mobile = new PairingClient({ base, pause: () => pauses++ });
     try {
       const { code } = await web.pair();
@@ -130,6 +140,7 @@ test('remote controls reach the web without playback claims stopping either clie
       await until(() => web.state.viewport?.zoom === 12);
       assert.equal(web.state.playback.stationId, 'station-123');
       assert.equal(pauses, 0);
+      assert.ok(!requests.some((url) => url.endsWith('/wait')));
       await mobile.request('command', { type: 'pause' });
       await until(() => web.state.playback?.type === 'pause');
       await mobile.leave();
@@ -157,25 +168,28 @@ test('remote controls validate payloads, require credentials and isolate groups'
   assert.equal(c.snapshot(other.token).playback, null);
 });
 
-test('server restart invalidates saved credentials without affecting playback', async () => {
-  let saved;
-  let pauses = 0;
-  const c = new PairingClient({
-    base: '/',
-    token: 'old',
-    save: (token) => {
-      saved = token;
-    },
-    pause: () => pauses++,
-    fetcher: async () => new Response('{}', { status: 401 }),
-  });
-  c.playing = true;
-  await c.connect();
-  assert.equal(saved, null);
-  assert.equal(c.token, null);
-  assert.equal(pauses, 0);
-  c.destroy();
-});
+test('server restart invalidates saved WebSocket credentials without affecting playback', () =>
+  withServer(async (base) => {
+    let saved;
+    let pauses = 0;
+    const c = new PairingClient({
+      base,
+      token: 'a'.repeat(64),
+      save: (token) => {
+        saved = token;
+      },
+      pause: () => pauses++,
+    });
+    try {
+      c.playing = true;
+      await c.connect();
+      assert.equal(saved, null);
+      assert.equal(c.token, null);
+      assert.equal(pauses, 0);
+    } finally {
+      c.destroy();
+    }
+  }));
 
 test('pairing credentials are scoped to API origin and tolerate blocked browser storage', () => {
   const memory = new Map();
@@ -223,3 +237,81 @@ test('QR payload identifies the server and one-time invite, never a durable devi
   assert.throws(() => pairingPayload('/', 'https://web.example', 'bad', expiresAt));
   assert.throws(() => pairingPayload('/', 'https://web.example', '12345678', Date.now() - 1));
 });
+
+test('WebSocket reconnect restores missed state and revoked tokens disconnect every receiver', () =>
+  withServer(async (base) => {
+    const connections = [];
+    const web = new PairingClient({
+      base,
+      socketFactory: (url) => {
+        const socket = new WebSocket(url);
+        connections.push(socket);
+        return socket;
+      },
+    });
+    const mobile = new PairingClient({ base });
+    try {
+      const { code } = await web.pair();
+      await mobile.pair(code);
+      await until(() => web.connected && mobile.connected);
+      connections[0].close();
+      await until(() => !web.connected);
+      await mobile.request('command', { type: 'play', stationId: 'missed-station' });
+      await until(() => web.connected && web.state.playback?.stationId === 'missed-station');
+      assert.ok(connections.length >= 2);
+      await web.request('leave');
+      await until(() => web.token === null);
+      assert.equal(web.connected, false);
+      assert.equal(web.state.members, 0);
+    } finally {
+      web.destroy();
+      mobile.destroy();
+    }
+  }));
+
+test('WebSocket rejects foreign origins and invalid authentication, and isolates paired groups', () =>
+  withServer(async (base) => {
+    const url = base.replace('http:', 'ws:') + '/api/pairing/socket';
+    const denied = new TestSocket(url, { origin: 'https://evil.example' });
+    denied.on('error', () => {});
+    const [response] = await new Promise((resolve) => {
+      denied.on('unexpected-response', (_req, res) => {
+        res.resume();
+        resolve([res]);
+      });
+    });
+    assert.equal(response.statusCode, 403);
+    denied.terminate();
+
+    const invalid = new TestSocket(url, { origin: 'https://web.example' });
+    await once(invalid, 'open');
+    const rejected = once(invalid, 'close');
+    invalid.send(JSON.stringify({ token: 'f'.repeat(64) }));
+    assert.equal((await rejected)[0], 4401);
+
+    const web = new PairingClient({ base });
+    const other = new PairingClient({ base });
+    let extra;
+    try {
+      await web.pair();
+      await other.pair();
+      await until(() => web.connected && other.connected);
+      extra = new TestSocket(url, { origin: 'https://web.example' });
+      await once(extra, 'open');
+      const initial = once(extra, 'message');
+      extra.send(JSON.stringify({ token: web.token }));
+      const snapshot = JSON.parse((await initial)[0].toString()).state;
+      const update = once(extra, 'message');
+      await web.request('command', { type: 'pause' });
+      assert.equal(JSON.parse((await update)[0].toString()).state.playback.type, 'pause');
+      assert.equal(other.state.playback, null);
+      assert.equal(other.state.revision, snapshot.revision);
+      const malformed = once(extra, 'close');
+      extra.send('invalid');
+      assert.equal((await malformed)[0], 4400);
+    } finally {
+      extra?.terminate();
+      web.destroy();
+      other.destroy();
+    }
+  }));

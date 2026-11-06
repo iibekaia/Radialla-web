@@ -20,16 +20,31 @@ The QR contains `{type:"radialla-pairing", version:1, apiBaseUrl, code, expiresA
 never a token. Validate the configured HTTPS server origin and expiry before joining.
 Codes expire after five minutes and can be used once. Groups allow four credentials.
 
-All requests use JSON POST bodies. Authenticated requests require
+HTTP actions use JSON POST bodies. Authenticated requests require
 `Authorization: Bearer <token>`; never place tokens in URLs or logs.
 Use `/api/pairing/code` with `{}` to replace an invite, `/api/pairing/leave`
 with `{}` to revoke that credential.
 
-Keep one `/api/pairing/wait` request open with `{afterRevision:-1}`, then
-use each received revision. Timeout is 25 seconds; clients need a longer
-request timeout and should retry connection failures with backoff. A 401
-invalidates the saved pairing. Groups expire after 24 hours of inactivity;
-server restarts revoke them. Deploy one server instance with HTTPS.
+The web receives updates through a persistent WebSocket at
+`wss://<api-host>/api/pairing/socket` (use `ws:` for local HTTP development).
+Send `{token}` as the first JSON text frame within five seconds; credentials
+must never appear in the URL. The server immediately sends
+`{type:"state", state:{...}}` and pushes a new state on every group change.
+It also sends `{type:"heartbeat"}` and WebSocket ping frames every 20 seconds.
+Browsers answer ping frames automatically. Close code `4401` invalidates the
+saved credential; `4400` indicates a malformed message, and `4429` indicates
+the connection limit. Commands still use the authenticated HTTP endpoint below.
+The web detects silent connections after 45 seconds and reconnects with
+backoff from 500 ms to eight seconds, receiving the current state again.
+Hosting proxies must forward WebSocket Upgrade requests for this path; restart
+the Angular dev server after enabling its WebSocket proxy configuration.
+
+`POST /api/pairing/wait` remains available for existing native clients, with
+`{afterRevision:-1}` and then each received revision. Its timeout is 25 seconds;
+native clients need a longer request timeout. The web does not use this endpoint
+or fall back to polling. HTTP 401 invalidates saved credentials. Groups expire
+after 24 hours of inactivity; server restarts revoke them. Deploy one server
+instance with HTTPS.
 
 ## Mobile commands
 
@@ -49,7 +64,7 @@ State contains `{revision, owner:null, members, playback, viewport}`.
 its own `revision`, so a map update cannot overwrite a pending station choice.
 Apply each value only once per revision and ignore older responses. Do not
 send commands back when applying received state. `members` counts stored
-credentials, not live devices. A live successful wait transport indicates
+credentials, not live devices. A live authenticated transport indicates
 connectivity; on transport failure the mobile should exit controller mode
 and restore normal local controls, without replaying offline commands later.
 
