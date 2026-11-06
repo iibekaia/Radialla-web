@@ -5,6 +5,7 @@ import { CatalogService } from '../catalog/catalog.service';
 import { Station } from '../../shared/models/station';
 import { readLastStation, writeLastStation } from '../storage/last-station.mjs';
 import { readVolume, writeVolume } from '../storage/volume.mjs';
+import { PairingService } from '../pairing/pairing.service';
 
 const STATUS_MESSAGES: Record<PlaybackStatus, string> = {
   loading: 'იტვირთება აუდიო…',
@@ -18,6 +19,7 @@ const STATUS_MESSAGES: Record<PlaybackStatus, string> = {
 export class PlaybackService implements OnDestroy {
   readonly metadata = inject(NowPlayingService);
   private readonly catalog = inject(CatalogService);
+  private readonly pairing = inject(PairingService);
   private metadataStation: string | null = null;
   readonly active = signal<Station | null>(readLastStation());
   readonly playing = signal(false);
@@ -29,7 +31,11 @@ export class PlaybackService implements OnDestroy {
   readonly volume = this.volumeLevel.asReadonly();
   readonly muted = computed(() => this.mutedState() || this.volumeLevel() === 0);
   private readonly session = new AudioSession((status) => {
+    const started = status === 'playing' && !this.playing();
     this.playing.set(status === 'playing');
+    if (started) this.pairing.playbackStarted();
+    if (status === 'paused' || status === 'error' || status === 'blocked')
+      this.pairing.playbackStopped();
     this.loading.set(status === 'loading');
     const station = this.active();
     if (status === 'playing' && station) writeLastStation(station);
@@ -43,6 +49,10 @@ export class PlaybackService implements OnDestroy {
   });
 
   constructor() {
+    this.pairing.onRemotePause = () => {
+      this.pause();
+      this.message.set('pairPaused');
+    };
     this.applyVolume();
   }
 
@@ -68,6 +78,7 @@ export class PlaybackService implements OnDestroy {
   }
 
   select(station: Station) {
+    this.pairing.playbackStopped();
     this.clearMetadata();
     this.session.stop();
     this.playing.set(false);
@@ -106,6 +117,7 @@ export class PlaybackService implements OnDestroy {
   }
 
   pause() {
+    this.pairing.playbackStopped();
     this.clearMetadata();
     this.session.stop();
     this.playing.set(false);
@@ -119,6 +131,7 @@ export class PlaybackService implements OnDestroy {
   }
 
   ngOnDestroy() {
+    this.pairing.playbackStopped();
     this.clearMetadata();
     this.session.stop();
   }

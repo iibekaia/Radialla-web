@@ -3,9 +3,11 @@ import { resolve, extname, sep } from 'node:path';
 import { createServer } from 'node:http';
 import { createMetadataProvider } from './metadata/stream-metadata.mjs';
 import { createStreamRelay } from './streaming/stream-relay.mjs';
+import { createPairingRoutes } from './pairing/routes.mjs';
 export function createApp(stations, config = {}) {
   const metadata = config.metadataProvider || createMetadataProvider();
   const relay = createStreamRelay(config.streamRelay);
+  const pairing = createPairingRoutes(config.pairing);
   return createServer(async (req, res) => {
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
     res.setHeader('X-Content-Type-Options', 'nosniff');
@@ -13,13 +15,17 @@ export function createApp(stations, config = {}) {
       res.setHeader('Access-Control-Allow-Origin', config.webOrigin);
       res.setHeader('Vary', 'Origin');
     }
+    const requestUrl = new URL(req.url, 'http://localhost');
+    const path = requestUrl.pathname;
+    if (path.startsWith('/api/pairing/')) {
+      await pairing(req, res, path, config.webOrigin);
+      return;
+    }
     if (req.method !== 'GET') {
       res.writeHead(405, { Allow: 'GET' });
       res.end(JSON.stringify({ error: 'Method not allowed' }));
       return;
     }
-    const requestUrl = new URL(req.url, 'http://localhost');
-    const path = requestUrl.pathname;
     if (path === '/api/stream') {
       await relay(requestUrl.searchParams.get('station') || '', res);
       return;

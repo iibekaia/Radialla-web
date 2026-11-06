@@ -5,6 +5,7 @@ import { StationPanelComponent } from './features/stations/station-panel.compone
 import { MiniPlayerComponent } from './features/player/mini-player.component';
 import { LanguagePickerComponent } from './core/localization/language-picker.component';
 import { IconComponent } from './shared/ui/icon.component';
+import { PairingComponent } from './features/pairing/pairing.component';
 
 @Component({
   selector: 'app-root',
@@ -15,6 +16,7 @@ import { IconComponent } from './shared/ui/icon.component';
     MiniPlayerComponent,
     LanguagePickerComponent,
     IconComponent,
+    PairingComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',

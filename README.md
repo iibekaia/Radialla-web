@@ -46,13 +46,43 @@ not the `server` or `web` workspace directory.
 5. Verify `https://<generated-domain>/api/health` returns `{"status":"ok"}`,
    then open the root URL and check the catalog and playback.
 
-This deploys the existing web/API only. Device pairing and exclusive playback
-between iOS and the web are not implemented yet. They require a separate
-coordination API plus integration in each client. The iOS project remains
+Device pairing and exclusive playback are implemented in this web/API source;
+deploying an older GitHub revision will not include them. The web automatically shows a QR
+invite for an in-app scanner when the devices dialog opens. The iOS
+scanner and playback integration still need to be implemented independently;
+see [the pairing API contract](docs/device-pairing.md). The iOS project remains
 independent. Audio relayed through `/api/stream` consumes hosting bandwidth;
 direct HTTPS station streams do not pass through this server.
 
 Railway configuration reference: https://docs.railway.com/config-as-code/reference
+
+## Device pairing
+
+Open the devices button beside the language picker: the QR appears automatically.
+A compatible Radialla mobile client scans it inside the app and joins through
+the API. No manual code entry or generation button is shown. Expired QR invites
+refresh automatically while the dialog remains open. Pairing does
+not require an account or matching Wi-Fi networks. A joined group automatically
+uses exclusive playback; starting successful audio on one client pauses the
+other connected players. Loading, autoplay denial, and failed streams do not
+claim playback. Browser tabs have distinct playback IDs, even if they share a
+stored device credential.
+
+Updates use authenticated HTTP long polling (up to 25 seconds per request),
+so an ownership change returns immediately while a request is connected.
+Network loss and OS/browser suspension can delay delivery; this is best-effort
+coordination while online, not an offline exclusivity guarantee. Pairing
+failure leaves normal radio playback, demo catalog and local favorites usable.
+Invites are single-use and expire after five minutes. There are at most four
+credentials per group; the server bounds groups, listeners and request rates.
+Credentials are stored separately from favorites and scoped to the API base.
+Blocked storage supports the current page session only.
+
+The initial Free deployment stores groups in server memory and requires one
+service instance. A restart/redeploy or 24 hours without API activity expires
+pairing, and clients must pair again. Persistent pairing and multi-instance
+deployment require a shared store. **Disconnect this device** revokes its
+credential; other tabs using that credential are disconnected as well.
 
 ## Unavailable station fallback
 

@@ -1,0 +1,48 @@
+<button
+  class="device-button"
+  (click)="open()"
+  [attr.aria-label]="i18n.t('pairTitle')"
+  [title]="i18n.t('pairTitle')"
+>
+  <svg
+    viewBox="0 0 24 24"
+    width="20"
+    height="20"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.7"
+    aria-hidden="true"
+  >
+    <rect x="2" y="3" width="14" height="11" rx="2" />
+    <path d="M5 18h7m-4-4v4" />
+    <rect x="15" y="9" width="7" height="12" rx="1.5" />
+  </svg>
+</button>
+<dialog #dialog aria-labelledby="pair-title" (close)="opened.set(false)">
+  <div class="heading">
+    <h2 id="pair-title">{{ i18n.t('pairTitle') }}</h2>
+    <button class="close" (click)="close()" [attr.aria-label]="i18n.t('pairClose')">&times;</button>
+  </div>
+  @if (!pairing.available()) {
+    <p role="status">{{ i18n.t('pairNeedsServer') }}</p>
+  } @else if (pairing.members() > 1) {
+    <p class="status" role="status">
+      {{ i18n.t(pairing.connected() ? 'pairConnected' : 'pairReconnecting') }}
+    </p>
+    <p>{{ i18n.t('pairExclusive') }}</p>
+    <button class="secondary" [disabled]="pairing.busy()" (click)="disconnect()">
+      {{ i18n.t('pairDisconnect') }}
+    </button>
+  } @else {
+    <p class="scan-help">{{ i18n.t('pairScanSimple') }}</p>
+    @if (qrImage()) {
+      <img class="qr" [src]="qrImage()" width="280" height="280" [alt]="i18n.t('pairQRAlt')" />
+    } @else if (!pairing.error()) {
+      <div class="qr-placeholder" role="status">{{ i18n.t('pairPreparing') }}</div>
+    }
+  }
+  @if (pairing.error()) {
+    <p class="error" role="alert">{{ i18n.t(pairing.error()) }}</p>
+    <button (click)="retry()">{{ i18n.t('pairRetry') }}</button>
+  }
+</dialog>

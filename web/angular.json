@@ -24,7 +24,8 @@
             "outputPath": "dist/web",
             "outputHashing": "all",
             "allowedCommonJsDependencies": [
-              "leaflet"
+              "leaflet",
+              "qrcode"
             ]
           },
           "configurations": {
