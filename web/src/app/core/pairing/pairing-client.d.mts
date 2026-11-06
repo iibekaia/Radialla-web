@@ -1,9 +1,18 @@
+export type RemotePlayback =
+  | { type: 'play' | 'select'; stationId: string; revision: number }
+  | { type: 'pause'; revision: number };
+export interface RemoteViewport {
+  latitude: number;
+  longitude: number;
+  zoom: number;
+  revision: number;
+}
 export interface PairingState {
   revision: number;
-  owner: string | null;
+  owner: null;
   members: number;
-  playback?: { type: 'play' | 'select' | 'pause'; stationId?: string; revision: number } | null;
-  viewport?: { latitude: number; longitude: number; zoom: number; revision: number } | null;
+  playback?: RemotePlayback | null;
+  viewport?: RemoteViewport | null;
 }
 export interface PairingCode {
   code: string;

@@ -1,4 +1,4 @@
-import { Injectable, DestroyRef, effect, inject, signal, computed } from '@angular/core';
+import { Injectable, DestroyRef, effect, inject, signal, computed, untracked } from '@angular/core';
 import { CatalogService } from '../catalog/catalog.service';
 import { PairingState, PairingClient } from './pairing-client.mjs';
 import { readPairing, writePairing } from '../storage/pairing.mjs';
@@ -37,34 +37,7 @@ export class PairingService {
     effect(() => {
       this.generation();
       const base = this.catalog.config().apiBaseUrl;
-      this.client?.destroy();
-      this.client = undefined;
-      this.available.set(!!base);
-      this.paired.set(false);
-      this.connected.set(false);
-      this.members.set(0);
-      this.code.set('');
-      this.remotePlayback.set(null);
-      this.remoteViewport.set(null);
-      if (!base) return;
-      const client = new PairingClient({
-        base,
-        token: readPairing(base),
-        changed: () => {
-          if (this.client !== client) return;
-          if (client.state.members > this.members() && this.members() > 0) this.code.set('');
-          this.paired.set(!!client.token);
-          this.connected.set(client.connected);
-          this.members.set(client.state.members);
-          this.remotePlayback.set(client.state.playback);
-          this.remoteViewport.set(client.state.viewport);
-          if (!client.token) this.code.set('');
-        },
-        save: (token) => writePairing(base, token),
-      });
-      this.client = client;
-      this.paired.set(!!client.token);
-      void client.connect();
+      untracked(() => this.configureClient(base));
     });
     effect((onCleanup) => {
       if (!this.code()) return;
@@ -79,6 +52,39 @@ export class PairingService {
     });
     inject(DestroyRef).onDestroy(() => this.client?.destroy());
   }
+  private configureClient(base: string) {
+    this.client?.destroy();
+    this.client = undefined;
+    this.available.set(!!base);
+    this.paired.set(false);
+    this.connected.set(false);
+    this.members.set(0);
+    this.code.set('');
+    this.remotePlayback.set(null);
+    this.remoteViewport.set(null);
+    if (!base) return;
+    const client = new PairingClient({
+      base,
+      token: readPairing(base),
+      changed: () => this.syncClient(client),
+      save: (token) => writePairing(base, token),
+    });
+    this.client = client;
+    this.paired.set(!!client.token);
+    void client.connect();
+  }
+
+  private syncClient(client: PairingClient) {
+    if (this.client !== client) return;
+    if (client.state.members > this.members() && this.members() > 0) this.code.set('');
+    this.paired.set(!!client.token);
+    this.connected.set(client.connected);
+    this.members.set(client.state.members);
+    this.remotePlayback.set(client.state.playback);
+    this.remoteViewport.set(client.state.viewport);
+    if (!client.token) this.code.set('');
+  }
+
   async act(action: 'create' | 'join' | 'code' | 'leave', code = '') {
     const client = this.client;
     if (!client || this.busy()) return;

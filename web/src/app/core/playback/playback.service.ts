@@ -61,7 +61,7 @@ export class PlaybackService implements OnDestroy {
         this.pause();
         return;
       }
-      void this.catalog.findStation(command.stationId!).then((station) => {
+      void this.catalog.findStation(command.stationId).then((station) => {
         if (!station || current !== request) return;
         if (command.type === 'play') void this.play(station);
         else this.select(station);

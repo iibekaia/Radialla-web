@@ -1,3 +1,7 @@
+const BUFFER_TIMEOUT_MS = 15_000;
+const MAX_RETRIES = 3;
+const INITIAL_RETRY_MS = 1_000;
+
 /** Owns one audio element at a time; retired streams cannot update current playback. */
 export class AudioSession {
   constructor(onStatus, createAudio = () => new Audio(), timers = globalThis) {
@@ -42,11 +46,11 @@ export class AudioSession {
         this.clearStallTimer();
         // Only reconnect established streams. Initial failures and autoplay denial
         // remain visible, and a manual stop always cancels a pending reconnect.
-        if (!connected || retries >= 3) {
+        if (!connected || retries >= MAX_RETRIES) {
           update('error');
           return;
         }
-        const delay = 1000 * 2 ** retries++;
+        const delay = INITIAL_RETRY_MS * 2 ** retries++;
         this.audio = null;
         this.release(audio);
         this.onStatus('loading');
@@ -69,7 +73,7 @@ export class AudioSession {
         this.stallTimer = this.timers.setTimeout(() => {
           this.stallTimer = null;
           failed();
-        }, 15000);
+        }, BUFFER_TIMEOUT_MS);
       };
       audio.addEventListener('waiting', buffering);
       audio.addEventListener('stalled', buffering);

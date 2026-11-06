@@ -1,6 +1,12 @@
 // WebSocket receives paired-device changes; explicit actions use authenticated HTTP.
 import { isPairingState } from './pairing-state.mjs';
 
+const REQUEST_TIMEOUT_MS = 35_000;
+const CONNECT_TIMEOUT_MS = 10_000;
+const HEARTBEAT_TIMEOUT_MS = 45_000;
+const INITIAL_RETRY_MS = 500;
+const MAX_RETRY_MS = 8_000;
+
 const emptyState = () => ({ revision: -1, owner: null, members: 0 });
 
 export class PairingClient {
@@ -18,7 +24,7 @@ export class PairingClient {
     this.changed = changed;
     this.save = save;
     this.socketFactory = socketFactory;
-    this.retryDelay = 500;
+    this.retryDelay = INITIAL_RETRY_MS;
     this.state = emptyState();
     this.connected = false;
     this.controller = new AbortController();
@@ -31,7 +37,7 @@ export class PairingClient {
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
       body: JSON.stringify(data),
-      signal: AbortSignal.any([this.controller.signal, AbortSignal.timeout(35_000)]),
+      signal: AbortSignal.any([this.controller.signal, AbortSignal.timeout(REQUEST_TIMEOUT_MS)]),
       credentials: 'omit',
       cache: 'no-store',
       referrerPolicy: 'no-referrer',
@@ -74,7 +80,7 @@ export class PairingClient {
           this.retryTimer = undefined;
           void this.connect();
         }, this.retryDelay);
-        this.retryDelay = Math.min(this.retryDelay * 2, 8000);
+        this.retryDelay = Math.min(this.retryDelay * 2, MAX_RETRY_MS);
       };
       let socket;
       try {
@@ -98,7 +104,7 @@ export class PairingClient {
         clearTimeout(watchdog);
         watchdog = setTimeout(() => socket.close(), ms);
       };
-      armWatchdog(10_000);
+      armWatchdog(CONNECT_TIMEOUT_MS);
       socket.addEventListener('open', () => {
         if (this.controller.signal.aborted) return socket.close();
         socket.send(JSON.stringify({ token: this.token }));
@@ -109,13 +115,13 @@ export class PairingClient {
           const message = JSON.parse(event.data);
           if (message.type === 'state') {
             this.apply(message.state, true);
-            this.retryDelay = 500;
+            this.retryDelay = INITIAL_RETRY_MS;
             resolve();
           } else if (message.type !== 'heartbeat') {
             socket.close();
             return;
           }
-          armWatchdog(45_000);
+          armWatchdog(HEARTBEAT_TIMEOUT_MS);
         } catch {
           socket.close();
         }
@@ -145,7 +151,7 @@ export class PairingClient {
     void this.connect();
     return result;
   }
-  async newCode() {
+  newCode() {
     return this.request('code');
   }
   async leave() {
