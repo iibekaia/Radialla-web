@@ -1,0 +1,28 @@
+:host {
+  position: fixed;
+  top: max(112px, env(safe-area-inset-top));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+  width: max-content;
+  max-width: calc(100vw - 32px);
+  pointer-events: none;
+}
+.message {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--material);
+  backdrop-filter: blur(24px);
+  color: var(--text);
+  box-shadow: 0 8px 32px #17252c20;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.message app-icon {
+  width: 18px;
+  height: 18px;
+}
