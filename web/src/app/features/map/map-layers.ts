@@ -1,4 +1,5 @@
 export const FOCUS_ZOOM = 11;
+export const LOCATION_ZOOM = 12;
 export const MAP_LAYERS = [
   {
     id: 'standard',

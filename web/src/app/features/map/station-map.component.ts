@@ -21,7 +21,7 @@ import { StationMarkers } from './station-markers';
 import { mapLocation } from '../../shared/stations/map-location.mjs';
 import { MapLocationController } from './map-location-controller';
 
-import { FOCUS_ZOOM, MAP_LAYERS } from './map-layers';
+import { FOCUS_ZOOM, LOCATION_ZOOM, MAP_LAYERS } from './map-layers';
 
 @Component({
   selector: 'app-station-map',
@@ -204,8 +204,11 @@ export class StationMapComponent implements AfterViewInit, OnDestroy {
     if (!this.map) return;
     const coordinates: L.LatLngExpression = [point.latitude, point.longitude];
     // A late location response must not override a station or a user-selected area.
-    if (!automatic || (!this.hasStationFocus() && !this.explored))
-      this.setAutomaticView(coordinates);
+    if (!automatic || (!this.hasStationFocus() && !this.explored)) {
+      this.setAutomaticView(coordinates, LOCATION_ZOOM);
+      // Keep this closer zoom when location-based autoplay selects a station.
+      this.explored = true;
+    }
     this.locationMarker?.remove();
     this.locationMarker = L.circleMarker(coordinates, {
       radius: 7,
