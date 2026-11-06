@@ -8,9 +8,10 @@
   <label class="station-search">
     <app-icon name="globe" />
     <select
+      #countrySelect
       [attr.aria-label]="vm.i18n.t('countrySelect')"
       [value]="vm.selectedCountry() || ''"
-      (change)="vm.chooseCountry($any($event.target).value)"
+      (change)="vm.chooseCountry(countrySelect.value)"
     >
       <option value="">{{ vm.i18n.t('allCountries') }}</option>
       @for (country of vm.countries(); track country.code) {

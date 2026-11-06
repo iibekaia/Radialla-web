@@ -7,8 +7,9 @@ import { LocalizationService } from './localization.service';
   imports: [IconComponent],
   template: `<label class="language-picker" [title]="i18n.t('Language')"
       ><app-icon name="globe" /><select
+        #languageSelect
         [attr.aria-label]="i18n.t('Language')"
-        (change)="i18n.choose($any($event.target).value)"
+        (change)="i18n.choose(languageSelect.value)"
       >
         <option value="auto" [selected]="i18n.preference.value() === 'auto'">
           {{ i18n.t('auto') }}

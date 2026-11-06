@@ -93,7 +93,6 @@ function fixture() {
     {
       playing: () => playing,
       changed: (value) => events.push(value),
-      error: () => events.push('error'),
     },
     browser,
   );
@@ -116,6 +115,7 @@ function fixture() {
 
 test('PiP moves the same player, copies styles and base URL, and restores it on return or window close', async () => {
   const f = fixture();
+  f.doc.visibilityState = 'hidden';
   f.controller.update('ka', 'Radialla test');
   const pending = f.controller.open();
   void f.controller.open();
@@ -165,18 +165,15 @@ test('browser-triggered automatic PiP requires playback and closes when the tab 
   playing.controller.destroy();
 });
 
-test('denied or unsupported PiP does not move the player; automatic errors stay quiet', async () => {
+test('denied or unsupported PiP does not move the player or report a false open state', async () => {
   const f = fixture();
+  f.doc.visibilityState = 'hidden';
   f.browser.documentPictureInPicture.requestWindow = async () => {
     throw Error('Denied');
   };
   await f.controller.open();
   assert.equal(f.player.parent, f.parent);
-  assert.equal(f.events.at(-1), 'error');
-  f.events.length = 0;
-  f.doc.visibilityState = 'hidden';
-  await f.controller.open(true);
-  assert.equal(f.events.includes('error'), false);
+  assert.deepEqual(f.events, []);
   f.controller.destroy();
   delete f.browser.documentPictureInPicture;
   const unsupported = new PictureInPictureController(
@@ -186,7 +183,6 @@ test('denied or unsupported PiP does not move the player; automatic errors stay 
       playing() {
         return true;
       },
-      error() {},
     },
     f.browser,
   );
@@ -196,13 +192,14 @@ test('denied or unsupported PiP does not move the player; automatic errors stay 
   unsupported.destroy();
 });
 
-test('late PiP requests after destruction or a return to the tab close without moving the player', async () => {
-  for (const destroyed of [true, false]) {
+test('late PiP requests after destruction, a return to the tab or a pause close without moving the player', async () => {
+  for (const reason of ['destroyed', 'visible', 'paused']) {
     const f = fixture();
     f.doc.visibilityState = 'hidden';
-    const pending = f.controller.open(true);
-    if (destroyed) f.controller.destroy();
-    else f.doc.visibilityState = 'visible';
+    const pending = f.controller.open();
+    if (reason === 'destroyed') f.controller.destroy();
+    else if (reason === 'visible') f.doc.visibilityState = 'visible';
+    else f.pause();
     f.resolve();
     await pending;
     assert.equal(f.player.parent, f.parent);

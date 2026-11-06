@@ -14,7 +14,6 @@ interface PictureInPictureBrowser {
 interface PictureInPictureCallbacks {
   playing(): boolean;
   changed(open: boolean): void;
-  error?(): void;
 }
 
 /** Moves the existing Angular player; audio stays in its original session. */
@@ -25,11 +24,10 @@ export class PictureInPictureController {
   private pending = false;
   private destroyed = false;
   private registered = false;
-  private automatic = false;
   private language = '';
   private title = '';
   private readonly visibilityChanged = () => {
-    if (this.automatic && this.browser.document.visibilityState === 'visible') this.close();
+    if (this.popup && this.browser.document.visibilityState === 'visible') this.close();
   };
 
   constructor(
@@ -44,8 +42,7 @@ export class PictureInPictureController {
       browser.navigator.mediaSession?.setActionHandler(
         'enterpictureinpicture' as MediaSessionAction,
         () => {
-          if (this.callbacks.playing() && browser.document.visibilityState === 'hidden')
-            void this.open(true);
+          void this.open();
         },
       );
       this.registered = !!browser.navigator.mediaSession;
@@ -63,23 +60,30 @@ export class PictureInPictureController {
     }
   }
 
-  async open(automatic = false) {
-    if (!this.supported || this.destroyed || this.pending || this.popup) return;
-    if (automatic && this.browser.document.visibilityState === 'visible') return;
+  private canOpen() {
+    return (
+      !this.destroyed &&
+      this.callbacks.playing() &&
+      this.browser.document.visibilityState === 'hidden'
+    );
+  }
+
+  async open() {
+    const api = this.browser.documentPictureInPicture;
+    if (!api || !this.canOpen() || this.pending || this.popup) return;
     this.pending = true;
     let popup: Window | undefined;
     try {
-      popup = await this.browser.documentPictureInPicture!.requestWindow({
+      popup = await api.requestWindow({
         width: 440,
         height: 240,
         disallowReturnToOpener: false,
       });
-      if (this.destroyed || (automatic && this.browser.document.visibilityState === 'visible')) {
+      if (!this.canOpen()) {
         popup.close();
         return;
       }
       this.popup = popup;
-      this.automatic = automatic;
       const doc = popup.document;
       const base = doc.createElement('base');
       base.href = this.browser.document.baseURI;
@@ -105,17 +109,16 @@ export class PictureInPictureController {
     } catch {
       popup?.close();
       this.restore();
-      if (!automatic && !this.destroyed) this.callbacks.error?.();
     } finally {
       this.pending = false;
     }
   }
 
   private restore() {
+    if (!this.popup && !this.placeholder) return;
     this.placeholder?.replaceWith(this.player);
     this.placeholder = undefined;
     this.popup = undefined;
-    this.automatic = false;
     this.callbacks.changed(false);
   }
 
@@ -126,8 +129,11 @@ export class PictureInPictureController {
   }
 
   returnToTab() {
-    this.browser.focus();
-    this.close();
+    try {
+      this.browser.focus();
+    } finally {
+      this.close();
+    }
   }
 
   destroy() {
