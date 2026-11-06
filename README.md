@@ -30,6 +30,10 @@ Configuration lives in `web/public/config.json`. `/` uses the same-origin API. E
 
 When playback reports a terminal `streamError`, the explorer waits three seconds and tries the next playable station in the current filtered/visible list. Existing reconnect attempts run first for an interrupted established stream. A failure chain skips stations already attempted and stops when no alternative remains. Successful playback clears the failure history. Manual play/pause, station selection or map/country browsing cancels the pending switch. Browser autoplay denial, loading and paused states do not trigger fallback. HTTP stations are candidates only when the configured API relay and a valid station UUID are available.
 
+## Station sharing
+
+Use the player's Share station button to choose Facebook, copy the station link, or open more sharing options in the system share sheet. Facebook opens its share composer in a new tab; publishing remains a separate action there. If clipboard access is blocked, a selectable link appears in the player. Links use `?station=<station ID>` and preserve the hosting path, so they also work on static hosting. Opening a link selects that station, ahead of the last-played station and location-based autoplay; press Play to listen. The app checks the local/demo catalog first and resolves uncached Radio Browser UUIDs directly without the Node API. Unavailable links show a message and leave browsing usable. A manual station or map selection takes priority over an unfinished link lookup.
+
 ## Floating player
 
 Browsers supporting automatic Document Picture-in-Picture can move the existing player into an always-on-top window when switching tabs during playback. Station selection, metadata, volume and playback stay synchronized. Back to tab focuses the original tab and restores the player; closing the floating window restores the player without stopping audio. Unsupported browsers keep the regular player. There is no manual floating-player launch button.

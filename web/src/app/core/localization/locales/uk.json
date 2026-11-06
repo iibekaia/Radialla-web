@@ -105,5 +105,11 @@
   "returnToTab": "Повернутися на вкладку",
   "returnPlayer": "Повернути плеєр на цю вкладку",
   "countryOverview": "%@ записів у каталозі — виберіть для завантаження країни",
-  "findOnYouTube": "Знайти %@ на YouTube"
+  "findOnYouTube": "Знайти %@ на YouTube",
+  "shareStation": "Поділитися станцією",
+  "stationLinkCopied": "Посилання на станцію скопійовано",
+  "copyStationLink": "Копіювати посилання на станцію",
+  "sharedStationLoading": "Завантаження станції за посиланням…",
+  "sharedStationUnavailable": "Станція за посиланням недоступна. Виберіть іншу станцію або відкрийте посилання знову.",
+  "moreShareOptions": "Інші способи поширення"
 }

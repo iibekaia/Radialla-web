@@ -105,5 +105,11 @@
   "returnToTab": "탭으로 돌아가기",
   "returnPlayer": "플레이어를 이 탭으로 이동",
   "countryOverview": "카탈로그 항목 %@개 — 선택하여 국가 불러오기",
-  "findOnYouTube": "YouTube에서 %@ 검색"
+  "findOnYouTube": "YouTube에서 %@ 검색",
+  "shareStation": "방송국 공유",
+  "stationLinkCopied": "방송국 링크가 복사되었습니다",
+  "copyStationLink": "방송국 링크 복사",
+  "sharedStationLoading": "공유된 방송국을 불러오는 중…",
+  "sharedStationUnavailable": "공유된 방송국을 사용할 수 없습니다. 다른 방송국을 선택하거나 링크를 다시 여세요.",
+  "moreShareOptions": "다른 공유 방법"
 }

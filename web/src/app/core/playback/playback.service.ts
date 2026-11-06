@@ -67,12 +67,17 @@ export class PlaybackService implements OnDestroy {
     writeVolume(this.volumeLevel(), this.mutedState());
   }
 
-  async play(station: Station) {
+  select(station: Station) {
     this.clearMetadata();
     this.session.stop();
     this.playing.set(false);
     this.loading.set(false);
     this.active.set(station);
+    this.message.set(STATUS_MESSAGES.paused);
+  }
+
+  async play(station: Station) {
+    this.select(station);
     if (!station.streamUrl) {
       this.message.set('missingStream');
       return;

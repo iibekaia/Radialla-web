@@ -101,3 +101,9 @@ export async function fetchCountryCounts(fetcher = fetch, signal) {
     }),
   );
 }
+
+export async function fetchRadioStation(id, fetcher = fetch, signal) {
+  if (!/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(id)) return null;
+  const rows = await radioJson(`stations/byuuid/${encodeURIComponent(id)}`, {}, fetcher, signal);
+  return rows.map(normalizeStation).find((station) => station?.id === id) || null;
+}

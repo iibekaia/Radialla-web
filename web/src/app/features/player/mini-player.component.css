@@ -1,6 +1,91 @@
 :host {
   display: contents;
 }
+.station-sharing {
+  display: flex;
+}
+.station-sharing > button {
+  anchor-name: --station-share-toggle;
+}
+.share-options {
+  position: fixed;
+  inset: auto 24px 150px auto;
+  margin: 0;
+  width: max-content;
+  max-width: calc(100vw - 24px);
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  color: var(--text);
+  background: var(--surface);
+  box-shadow: 0 8px 30px #17252c29;
+}
+@supports (position-anchor: --station-share-toggle) {
+  .share-options {
+    position-anchor: --station-share-toggle;
+    inset: auto;
+    bottom: anchor(top);
+    right: anchor(right);
+    margin-bottom: 8px;
+    position-try-fallbacks: flip-block, flip-inline;
+  }
+}
+.share-options a,
+.share-options button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 13px;
+  text-decoration: none;
+  text-align: start;
+}
+.share-options a:hover,
+.share-options button:hover {
+  background: var(--line);
+}
+.share-options app-icon,
+.facebook-icon {
+  width: 20px;
+  height: 20px;
+}
+.facebook-icon {
+  display: inline-flex;
+  align-items: flex-end;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 50%;
+  color: white;
+  background: #1877f2;
+  font:
+    bold 24px/20px Arial,
+    sans-serif;
+}
+.share-status {
+  color: var(--accent);
+  font-size: 10px;
+}
+.share-status:empty {
+  display: none;
+}
+.share-link {
+  width: 100%;
+  min-width: 0;
+  padding: 4px;
+  color: var(--text);
+  background: var(--material);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font-size: 11px;
+}
 .floating-player-placeholder {
   position: absolute;
   right: 24px;

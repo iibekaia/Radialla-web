@@ -57,10 +57,70 @@
           <span class="frequency">{{ s.frequency }} FM</span>
         }
       }
+      @if (vm.sharedStationNotice(); as notice) {
+        <span class="playback-status" role="status">{{ vm.i18n.t(notice) }}</span>
+      }
+      <span class="share-status" role="status">{{
+        shareStatus() ? vm.i18n.t(shareStatus()) : ''
+      }}</span>
+      @if (manualShareLink(); as url) {
+        <input
+          class="share-link"
+          type="text"
+          readonly
+          [value]="url"
+          [attr.aria-label]="vm.i18n.t('copyStationLink')"
+          [title]="vm.i18n.t('copyStationLink')"
+          (focus)="selectShareLink($event)"
+          (click)="selectShareLink($event)"
+        />
+      }
     </span>
   </div>
   <div class="player-actions">
     <div class="transport">
+      <div
+        class="station-sharing"
+        (keydown.escape)="shareOptions.hidePopover(); shareToggle.focus()"
+      >
+        <button
+          #shareToggle
+          type="button"
+          class="icon-button"
+          popovertarget="station-share-options"
+          [attr.aria-label]="vm.i18n.t('shareStation')"
+          [title]="vm.i18n.t('shareStation')"
+          [disabled]="
+            !vm.selected() || sharing() || vm.sharedStationNotice() === 'sharedStationLoading'
+          "
+        >
+          <app-icon name="share" />
+        </button>
+        <div
+          #shareOptions
+          id="station-share-options"
+          popover
+          class="share-options"
+          [attr.aria-label]="vm.i18n.t('shareStation')"
+        >
+          @if (facebookLink(); as url) {
+            <a
+              [href]="url"
+              target="_blank"
+              rel="noopener noreferrer"
+              (click)="shareOptions.hidePopover()"
+            >
+              <span class="facebook-icon" aria-hidden="true">f</span> Facebook
+            </a>
+          }
+          <button type="button" (click)="shareOptions.hidePopover(); shareStation(true)">
+            <app-icon name="link" /> {{ vm.i18n.t('copyStationLink') }}
+          </button>
+          <button type="button" (click)="shareOptions.hidePopover(); shareStation()">
+            <app-icon name="share" /> {{ vm.i18n.t('moreShareOptions') }}
+          </button>
+        </div>
+      </div>
       <button
         class="icon-button"
         [attr.aria-label]="vm.i18n.t('წინა რადიოსადგური')"

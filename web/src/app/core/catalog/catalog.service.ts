@@ -11,6 +11,7 @@ import {
   validStationCatalog,
 } from './live-catalog.mjs';
 import { COUNTRIES } from '../../shared/data/countries';
+import { fetchRadioStation } from './radio-browser.mjs';
 import countryRegions from '../../shared/data/country-regions.json';
 import {
   CATALOG_TTL,
@@ -158,6 +159,15 @@ export class CatalogService {
   setViewport(area: MapArea | null, country: string | null, favorites = false) {
     this.viewport = { area, country, favorites };
     if (this.ready) this.scheduleViewport();
+  }
+  async findStation(id: string): Promise<Station | null> {
+    const cached = this.stations().find((station) => station.id === id);
+    if (cached) return cached;
+    try {
+      return await fetchRadioStation(id, fetch, this.controller.signal);
+    } catch {
+      return this.stations().find((station) => station.id === id) || null;
+    }
   }
   private scheduleViewport() {
     const { area, country, favorites } = this.viewport;

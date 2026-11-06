@@ -105,5 +105,11 @@
   "returnToTab": "Back to tab",
   "returnPlayer": "Return player to this tab",
   "countryOverview": "%@ catalog entries — select to load this country",
-  "findOnYouTube": "Search for %@ on YouTube"
+  "findOnYouTube": "Search for %@ on YouTube",
+  "shareStation": "Share station",
+  "stationLinkCopied": "Station link copied",
+  "copyStationLink": "Copy station link",
+  "sharedStationLoading": "Loading shared station…",
+  "sharedStationUnavailable": "Shared station unavailable. Choose another station or reopen the link to retry.",
+  "moreShareOptions": "More sharing options"
 }

@@ -105,5 +105,11 @@
   "returnToTab": "返回标签页",
   "returnPlayer": "将播放器移回此标签页",
   "countryOverview": "%@ 个目录条目 — 点击加载此国家",
-  "findOnYouTube": "在 YouTube 上搜索 %@"
+  "findOnYouTube": "在 YouTube 上搜索 %@",
+  "shareStation": "分享电台",
+  "stationLinkCopied": "电台链接已复制",
+  "copyStationLink": "复制电台链接",
+  "sharedStationLoading": "正在加载分享的电台…",
+  "sharedStationUnavailable": "分享的电台暂不可用。请选择其他电台或重新打开链接重试。",
+  "moreShareOptions": "更多分享选项"
 }

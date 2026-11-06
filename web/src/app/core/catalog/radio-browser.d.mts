@@ -1,5 +1,10 @@
 import type { Station } from '../../shared/models/station';
 export const RADIO_HOSTS: string[];
+export function fetchRadioStation(
+  id: string,
+  fetcher?: typeof fetch,
+  signal?: AbortSignal,
+): Promise<Station | null>;
 export function fetchCountryCounts(
   fetcher?: typeof fetch,
   signal?: AbortSignal,

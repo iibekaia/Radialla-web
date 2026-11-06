@@ -1,5 +1,6 @@
 @import 'leaflet/dist/leaflet.css';
 @import '@ng-select/ng-select/themes/default.theme.css';
+@import './app/features/map/map-station-picker.css';
 :root {
   --accent: #f15a22;
   --background: #f4f4f4;
@@ -335,30 +336,6 @@ p {
   outline: 2px dashed #8a5a00;
   outline-offset: 3px;
 }
-.map-station-picker {
-  min-width: 180px;
-  max-width: 260px;
-}
-.map-station-picker p {
-  margin: 0 0 10px;
-  color: #555;
-}
-.map-station-picker button {
-  display: block;
-  width: 100%;
-  padding: 10px 6px;
-  border: 0;
-  border-top: 1px solid #ddd;
-  background: transparent;
-  color: #1565c0;
-  text-align: start;
-  cursor: pointer;
-}
-.map-station-picker button:hover,
-.map-station-picker button:focus-visible {
-  background: #eef4ff;
-}
-
 /* Shared select styling follows the app's light and dark palettes. */
 .ng-select .ng-select-container {
   background: transparent;

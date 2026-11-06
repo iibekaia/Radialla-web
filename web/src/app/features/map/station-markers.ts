@@ -5,6 +5,7 @@ import { COUNTRIES } from '../../shared/data/countries';
 import { CatalogEntry } from '../../core/catalog/viewport-catalog.mjs';
 
 import { LocalizationService } from '../../core/localization/localization.service';
+import { createStationPicker, fitStationPicker } from './map-station-picker';
 
 type Placement = {
   station: Station;
@@ -105,27 +106,31 @@ export class StationMarkers {
       );
       if (approximate || (cluster && colocated)) {
         // Coincident markers cannot be separated by zooming. Offer every station directly.
-        const content = document.createElement('div');
-        content.className = 'map-station-picker';
-        if (approximate) {
-          const note = document.createElement('p');
-          note.textContent = this.i18n.t(
-            s.capital ? 'countryLocationNotice' : 'countryAreaLocationNotice',
-          );
-          content.append(note);
-        }
-        for (const { station } of group) {
-          const button = document.createElement('button');
-          button.type = 'button';
-          button.textContent = station.name;
-          button.addEventListener('click', () => {
+        const content = createStationPicker(
+          group.map(({ station }) => station),
+          active,
+          this.i18n.country(s.station.country, s.station.countryCode) || this.i18n.t('stations'),
+          approximate
+            ? this.i18n.t(s.capital ? 'countryLocationNotice' : 'countryAreaLocationNotice')
+            : '',
+          this.i18n,
+          (station) => {
             this.onSelect(station);
             this.map.closePopup();
-          });
-          content.append(button);
-        }
+          },
+        );
         // Opening the picker must not pan the map and trigger area autoplay.
-        marker.bindPopup(content, { maxHeight: 260, autoPan: false });
+        marker.bindPopup(content, {
+          className: 'station-picker-popup',
+          maxWidth: 340,
+          minWidth: 220,
+          autoPan: false,
+        });
+        marker.on('popupopen', () => {
+          marker.closeTooltip();
+          const popup = marker.getPopup();
+          if (popup) fitStationPicker(popup, this.map);
+        });
       } else {
         marker.on('click', () => {
           if (cluster) {

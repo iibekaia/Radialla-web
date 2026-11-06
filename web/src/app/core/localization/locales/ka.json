@@ -105,5 +105,11 @@
   "returnToTab": "თაბზე დაბრუნება",
   "returnPlayer": "ფლეერის ამ თაბში დაბრუნება",
   "countryOverview": "%@ ჩანაწერი კატალოგში — აირჩიე ქვეყნის ჩასატვირთად",
-  "findOnYouTube": "YouTube-ზე ძიება: %@"
+  "findOnYouTube": "YouTube-ზე ძიება: %@",
+  "shareStation": "სადგურის გაზიარება",
+  "stationLinkCopied": "სადგურის ბმული დაკოპირებულია",
+  "copyStationLink": "სადგურის ბმულის კოპირება",
+  "sharedStationLoading": "გაზიარებული სადგური იტვირთება…",
+  "sharedStationUnavailable": "გაზიარებული სადგური მიუწვდომელია. აირჩიე სხვა სადგური ან ხელახლა გახსენი ბმული.",
+  "moreShareOptions": "გაზიარების სხვა გზები"
 }

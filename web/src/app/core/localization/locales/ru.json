@@ -105,5 +105,11 @@
   "returnToTab": "Вернуться на вкладку",
   "returnPlayer": "Вернуть плеер на эту вкладку",
   "countryOverview": "%@ записей в каталоге — выберите для загрузки страны",
-  "findOnYouTube": "Найти %@ на YouTube"
+  "findOnYouTube": "Найти %@ на YouTube",
+  "shareStation": "Поделиться станцией",
+  "stationLinkCopied": "Ссылка на станцию скопирована",
+  "copyStationLink": "Копировать ссылку на станцию",
+  "sharedStationLoading": "Загрузка станции по ссылке…",
+  "sharedStationUnavailable": "Станция по ссылке недоступна. Выберите другую станцию или откройте ссылку снова.",
+  "moreShareOptions": "Другие способы поделиться"
 }

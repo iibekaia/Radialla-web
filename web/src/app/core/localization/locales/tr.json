@@ -105,5 +105,11 @@
   "returnToTab": "Sekmeye dön",
   "returnPlayer": "Oynatıcıyı bu sekmeye taşı",
   "countryOverview": "%@ katalog kaydı — ülkeyi yüklemek için seçin",
-  "findOnYouTube": "YouTube’da %@ ara"
+  "findOnYouTube": "YouTube’da %@ ara",
+  "shareStation": "İstasyonu paylaş",
+  "stationLinkCopied": "İstasyon bağlantısı kopyalandı",
+  "copyStationLink": "İstasyon bağlantısını kopyala",
+  "sharedStationLoading": "Paylaşılan istasyon yükleniyor…",
+  "sharedStationUnavailable": "Paylaşılan istasyon kullanılamıyor. Başka bir istasyon seçin veya bağlantıyı yeniden açın.",
+  "moreShareOptions": "Diğer paylaşım seçenekleri"
 }

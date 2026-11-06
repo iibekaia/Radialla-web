@@ -15,6 +15,7 @@ import { stationInArea } from '../../shared/stations/station-area.mjs';
 import { LocalizationService } from '../../core/localization/localization.service';
 import { COUNTRIES } from '../../shared/data/countries';
 import { overviewArea } from '../../core/catalog/viewport-catalog.mjs';
+import { stationIdFromLink } from '../../core/sharing/station-link.mjs';
 import {
   filterStations,
   startupStation,
@@ -44,6 +45,9 @@ export class ExplorerService {
       : [],
   );
   private manualPlayback = false;
+  private readonly sharedStationId = signal(stationIdFromLink(window.location.href));
+  readonly sharedStationNotice = signal('');
+  private resolvingSharedStation = false;
   private autoplayStarted = false;
   private readonly pendingAutoplay = signal(!!this.player.active());
   private readonly location = signal<LocationPoint | null>(null);
@@ -103,7 +107,10 @@ export class ExplorerService {
     play: (station) => this.playSelection(station),
   });
   constructor() {
-    inject(DestroyRef).onDestroy(() => this.failover.destroy());
+    inject(DestroyRef).onDestroy(() => {
+      this.sharedStationId.set(null);
+      this.failover.destroy();
+    });
     effect(() =>
       this.failover.update({
         id: this.player.active()?.id || null,
@@ -119,7 +126,22 @@ export class ExplorerService {
       untracked(() => this.catalog.setViewport(area, country, favorites));
     });
     effect(() => {
-      if (!this.pendingAutoplay() || !this.catalog.playbackReady()) return;
+      const id = this.sharedStationId();
+      if (!id || !this.catalog.playbackReady() || this.resolvingSharedStation) return;
+      this.resolvingSharedStation = true;
+      this.sharedStationNotice.set('sharedStationLoading');
+      void this.catalog.findStation(id).then((station) => {
+        if (this.sharedStationId() !== id) return;
+        this.sharedStationId.set(null);
+        this.manualPlayback = true;
+        this.pendingAutoplay.set(false);
+        this.sharedStationNotice.set(station ? '' : 'sharedStationUnavailable');
+        if (station) this.player.select(station);
+      });
+    });
+    effect(() => {
+      if (this.sharedStationId() || !this.pendingAutoplay() || !this.catalog.playbackReady())
+        return;
       const station = startupStation(
         this.catalog.stations(),
         this.player.active(),
@@ -148,7 +170,7 @@ export class ExplorerService {
     });
   }
   requestAutoplay(location: LocationPoint | null) {
-    if (this.manualPlayback || this.autoplayStarted) return;
+    if (this.sharedStationId() || this.manualPlayback || this.autoplayStarted) return;
     this.location.set(location);
     this.pendingAutoplay.set(true);
   }
@@ -165,6 +187,7 @@ export class ExplorerService {
     this.beginAreaPlayback();
   }
   private beginAreaPlayback() {
+    this.cancelSharedSelection();
     this.failover.reset();
     this.manualPlayback = true;
     this.pendingAutoplay.set(false);
@@ -175,12 +198,14 @@ export class ExplorerService {
     this.playSelection(s);
   }
   private playSelection(s: Station) {
+    this.cancelSharedSelection();
     this.followArea.set(false);
     this.manualPlayback = true;
     this.pendingAutoplay.set(false);
     void this.player.play(s);
   }
   togglePlayback() {
+    this.cancelSharedSelection();
     this.failover.reset();
     this.followArea.set(false);
     this.manualPlayback = true;
@@ -192,5 +217,9 @@ export class ExplorerService {
   skip(delta: number) {
     const station = adjacentStation(this.visible(), this.selected()?.id, delta);
     if (station) this.choose(station);
+  }
+  private cancelSharedSelection() {
+    this.sharedStationId.set(null);
+    this.sharedStationNotice.set('');
   }
 }

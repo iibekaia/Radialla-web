@@ -105,5 +105,11 @@
   "returnToTab": "Վերադառնալ ներդիրին",
   "returnPlayer": "Նվագարկիչը վերադարձնել այս ներդիր",
   "countryOverview": "%@ գրառում կատալոգում — ընտրեք երկիրը բեռնելու համար",
-  "findOnYouTube": "Որոնել %@ YouTube-ում"
+  "findOnYouTube": "Որոնել %@ YouTube-ում",
+  "shareStation": "Կիսվել ռադիոկայանով",
+  "stationLinkCopied": "Ռադիոկայանի հղումը պատճենված է",
+  "copyStationLink": "Պատճենել ռադիոկայանի հղումը",
+  "sharedStationLoading": "Հղումով ռադիոկայանը բեռնվում է…",
+  "sharedStationUnavailable": "Հղումով ռադիոկայանը հասանելի չէ։ Ընտրեք այլ կայան կամ կրկին բացեք հղումը։",
+  "moreShareOptions": "Կիսվելու այլ տարբերակներ"
 }
