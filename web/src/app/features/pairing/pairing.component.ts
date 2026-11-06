@@ -2,10 +2,12 @@ import { Component, ElementRef, inject, signal, viewChild, effect } from '@angul
 import { toDataURL } from 'qrcode';
 import { PairingService } from '../../core/pairing/pairing.service';
 import { LocalizationService } from '../../core/localization/localization.service';
+import { IconComponent } from '../../shared/ui/icon.component';
 
 @Component({
   selector: 'app-pairing',
   standalone: true,
+  imports: [IconComponent],
   templateUrl: './pairing.component.html',
   styleUrl: './pairing.component.css',
 })

@@ -21,28 +21,51 @@
 <dialog #dialog aria-labelledby="pair-title" (close)="opened.set(false)">
   <div class="heading">
     <h2 id="pair-title">{{ i18n.t('pairTitle') }}</h2>
-    <button class="close" (click)="close()" [attr.aria-label]="i18n.t('pairClose')">&times;</button>
+    <button class="close" (click)="close()" [attr.aria-label]="i18n.t('pairClose')">
+      <app-icon name="close" />
+    </button>
   </div>
   @if (!pairing.available()) {
-    <p role="status">{{ i18n.t('pairNeedsServer') }}</p>
+    <p class="notice" role="status">{{ i18n.t('pairNeedsServer') }}</p>
   } @else if (pairing.members() > 1) {
-    <p class="status" role="status">
-      {{ i18n.t(pairing.connected() ? 'pairConnected' : 'pairReconnecting') }}
-    </p>
-    <p>{{ i18n.t('pairExclusive') }}</p>
-    <button class="secondary" [disabled]="pairing.busy()" (click)="disconnect()">
-      {{ i18n.t('pairDisconnect') }}
-    </button>
+    <div class="connected-content" [class.reconnecting]="!pairing.connected()">
+      <div class="connection-symbol" aria-hidden="true"><app-icon name="link" /></div>
+      <div class="connection-status" role="status">
+        <p class="status">
+          <span class="status-dot" aria-hidden="true"></span>
+          {{ i18n.t(pairing.connected() ? 'pairConnected' : 'pairReconnecting') }}
+        </p>
+        <p class="member-count">{{ i18n.t('pairMembers', pairing.members()) }}</p>
+      </div>
+      <p class="connection-help">{{ i18n.t('pairExclusive') }}</p>
+      <button class="disconnect" [disabled]="pairing.busy()" (click)="disconnect()">
+        {{ i18n.t('pairDisconnect') }}
+      </button>
+    </div>
   } @else {
-    <p class="scan-help">{{ i18n.t('pairScanSimple') }}</p>
-    @if (qrImage()) {
-      <img class="qr" [src]="qrImage()" width="280" height="280" [alt]="i18n.t('pairQRAlt')" />
-    } @else if (!pairing.error()) {
-      <div class="qr-placeholder" role="status">{{ i18n.t('pairPreparing') }}</div>
-    }
+    <div class="scan-content">
+      @if (qrImage()) {
+        <div class="qr-frame">
+          <img class="qr" [src]="qrImage()" width="280" height="280" [alt]="i18n.t('pairQRAlt')" />
+        </div>
+        <p class="waiting" role="status">
+          <span class="status-dot" aria-hidden="true"></span>{{ i18n.t('pairWaiting') }}
+        </p>
+      } @else if (!pairing.error()) {
+        <div class="qr-placeholder" role="status">
+          <span class="loading-spinner" aria-hidden="true"></span>
+          {{ i18n.t('pairPreparing') }}
+        </div>
+      }
+      <p class="scan-help">{{ i18n.t('pairScanSimple') }}</p>
+    </div>
   }
   @if (pairing.error()) {
-    <p class="error" role="alert">{{ i18n.t(pairing.error()) }}</p>
-    <button (click)="retry()">{{ i18n.t('pairRetry') }}</button>
+    <div class="error-content">
+      <p class="error" role="alert">{{ i18n.t(pairing.error()) }}</p>
+      <button class="retry" [disabled]="pairing.busy()" (click)="retry()">
+        {{ i18n.t('pairRetry') }}
+      </button>
+    </div>
   }
 </dialog>
