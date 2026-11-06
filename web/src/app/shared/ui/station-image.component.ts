@@ -1,4 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
+import {
+  STATION_IMAGE_FALLBACK,
+  StationImageService,
+} from '../../core/catalog/station-image.service';
 
 @Component({
   selector: 'app-station-image',
@@ -27,18 +31,16 @@ import { Component, Input } from '@angular/core';
   `,
 })
 export class StationImageComponent {
+  private readonly images = inject(StationImageService);
   @Input() loading: 'lazy' | 'eager' = 'lazy';
-  src = 'radio-logo.png';
+  src = STATION_IMAGE_FALLBACK;
 
   @Input() set imageUrl(value: string | null | undefined) {
-    this.src = 'radio-logo.png';
-    try {
-      const url = new URL(value || '');
-      if (url.protocol === 'https:' || url.protocol === 'http:') this.src = url.href;
-    } catch {}
+    this.src = this.images.source(value);
   }
 
   useFallback() {
-    if (this.src !== 'radio-logo.png') this.src = 'radio-logo.png';
+    this.images.markFailed(this.src);
+    this.src = STATION_IMAGE_FALLBACK;
   }
 }
