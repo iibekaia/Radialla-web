@@ -60,7 +60,7 @@
   "Quick access to your last radio station.": "최근 청취한 방송국에 빠르게 접근합니다.",
   "Song saved": "노래가 저장되었습니다",
   "Catalog loading stopped. Loaded stations remain available.": "목록 불러오기가 중단되었습니다. 불러온 방송국은 계속 이용할 수 있습니다.",
-  "auto": "자동 (브라우저)",
+  "auto": "자동 (위치 기준)",
   "tagline": "전 세계 라디오를 내 주파수로",
   "showList": "방송국 목록 열기",
   "hideList": "방송국 목록 닫기",

@@ -60,7 +60,7 @@
   "Quick access to your last radio station.": "Son dinlediğiniz radyo istasyonuna hızlı erişim.",
   "Song saved": "Şarkı kaydedildi",
   "Catalog loading stopped. Loaded stations remain available.": "Katalog yüklemesi durdu. Yüklenen istasyonlar kullanılabilir durumda.",
-  "auto": "Otomatik (tarayıcı)",
+  "auto": "Otomatik (konuma göre)",
   "tagline": "Dünyanın radyoları senin frekansında",
   "showList": "İstasyonları göster",
   "hideList": "İstasyonları gizle",

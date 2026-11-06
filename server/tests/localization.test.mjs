@@ -38,15 +38,24 @@ test('all eight app languages include every key and preserve placeholder counts'
     }
   }
 });
-test('manual choice wins; automatic detection matches supported browser languages and falls back to English', () => {
-  assert.equal(resolveLanguage('ka', ['en-US']), 'ka');
-  assert.equal(resolveLanguage('auto', ['ko-KR']), 'ko');
-  assert.equal(resolveLanguage('auto', ['zh-TW']), 'zh-Hans');
-  assert.equal(resolveLanguage('auto', ['fr-FR', 'uk-UA']), 'uk');
-  assert.equal(resolveLanguage('auto', ['fr-GE']), 'ka');
-  assert.equal(resolveLanguage('corrupt', ['tr-TR']), 'tr');
-  assert.equal(resolveLanguage('auto', ['bad_locale', 'fr-FR']), 'en');
-  assert.equal(resolveLanguage('auto', []), 'en');
+test('manual choice wins; automatic detection follows country with English for unavailable or unsupported countries', () => {
+  for (const [country, language] of Object.entries({
+    GE: 'ka',
+    RU: 'ru',
+    UA: 'uk',
+    CN: 'zh-Hans',
+    KR: 'ko',
+    AM: 'hy',
+    TR: 'tr',
+  })) {
+    assert.equal(resolveLanguage('auto', country), language);
+    assert.equal(resolveLanguage('en', country), 'en');
+    assert.equal(resolveLanguage('ka', country), 'ka');
+  }
+  assert.equal(resolveLanguage('auto', ' ge '), 'ka');
+  assert.equal(resolveLanguage('corrupt', 'TR'), 'tr');
+  for (const country of ['FR', 'US', 'DE', 'bad_locale', 'toString', null, undefined])
+    assert.equal(resolveLanguage('auto', country), 'en');
 });
 test('translation uses app placeholders, English fallback and preserves literal broadcaster text', () => {
   assert.equal(translate(dictionaries, 'ka', '%@ სადგური', ['12']), '12 სადგური');

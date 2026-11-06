@@ -1,5 +1,5 @@
 export const LANGUAGES: { id: string; name: string }[];
-export function resolveLanguage(preference: string, languages: readonly string[]): string;
+export function resolveLanguage(preference: string, countryCode?: string | null): string;
 export function translate(
   dictionaries: Record<string, Record<string, string>>,
   language: string,

@@ -1,5 +1,6 @@
-import { Injectable, computed, effect, inject, signal, DestroyRef } from '@angular/core';
+import { Injectable, computed, effect, inject, DestroyRef } from '@angular/core';
 import { LanguagePreferenceService } from '../storage/language-preference.service';
+import { CountryLocationService } from './country-location.service';
 import { LANGUAGES, resolveLanguage, translate, translateCountry } from './localization.mjs';
 import countryNames from './country-names.json';
 import en from './locales/en.json';
@@ -24,20 +25,20 @@ const dictionaries: Record<string, Record<string, string>> = {
 export class LocalizationService {
   readonly preference = inject(LanguagePreferenceService);
   readonly languages = LANGUAGES;
-  private readonly browserLanguages = signal([...navigator.languages]);
+  private readonly location = inject(CountryLocationService);
   readonly language = computed(() =>
-    resolveLanguage(this.preference.value(), this.browserLanguages()),
+    resolveLanguage(this.preference.value(), this.location.country()),
   );
   constructor() {
-    const change = () => this.browserLanguages.set([...navigator.languages]);
     const storage = (e: StorageEvent) => {
       if (e.key === 'radialla.language' || e.key === null) this.preference.refresh();
     };
-    window.addEventListener('languagechange', change);
     window.addEventListener('storage', storage);
     inject(DestroyRef).onDestroy(() => {
-      window.removeEventListener('languagechange', change);
       window.removeEventListener('storage', storage);
+    });
+    effect(() => {
+      if (this.preference.value() === 'auto') void this.location.detect();
     });
     effect(() => {
       document.documentElement.lang = this.language();
