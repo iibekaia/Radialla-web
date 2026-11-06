@@ -6,5 +6,6 @@ export class AudioSession {
     timers?: Pick<typeof globalThis, 'setTimeout' | 'clearTimeout'>,
   );
   play(url: string): Promise<void>;
+  setVolume(volume: number, muted?: boolean): void;
   stop(): void;
 }

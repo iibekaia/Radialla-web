@@ -38,5 +38,7 @@ export class IconComponent {
     down: 'M6 9l6 6 6-6',
     volume: 'M11 4L6 8H3v8h3l5 4V4ZM15 8a6 6 0 0 1 0 8M18 5a10 10 0 0 1 0 14',
     muted: 'M11 4L6 8H3v8h3l5 4V4ZM16 9l6 6M22 9l-6 6',
+    pip: 'M3 4h18v16H3ZM12 11h7v7h-7Z',
+    return: 'M9 5l-6 6 6 6M3 11h12a6 6 0 0 1 6 6v2',
   };
 }

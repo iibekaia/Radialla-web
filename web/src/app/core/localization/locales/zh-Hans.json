@@ -98,5 +98,10 @@
   "emptyCountryStations": "已加载的目录中没有%@的电台。请选择其他国家或移动地图。",
   "approximateLocation": "大致位置",
   "countryLocationNotice": "显示在该国首都；电台的确切位置未知。",
-  "countryAreaLocationNotice": "显示在该国的大致位置；电台的确切位置未知。"
+  "countryAreaLocationNotice": "显示在该国的大致位置；电台的确切位置未知。",
+  "volume": "音量",
+  "mute": "静音",
+  "unmute": "取消静音",
+  "returnToTab": "返回标签页",
+  "returnPlayer": "将播放器移回此标签页"
 }

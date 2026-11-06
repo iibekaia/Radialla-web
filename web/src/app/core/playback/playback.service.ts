@@ -1,9 +1,10 @@
-import { Injectable, OnDestroy, inject, signal } from '@angular/core';
+import { Injectable, OnDestroy, computed, inject, signal } from '@angular/core';
 import { AudioSession, PlaybackStatus } from './audio-session.mjs';
 import { NowPlayingService } from './now-playing.service';
 import { CatalogService } from '../catalog/catalog.service';
 import { Station } from '../../shared/models/station';
 import { readLastStation, writeLastStation } from '../storage/last-station.mjs';
+import { readVolume, writeVolume } from '../storage/volume.mjs';
 
 const STATUS_MESSAGES: Record<PlaybackStatus, string> = {
   loading: 'იტვირთება აუდიო…',
@@ -22,6 +23,11 @@ export class PlaybackService implements OnDestroy {
   readonly playing = signal(false);
   readonly loading = signal(false);
   readonly message = signal(this.active() ? STATUS_MESSAGES.paused : '');
+  private readonly savedVolume = readVolume();
+  private readonly volumeLevel = signal(this.savedVolume.volume);
+  private readonly mutedState = signal(this.savedVolume.muted);
+  readonly volume = this.volumeLevel.asReadonly();
+  readonly muted = computed(() => this.mutedState() || this.volumeLevel() === 0);
   private readonly session = new AudioSession((status) => {
     this.playing.set(status === 'playing');
     this.loading.set(status === 'loading');
@@ -35,6 +41,31 @@ export class PlaybackService implements OnDestroy {
     }
     this.message.set(STATUS_MESSAGES[status]);
   });
+
+  constructor() {
+    this.applyVolume();
+  }
+
+  setVolume(value: number) {
+    if (!Number.isFinite(value)) return;
+    this.volumeLevel.set(Math.max(0, Math.min(1, value)));
+    this.mutedState.set(false);
+    this.applyVolume();
+  }
+
+  toggleMute() {
+    if (this.volumeLevel() === 0) {
+      this.setVolume(1);
+      return;
+    }
+    this.mutedState.update((value) => !value);
+    this.applyVolume();
+  }
+
+  private applyVolume() {
+    this.session.setVolume(this.volumeLevel(), this.mutedState());
+    writeVolume(this.volumeLevel(), this.mutedState());
+  }
 
   async play(station: Station) {
     this.clearMetadata();

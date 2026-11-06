@@ -98,5 +98,10 @@
   "emptyCountryStations": "Yüklenen katalogda %@ için istasyon yok. Başka bir ülke seçin veya haritayı hareket ettirin.",
   "approximateLocation": "Yaklaşık konum",
   "countryLocationNotice": "Ülkenin başkentinde gösterilir; istasyonun kesin konumu bilinmiyor.",
-  "countryAreaLocationNotice": "Ülkenin yaklaşık konumunda gösterilir; istasyonun kesin konumu bilinmiyor."
+  "countryAreaLocationNotice": "Ülkenin yaklaşık konumunda gösterilir; istasyonun kesin konumu bilinmiyor.",
+  "volume": "Ses seviyesi",
+  "mute": "Sesi kapat",
+  "unmute": "Sesi aç",
+  "returnToTab": "Sekmeye dön",
+  "returnPlayer": "Oynatıcıyı bu sekmeye taşı"
 }

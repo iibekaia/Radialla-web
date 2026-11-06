@@ -33,6 +33,10 @@
 body {
   margin: 0;
 }
+body.floating-player-document {
+  min-width: 240px;
+  overflow: auto;
+}
 button {
   font: inherit;
   cursor: pointer;

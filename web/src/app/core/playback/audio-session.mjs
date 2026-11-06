@@ -7,6 +7,18 @@ export class AudioSession {
     this.generation = 0;
     this.audio = null;
     this.retryTimer = null;
+    this.volume = 1;
+    this.muted = false;
+  }
+
+  setVolume(volume, muted = false) {
+    if (!Number.isFinite(volume)) return;
+    this.volume = Math.max(0, Math.min(1, volume));
+    this.muted = muted;
+    if (this.audio) {
+      this.audio.volume = this.volume;
+      this.audio.muted = this.muted;
+    }
   }
 
   async play(url) {
@@ -17,6 +29,8 @@ export class AudioSession {
     const start = async () => {
       if (generation !== this.generation) return;
       const audio = this.createAudio();
+      audio.volume = this.volume;
+      audio.muted = this.muted;
       this.audio = audio;
       const current = () => generation === this.generation && this.audio === audio;
       const update = (status) => {

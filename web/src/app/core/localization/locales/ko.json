@@ -98,5 +98,10 @@
   "emptyCountryStations": "불러온 목록에 %@ 방송국이 없습니다. 다른 국가를 선택하거나 지도를 이동하세요.",
   "approximateLocation": "대략적인 위치",
   "countryLocationNotice": "국가의 수도에 표시됩니다. 방송국의 정확한 위치는 알 수 없습니다.",
-  "countryAreaLocationNotice": "국가의 대략적인 위치에 표시됩니다. 방송국의 정확한 위치는 알 수 없습니다."
+  "countryAreaLocationNotice": "국가의 대략적인 위치에 표시됩니다. 방송국의 정확한 위치는 알 수 없습니다.",
+  "volume": "음량",
+  "mute": "음소거",
+  "unmute": "음소거 해제",
+  "returnToTab": "탭으로 돌아가기",
+  "returnPlayer": "플레이어를 이 탭으로 이동"
 }

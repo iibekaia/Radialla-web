@@ -1,4 +1,19 @@
-<aside class="mini-player" [attr.aria-label]="vm.i18n.t('player')">
+@if (pipOpen()) {
+  <button class="floating-player-placeholder" (click)="returnToTab()">
+    <app-icon name="pip" /> {{ vm.i18n.t('returnPlayer') }}
+  </button>
+}
+<aside
+  #player
+  class="mini-player"
+  [class.is-floating]="pipOpen()"
+  [attr.aria-label]="vm.i18n.t('player')"
+>
+  @if (pipOpen()) {
+    <button class="return-to-tab" (click)="returnToTab()">
+      <app-icon name="return" /> {{ vm.i18n.t('returnToTab') }}
+    </button>
+  }
   <div class="player-summary" [attr.aria-busy]="vm.player.loading()">
     <app-station-image [imageUrl]="vm.selected()?.imageUrl" loading="eager" /><span
       class="station-info"
@@ -33,31 +48,56 @@
       }
     </span>
   </div>
-  <div class="transport">
-    <button
-      class="icon-button"
-      [attr.aria-label]="vm.i18n.t('წინა რადიოსადგური')"
-      [disabled]="vm.visible().length < 2"
-      (click)="vm.skip(-1)"
-    >
-      <app-icon name="previous" /></button
-    ><button
-      class="play-button"
-      [attr.aria-label]="vm.i18n.t(vm.player.playing() || vm.player.loading() ? 'პაუზა' : 'დაკვრა')"
-      [disabled]="!vm.selected()"
-      (click)="vm.togglePlayback()"
-    >
-      @if (vm.player.loading()) {
-        <span class="playback-spinner" aria-hidden="true"></span>
-      }
-      <app-icon [name]="vm.player.playing() || vm.player.loading() ? 'pause' : 'play'" /></button
-    ><button
-      class="icon-button"
-      [attr.aria-label]="vm.i18n.t('შემდეგი რადიოსადგური')"
-      [disabled]="vm.visible().length < 2"
-      (click)="vm.skip(1)"
-    >
-      <app-icon name="next" />
-    </button>
+  <div class="player-actions">
+    <div class="transport">
+      <button
+        class="icon-button"
+        [attr.aria-label]="vm.i18n.t('წინა რადიოსადგური')"
+        [disabled]="vm.visible().length < 2"
+        (click)="vm.skip(-1)"
+      >
+        <app-icon name="previous" /></button
+      ><button
+        class="play-button"
+        [attr.aria-label]="
+          vm.i18n.t(vm.player.playing() || vm.player.loading() ? 'პაუზა' : 'დაკვრა')
+        "
+        [disabled]="!vm.selected()"
+        (click)="vm.togglePlayback()"
+      >
+        @if (vm.player.loading()) {
+          <span class="playback-spinner" aria-hidden="true"></span>
+        }
+        <app-icon [name]="vm.player.playing() || vm.player.loading() ? 'pause' : 'play'" /></button
+      ><button
+        class="icon-button"
+        [attr.aria-label]="vm.i18n.t('შემდეგი რადიოსადგური')"
+        [disabled]="vm.visible().length < 2"
+        (click)="vm.skip(1)"
+      >
+        <app-icon name="next" />
+      </button>
+    </div>
+    <div class="volume-controls" role="group" [attr.aria-label]="vm.i18n.t('volume')">
+      <button
+        class="icon-button"
+        [attr.aria-label]="vm.i18n.t(vm.player.muted() ? 'unmute' : 'mute')"
+        [attr.title]="vm.i18n.t(vm.player.muted() ? 'unmute' : 'mute')"
+        [attr.aria-pressed]="vm.player.muted()"
+        (click)="vm.player.toggleMute()"
+      >
+        <app-icon [name]="vm.player.muted() ? 'muted' : 'volume'" />
+      </button>
+      <input
+        type="range"
+        min="0"
+        max="100"
+        step="1"
+        [value]="vm.player.muted() ? 0 : vm.player.volume() * 100"
+        [attr.aria-label]="vm.i18n.t('volume')"
+        [attr.aria-valuetext]="(vm.player.muted() ? 0 : vm.player.volume() * 100).toFixed(0) + '%'"
+        (input)="changeVolume($event)"
+      />
+    </div>
   </div>
 </aside>

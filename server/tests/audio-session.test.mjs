@@ -107,6 +107,7 @@ test('an interrupted established stream reconnects, ignores old events and stops
     },
     timers,
   );
+  session.setVolume(0.35, true);
   const initial = session.play('https://example.com/live');
   elements[0].dispatchEvent(new Event('playing'));
   elements[0].resolve();
@@ -121,12 +122,48 @@ test('an interrupted established stream reconnects, ignores old events and stops
     assert.equal(task.delay, 1000 * 2 ** i);
     pending.delete(id);
     task.fn();
+    assert.equal(elements[i + 1].volume, 0.35);
+    assert.equal(elements[i + 1].muted, true);
     elements[i + 1].dispatchEvent(new Event('playing'));
     elements[i + 1].resolve();
   }
   elements[3].dispatchEvent(new Event('error'));
   assert.equal(states.at(-1), 'error');
   assert.equal(pending.size, 0);
+  session.stop();
+});
+
+test('volume changes apply immediately and survive station switches without restarting audio', async () => {
+  const elements = [];
+  const session = new AudioSession(
+    () => {},
+    () => {
+      const audio = new FakeAudio();
+      elements.push(audio);
+      return audio;
+    },
+  );
+  session.setVolume(0.4);
+  const first = session.play('https://example.com/first');
+  assert.equal(elements[0].volume, 0.4);
+  session.setVolume(0.2, true);
+  assert.equal(elements[0].volume, 0.2);
+  assert.equal(elements[0].muted, true);
+  assert.equal(elements[0].paused, false);
+  elements[0].resolve();
+  await first;
+  const second = session.play('https://example.com/second');
+  assert.equal(elements[1].volume, 0.2);
+  assert.equal(elements[1].muted, true);
+  session.setVolume(2);
+  assert.equal(elements[1].volume, 1);
+  assert.equal(elements[1].muted, false);
+  session.setVolume(NaN);
+  assert.equal(elements[1].volume, 1);
+  session.setVolume(-1);
+  assert.equal(elements[1].volume, 0);
+  elements[1].resolve();
+  await second;
   session.stop();
 });
 

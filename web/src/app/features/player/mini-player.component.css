@@ -1,6 +1,59 @@
 :host {
   display: contents;
 }
+.floating-player-placeholder {
+  position: absolute;
+  right: 24px;
+  bottom: 24px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 18px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  color: var(--text);
+  background: var(--material);
+}
+.return-to-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-start;
+  border: 0;
+  background: none;
+  color: var(--secondary);
+  font-size: 12px;
+  padding: 4px 0;
+}
+.player-actions,
+.volume-controls {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 8px;
+}
+.volume-controls {
+  padding-left: 8px;
+  border-left: 1px solid var(--line);
+}
+.volume-controls .icon-button {
+  width: 32px;
+  height: 36px;
+  padding: 4px;
+}
+.volume-controls input {
+  width: 88px;
+  height: 32px;
+  margin: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.volume-controls input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
 .mini-player {
   position: absolute;
   bottom: 24px;
@@ -50,6 +103,15 @@
   }
 }
 @media (max-width: 700px) {
+  .player-actions {
+    flex-direction: column;
+    gap: 0;
+  }
+  .volume-controls {
+    padding-left: 0;
+    border-left: 0;
+    gap: 4px;
+  }
   .mini-player {
     left: 12px;
     right: 12px;
@@ -208,6 +270,53 @@
     animation-duration: 2.4s;
   }
   .track-bars i {
-    animation: none;
+    animation-name: equalizer-gentle;
+    animation-duration: 1.8s;
   }
+  .track-bars i:nth-child(2) {
+    animation-duration: 2.1s;
+  }
+  .track-bars i:nth-child(3) {
+    animation-duration: 2.4s;
+  }
+}
+@keyframes equalizer-gentle {
+  from {
+    transform: scaleY(0.65);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+/* Override map docking and narrow-screen layout inside the separate PiP document. */
+.mini-player.is-floating {
+  position: static;
+  width: 100%;
+  max-width: none;
+  min-height: 100vh;
+  margin: 0;
+  padding: 16px;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: 14px;
+}
+.mini-player.is-floating .player-summary {
+  flex: none;
+}
+.mini-player.is-floating .player-actions {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+.mini-player.is-floating .station-info strong {
+  font-size: 15px;
+}
+.mini-player.is-floating .track-text {
+  font-size: 12px;
 }

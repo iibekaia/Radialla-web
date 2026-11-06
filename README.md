@@ -26,6 +26,14 @@ Configuration lives in `web/public/config.json`. `/` uses the same-origin API. E
 
 `web/public/stations.json` remains a backend-independent demo fallback. Real catalog requests go directly to Radio Browser over HTTPS. See https://docs.radio-browser.info/ for the upstream API contract. Browser codec support and stream availability vary. The backend currently serves a bundled catalog; there is no database, authentication or user synchronization. The browser loads the upstream catalog independently of this server.
 
+## Floating player
+
+Browsers supporting automatic Document Picture-in-Picture can move the existing player into an always-on-top window when switching tabs during playback. Station selection, metadata, volume and playback stay synchronized. Back to tab focuses the original tab and restores the player; closing the floating window restores the player without stopping audio. Unsupported browsers keep the regular player. There is no manual floating-player launch button.
+
+The player registers the Media Session `enterpictureinpicture` action for automatic opening while playing when switching tabs. The browser controls eligibility and permission; automatic opening cannot be guaranteed on every browser or visit. In desktop Chrome, allow Automatic picture-in-picture in the site's permissions if prompted. Automatic windows close on returning to the tab. HTTPS (or localhost) is required. No camera, microphone or extension is needed.
+
+References: https://developer.chrome.com/blog/automatic-picture-in-picture-media-playback and https://developer.chrome.com/docs/web-platform/document-picture-in-picture.
+
 ## Current song information
 
 While playback is active, the bottom player requests `/api/now-playing?station=<Radio Browser UUID>` immediately, then 20 seconds after each response. The API resolves the UUID through Radio Browser and reads a bounded sample of ICY metadata from the stream. It shares cached lookups for 20 seconds and limits concurrent reads. Stream destinations and redirects must resolve to public IP addresses; client-supplied stream URLs are not accepted. Pausing, playback failure or changing stations clears the displayed track and cancels frontend requests.
