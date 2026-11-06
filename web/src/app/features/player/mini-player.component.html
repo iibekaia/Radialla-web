@@ -3,6 +3,12 @@
     <app-station-image [imageUrl]="vm.selected()?.imageUrl" loading="eager" /><span
       class="station-info"
       ><strong>{{ vm.selected()?.name || vm.i18n.t('choose') }}</strong>
+      @if (vm.player.playing()) {
+        <span class="track-label" role="status">
+          <span class="track-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+          {{ vm.i18n.t('live') }}
+        </span>
+      }
       @if (vm.player.playing() && vm.player.metadata.track(); as track) {
         <span
           class="now-playing"
@@ -10,10 +16,6 @@
           aria-atomic="true"
           [title]="track.artist ? track.artist + ' — ' + track.title : track.title"
         >
-          <span class="track-label"
-            ><span class="track-bars" aria-hidden="true"><i></i><i></i><i></i></span>
-            {{ vm.i18n.t('now') }}</span
-          >
           <span class="track-text">
             @if (track.artist) {
               <span class="track-artist">{{ track.artist }} — </span>
@@ -21,7 +23,7 @@
             {{ track.title }}</span
           >
         </span>
-      } @else if (vm.player.active()) {
+      } @else if (vm.player.active() && !vm.player.playing()) {
         <span class="playback-status" role="status">{{ vm.i18n.t(vm.player.message()) }}</span>
       }
       @if (vm.selected(); as s) {
@@ -30,10 +32,6 @@
         }
       }
     </span>
-  </div>
-  <div class="dock-label" [class.is-loading]="vm.player.loading()">
-    <span></span>
-    {{ vm.i18n.t(vm.player.loading() ? 'იტვირთება აუდიო…' : 'live') }}
   </div>
   <div class="transport">
     <button
