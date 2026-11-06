@@ -1,5 +1,6 @@
 name: Radialla platform
 on:
+  workflow_dispatch:
   push:
     branches: [main]
     paths: ['**']
@@ -24,6 +25,41 @@ jobs:
         with:
           name: radialla-web
           path: web/dist/web/browser
+  pages:
+    needs: verify
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    concurrency:
+      group: github-pages
+      cancel-in-progress: false
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: radialla-web
+          path: site
+      - uses: actions/configure-pages@v5
+      - name: Disable unavailable same-origin API on static hosting
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFileSync, writeFileSync } from 'node:fs';
+          const path = 'site/config.json';
+          const config = JSON.parse(readFileSync(path, 'utf8'));
+          config.apiBaseUrl = '';
+          writeFileSync(path, JSON.stringify(config, null, 2) + '\n');
+          NODE
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
   image:
     needs: verify
     if: github.event_name == 'push'

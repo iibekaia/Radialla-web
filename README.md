@@ -34,6 +34,14 @@ The artist/title line appears only when metadata is available. Unsupported strea
 
 ## GitHub build → Render hosting
 
+### GitHub Pages frontend
+
+With repository Settings → Pages → Source set to GitHub Actions, successful main-branch builds also publish the Angular frontend to GitHub Pages. The workflow can be started manually from Actions → Radialla platform → Run workflow on `main`. Set the custom domain to `radialla.ge` in Pages settings and enable Enforce HTTPS after DNS validation and certificate issuance.
+
+The Pages artifact uses an empty `apiBaseUrl`, since Pages cannot run the Node API. Direct HTTPS stations, the catalog and local favorites work; HTTP-only station relay and current-song metadata require separately hosted API infrastructure. The normal build artifact and Docker image retain their same-origin API configuration for Render. This Pages build targets the root of the configured custom domain.
+
+### Full application on Render
+
 `.github/workflows/web.yml` verifies PRs; main-branch pushes also build a Linux Docker image and publish it to `ghcr.io/<lowercase-owner>/radialla-platform` with latest and commit SHA tags. GitHub Actions performs the build; Render runs the image.
 
 1. Push this independent project into its own GitHub repository. No GitHub remote has been configured yet.
