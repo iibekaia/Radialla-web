@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy, computed, inject, signal } from '@angular/core';
+import { Injectable, OnDestroy, computed, effect, inject, signal } from '@angular/core';
 import { AudioSession, PlaybackStatus } from './audio-session.mjs';
 import { NowPlayingService } from './now-playing.service';
 import { CatalogService } from '../catalog/catalog.service';
@@ -49,10 +49,28 @@ export class PlaybackService implements OnDestroy {
   });
 
   constructor() {
-    this.pairing.onRemotePause = () => {
-      this.pause();
-      this.message.set('pairPaused');
-    };
+    let revision = -1;
+    let request = 0;
+    effect(() => {
+      const command = this.pairing.remotePlayback();
+      if (!command) {
+        revision = -1;
+        request++;
+        return;
+      }
+      if (command.revision <= revision) return;
+      revision = command.revision;
+      const current = ++request;
+      if (command.type === 'pause') {
+        this.pause();
+        return;
+      }
+      void this.catalog.findStation(command.stationId!).then((station) => {
+        if (!station || current !== request) return;
+        if (command.type === 'play') void this.play(station);
+        else this.select(station);
+      });
+    });
     this.applyVolume();
   }
 

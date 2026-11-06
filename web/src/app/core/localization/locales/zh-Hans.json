@@ -114,12 +114,12 @@
   "moreShareOptions": "更多分享选项",
   "pairTitle": "设备",
   "pairClose": "关闭",
-  "pairDescription": "配对设备，每次仅在一台设备上播放。",
+  "pairDescription": "用手机控制网页电台和地图。音频在网页端播放。",
   "pairNeedsServer": "需要运行中的 API 服务器。",
   "pairConnected": "已连接",
   "pairReconnecting": "正在重新连接…",
   "pairMembers": "%@ 台设备",
-  "pairExclusive": "在此开始播放会暂停另一台播放器。",
+  "pairExclusive": "用手机控制网页电台和地图。音频在网页端播放。",
   "pairNewCode": "生成新代码",
   "pairDisconnect": "断开此设备",
   "pairCreate": "显示二维码",
@@ -140,5 +140,7 @@
   "pairScanSimple": "打开 Radialla 应用中的二维码扫描器并扫描。",
   "pairPreparing": "正在生成二维码…",
   "pairRetry": "重试",
-  "pairServerOutdated": "请使用更新后的版本重启服务器。"
+  "pairServerOutdated": "请使用更新后的版本重启服务器。",
+  "settings": "设置",
+  "chooseLanguage": "选择语言"
 }

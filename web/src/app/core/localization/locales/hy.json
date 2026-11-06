@@ -114,12 +114,12 @@
   "moreShareOptions": "Կիսվելու այլ տարբերակներ",
   "pairTitle": "Սարքեր",
   "pairClose": "Փակել",
-  "pairDescription": "Զուգակցեք սարքերը՝ միայն մեկով լսելու համար։",
+  "pairDescription": "Հեռախոսով կառավարեք վեբ ռադիոն և քարտեզը։ Ձայնը հնչում է վեբում։",
   "pairNeedsServer": "Անհրաժեշտ է API սերվեր։",
   "pairConnected": "Միացված է",
   "pairReconnecting": "Վերամիացում…",
   "pairMembers": "%@ սարք",
-  "pairExclusive": "Այստեղ նվագարկումը կդադարեցնի մյուս նվագարկիչը։",
+  "pairExclusive": "Հեռախոսով կառավարեք վեբ ռադիոն և քարտեզը։ Ձայնը հնչում է վեբում։",
   "pairNewCode": "Նոր կոդ",
   "pairDisconnect": "Անջատել սարքը",
   "pairCreate": "Ցույց տալ QR կոդը",
@@ -140,5 +140,7 @@
   "pairScanSimple": "Radialla հավելվածում բացեք QR սկաները և սկանավորեք։",
   "pairPreparing": "QR-ը պատրաստվում է…",
   "pairRetry": "Կրկին փորձել",
-  "pairServerOutdated": "Վերագործարկեք սերվերը թարմացված տարբերակով։"
+  "pairServerOutdated": "Վերագործարկեք սերվերը թարմացված տարբերակով։",
+  "settings": "Կարգավորումներ",
+  "chooseLanguage": "Ընտրեք լեզուն"
 }

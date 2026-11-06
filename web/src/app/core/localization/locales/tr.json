@@ -114,12 +114,12 @@
   "moreShareOptions": "Diğer paylaşım seçenekleri",
   "pairTitle": "Cihazlar",
   "pairClose": "Kapat",
-  "pairDescription": "Aynı anda tek cihazda dinlemek için eşleştirin.",
+  "pairDescription": "Web radyosunu ve haritayı telefonunuzdan kontrol edin. Ses web üzerinde çalar.",
   "pairNeedsServer": "Çalışan bir API sunucusu gereklidir.",
   "pairConnected": "Bağlandı",
   "pairReconnecting": "Yeniden bağlanıyor…",
   "pairMembers": "%@ cihaz",
-  "pairExclusive": "Burada çalmak diğer bağlı oynatıcıyı duraklatır.",
+  "pairExclusive": "Web radyosunu ve haritayı telefonunuzdan kontrol edin. Ses web üzerinde çalar.",
   "pairNewCode": "Yeni kod",
   "pairDisconnect": "Bu cihazın bağlantısını kes",
   "pairCreate": "QR kodunu göster",
@@ -140,5 +140,7 @@
   "pairScanSimple": "Radialla uygulamasında QR tarayıcıyı açıp tarayın.",
   "pairPreparing": "QR hazırlanıyor…",
   "pairRetry": "Tekrar dene",
-  "pairServerOutdated": "Sunucuyu güncel sürümle yeniden başlatın."
+  "pairServerOutdated": "Sunucuyu güncel sürümle yeniden başlatın.",
+  "settings": "Ayarlar",
+  "chooseLanguage": "Dil seçin"
 }

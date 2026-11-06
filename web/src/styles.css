@@ -383,8 +383,95 @@ p {
 }
 .language-select .ng-value {
   display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
 }
 .language-select .ng-dropdown-panel {
-  width: 220px;
+  width: min(220px, calc(100vw - 152px));
+  left: auto;
   right: 0;
+}
+/* Give all three header controls the same quiet, rounded surface. */
+.header-actions .device-button,
+.header-actions .panel-toggle,
+.header-actions .language-select.ng-select .ng-select-container {
+  width: 34px;
+  height: 38px;
+  min-height: 38px;
+  border: 0;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--text) 5%, var(--surface));
+  color: var(--text);
+}
+.header-actions .device-button:hover,
+.header-actions .panel-toggle:hover,
+.header-actions .language-select.ng-select:hover .ng-select-container,
+.header-actions .language-select.ng-select-opened .ng-select-container {
+  background: color-mix(in srgb, var(--text) 9%, var(--surface));
+}
+.header-actions .language-select.ng-select-focused .ng-select-container {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* Direct map controls share the map toolbar's circular buttons. */
+app-settings-controls.map-settings .device-button,
+app-settings-controls.map-settings .language-picker,
+app-settings-controls.map-settings .language-select.ng-select .ng-select-container {
+  width: 48px;
+  height: 48px;
+  min-height: 48px;
+}
+app-settings-controls.map-settings .device-button,
+app-settings-controls.map-settings .language-select.ng-select .ng-select-container {
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--material);
+  color: var(--text);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 2px 12px #0002;
+}
+app-settings-controls.map-settings .device-button:hover,
+app-settings-controls.map-settings .language-select.ng-select:hover .ng-select-container {
+  background: var(--surface);
+}
+app-settings-controls.map-settings .language-select .ng-select-container .ng-value-container {
+  justify-content: center;
+  padding: 0;
+}
+app-settings-controls.map-settings .language-select.ng-select-focused .ng-select-container {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+app-settings-controls.map-settings .language-picker,
+app-settings-controls.map-settings .language-select.ng-select .ng-select-container {
+  width: 180px;
+}
+app-settings-controls.map-settings .language-select.ng-select .ng-select-container {
+  border-radius: 24px;
+}
+.language-select .ng-dropdown-panel.ng-select-bottom {
+  margin-top: 8px;
+  border-radius: 14px;
+  overflow: hidden;
+}
+.language-select .ng-dropdown-panel.ng-select-top {
+  margin-bottom: 8px;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+/* Ten language rows fit before scrolling; short viewports keep the list on screen. */
+.language-select .ng-dropdown-panel .ng-dropdown-panel-items {
+  max-height: min(400px, calc(100dvh - 176px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.language-select .ng-dropdown-panel .ng-option {
+  height: 40px;
+  padding: 10px 12px;
+  line-height: 20px;
 }

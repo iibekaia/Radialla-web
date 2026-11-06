@@ -114,12 +114,12 @@
   "moreShareOptions": "More sharing options",
   "pairTitle": "Devices",
   "pairClose": "Close",
-  "pairDescription": "Pair devices to listen on one device at a time.",
+  "pairDescription": "Control web radio and map from your phone. Audio plays on the web.",
   "pairNeedsServer": "A running API server is required.",
   "pairConnected": "Connected",
   "pairReconnecting": "Reconnecting…",
   "pairMembers": "%@ devices",
-  "pairExclusive": "Starting playback here pauses the other connected player.",
+  "pairExclusive": "Control web radio and map from your phone. Audio plays on the web.",
   "pairNewCode": "Generate new code",
   "pairDisconnect": "Disconnect this device",
   "pairCreate": "Show QR code",
@@ -140,5 +140,7 @@
   "pairScanSimple": "Open the QR scanner in the Radialla app and scan this QR.",
   "pairPreparing": "Preparing QR…",
   "pairRetry": "Retry",
-  "pairServerOutdated": "The server needs to be restarted with the updated version."
+  "pairServerOutdated": "The server needs to be restarted with the updated version.",
+  "settings": "Settings",
+  "chooseLanguage": "Choose language"
 }

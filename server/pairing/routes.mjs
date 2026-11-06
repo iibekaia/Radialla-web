@@ -45,7 +45,7 @@ export function createPairingRoutes({
     };
     try {
       const action = path.slice('/api/pairing/'.length);
-      if (!['create', 'join', 'code', 'claim', 'wait', 'leave'].includes(action))
+      if (!['create', 'join', 'code', 'claim', 'command', 'wait', 'leave'].includes(action))
         throw new PairingError(404, 'Not found');
       rateLimit(req, action);
       if (!req.headers['content-type']?.startsWith('application/json'))
@@ -69,6 +69,7 @@ export function createPairingRoutes({
         return send(coordinator.join(typeof data.code === 'string' ? data.code : ''));
       if (action === 'code') return send(coordinator.code(token));
       if (action === 'claim') return send(coordinator.claim(token, data.clientId));
+      if (action === 'command') return send(coordinator.command(token, data));
       if (action === 'leave') return send(coordinator.leave(token));
       if (!Number.isSafeInteger(data.afterRevision) || data.afterRevision < -1)
         throw new PairingError(400, 'Invalid revision');

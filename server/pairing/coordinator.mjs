@@ -17,7 +17,13 @@ export function createPairingCoordinator({ now = Date.now, maxGroups = 500 } = {
   const fail = (status, message) => {
     throw new PairingError(status, message);
   };
-  const state = (g) => ({ revision: g.revision, owner: g.owner, members: g.members.size });
+  const state = (g) => ({
+    revision: g.revision,
+    owner: g.owner,
+    members: g.members.size,
+    playback: g.playback,
+    viewport: g.viewport,
+  });
   function notify(g) {
     g.revision++;
     for (const listener of [...g.listeners]) listener(state(g));
@@ -65,6 +71,8 @@ export function createPairingCoordinator({ now = Date.now, maxGroups = 500 } = {
         revision: 0,
         owner: null,
         ownerToken: null,
+        playback: null,
+        viewport: null,
         touched: now(),
       };
       groups.add(g);
@@ -89,8 +97,33 @@ export function createPairingCoordinator({ now = Date.now, maxGroups = 500 } = {
       const g = member(token);
       if (typeof clientId !== 'string' || !/^[a-zA-Z0-9-]{16,80}$/.test(clientId))
         fail(400, 'Invalid client ID');
-      g.owner = clientId;
-      g.ownerToken = token;
+      // Legacy playback claims must never interrupt the web receiver.
+      return state(g);
+    },
+    command(token, command) {
+      const g = member(token);
+      if (!command || typeof command !== 'object') fail(400, 'Invalid command');
+      if (command.type === 'play' || command.type === 'select') {
+        if (
+          typeof command.stationId !== 'string' ||
+          !/^[a-zA-Z0-9_-]{1,100}$/.test(command.stationId)
+        )
+          fail(400, 'Invalid station');
+        g.playback = { type: command.type, stationId: command.stationId, revision: g.revision + 1 };
+      } else if (command.type === 'pause') {
+        g.playback = { type: 'pause', revision: g.revision + 1 };
+      } else if (command.type === 'viewport') {
+        const { latitude, longitude, zoom } = command;
+        if (
+          ![latitude, longitude, zoom].every(Number.isFinite) ||
+          Math.abs(latitude) > 85 ||
+          Math.abs(longitude) > 180 ||
+          zoom < 2 ||
+          zoom > 18
+        )
+          fail(400, 'Invalid viewport');
+        g.viewport = { latitude, longitude, zoom, revision: g.revision + 1 };
+      } else fail(400, 'Invalid command');
       notify(g);
       return state(g);
     },

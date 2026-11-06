@@ -14,12 +14,14 @@ import { LocalizationService } from '../../core/localization/localization.servic
 import * as L from 'leaflet';
 import { LocationPoint } from '../../core/playback/autoplay-station.mjs';
 import { Station } from '../../shared/models/station';
+import { SettingsControlsComponent } from '../settings/settings-controls.component';
 import { IconComponent } from '../../shared/ui/icon.component';
 import { MapArea } from '../../shared/stations/station-geometry';
 import { COUNTRIES } from '../../shared/data/countries';
 import { StationMarkers } from './station-markers';
 import { mapLocation } from '../../shared/stations/map-location.mjs';
 import { MapLocationController } from './map-location-controller';
+import { PairingService } from '../../core/pairing/pairing.service';
 import { CatalogEntry } from '../../core/catalog/viewport-catalog.mjs';
 
 import { FOCUS_ZOOM, LOCATION_ZOOM, MAP_LAYERS } from './map-layers';
@@ -27,11 +29,12 @@ import { FOCUS_ZOOM, LOCATION_ZOOM, MAP_LAYERS } from './map-layers';
 @Component({
   selector: 'app-station-map',
   standalone: true,
-  imports: [IconComponent],
+  imports: [IconComponent, SettingsControlsComponent],
   templateUrl: './station-map.component.html',
   styleUrl: './station-map.component.css',
 })
 export class StationMapComponent implements AfterViewInit, OnDestroy {
+  private readonly pairing = inject(PairingService);
   readonly i18n = inject(LocalizationService);
   readonly stations = input<Station[]>([]);
   readonly overviewCountries = input<CatalogEntry[]>([]);
@@ -68,6 +71,13 @@ export class StationMapComponent implements AfterViewInit, OnDestroy {
     located: (point, automatic) => this.showLocation(point, automatic),
   });
   constructor() {
+    effect(() => {
+      const viewport = this.pairing.remoteViewport();
+      if (viewport) {
+        this.explored = true;
+        this.setAutomaticView([viewport.latitude, viewport.longitude], viewport.zoom);
+      }
+    });
     effect(() => {
       const stations = this.stations(),
         active = this.activeId();
@@ -118,7 +128,9 @@ export class StationMapComponent implements AfterViewInit, OnDestroy {
     this.emitArea();
     const station = this.focusedStation();
     if (station) this.focus(station);
-    void this.location.restore();
+    const viewport = this.pairing.remoteViewport();
+    if (viewport) this.setAutomaticView([viewport.latitude, viewport.longitude], viewport.zoom);
+    else void this.location.restore();
   }
   private emitArea() {
     if (!this.map) return;

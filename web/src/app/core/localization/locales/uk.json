@@ -114,12 +114,12 @@
   "moreShareOptions": "Інші способи поширення",
   "pairTitle": "Пристрої",
   "pairClose": "Закрити",
-  "pairDescription": "З’єднайте пристрої для відтворення лише на одному з них.",
+  "pairDescription": "Керуйте радіо й картою на сайті з телефона. Звук відтворюється на сайті.",
   "pairNeedsServer": "Потрібен API-сервер.",
   "pairConnected": "Підключено",
   "pairReconnecting": "Відновлення з’єднання…",
   "pairMembers": "Пристроїв: %@",
-  "pairExclusive": "Початок відтворення тут призупинить інший плеєр.",
+  "pairExclusive": "Керуйте радіо й картою на сайті з телефона. Звук відтворюється на сайті.",
   "pairNewCode": "Новий код",
   "pairDisconnect": "Від’єднати пристрій",
   "pairCreate": "Показати QR-код",
@@ -140,5 +140,7 @@
   "pairScanSimple": "Відкрийте QR-сканер у Radialla та відскануйте код.",
   "pairPreparing": "Підготовка QR…",
   "pairRetry": "Повторити",
-  "pairServerOutdated": "Перезапустіть сервер з оновленою версією."
+  "pairServerOutdated": "Перезапустіть сервер з оновленою версією.",
+  "settings": "Налаштування",
+  "chooseLanguage": "Оберіть мову"
 }

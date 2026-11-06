@@ -49,7 +49,8 @@
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 0;
+  gap: 4px;
+  flex-shrink: 0;
 }
 .header-actions .icon-button {
   width: 34px;
@@ -68,7 +69,7 @@
   .explorer > .explorer-header {
     top: 16px;
     left: 16px;
-    width: min(340px, calc(100% - 88px));
+    width: min(340px, calc(100% - 32px));
     padding: 12px;
     min-height: 68px;
     border-radius: 20px;
@@ -82,9 +83,6 @@
   .brand img {
     width: 36px;
     height: 36px;
-  }
-  .header-actions .icon-button {
-    width: 30px;
   }
 }
 @media (max-width: 430px) {

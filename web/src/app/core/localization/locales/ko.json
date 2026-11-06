@@ -114,12 +114,12 @@
   "moreShareOptions": "다른 공유 방법",
   "pairTitle": "기기",
   "pairClose": "닫기",
-  "pairDescription": "한 번에 한 기기에서 재생하도록 연결하세요.",
+  "pairDescription": "휴대폰으로 웹 라디오와 지도를 제어하세요. 오디오는 웹에서 재생됩니다.",
   "pairNeedsServer": "실행 중인 API 서버가 필요합니다.",
   "pairConnected": "연결됨",
   "pairReconnecting": "다시 연결 중…",
   "pairMembers": "기기 %@대",
-  "pairExclusive": "여기서 재생하면 다른 플레이어가 일시 정지됩니다.",
+  "pairExclusive": "휴대폰으로 웹 라디오와 지도를 제어하세요. 오디오는 웹에서 재생됩니다.",
   "pairNewCode": "새 코드",
   "pairDisconnect": "이 기기 연결 해제",
   "pairCreate": "QR 코드 표시",
@@ -140,5 +140,7 @@
   "pairScanSimple": "Radialla 앱에서 QR 스캐너를 열고 스캔하세요.",
   "pairPreparing": "QR 준비 중…",
   "pairRetry": "다시 시도",
-  "pairServerOutdated": "업데이트된 버전으로 서버를 다시 시작하세요."
+  "pairServerOutdated": "업데이트된 버전으로 서버를 다시 시작하세요.",
+  "settings": "설정",
+  "chooseLanguage": "언어 선택"
 }

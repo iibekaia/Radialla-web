@@ -1,22 +1,25 @@
 <div #canvas class="map-canvas" [attr.aria-label]="i18n.t('map')"></div>
-<div class="layer-control">
-  <button
-    class="map-button"
-    [attr.aria-label]="i18n.t('რუკის ფენის შეცვლა')"
-    [attr.aria-expanded]="layersOpen()"
-    (click)="layersOpen.set(!layersOpen())"
-  >
-    <app-icon name="layers" />
-  </button>
-  @if (layersOpen()) {
-    <div class="layer-menu">
-      @for (layer of layers; track layer.id) {
-        <button [class.chosen]="layer.id === layerId()" (click)="setLayer(layer.id)">
-          {{ i18n.t(layer.label) }}
-        </button>
-      }
-    </div>
-  }
+<div class="map-toolbar">
+  <app-settings-controls />
+  <div class="layer-control">
+    <button
+      class="map-button"
+      [attr.aria-label]="i18n.t('რუკის ფენის შეცვლა')"
+      [attr.aria-expanded]="layersOpen()"
+      (click)="layersOpen.set(!layersOpen())"
+    >
+      <app-icon name="layers" />
+    </button>
+    @if (layersOpen()) {
+      <div class="layer-menu">
+        @for (layer of layers; track layer.id) {
+          <button [class.chosen]="layer.id === layerId()" (click)="setLayer(layer.id)">
+            {{ i18n.t(layer.label) }}
+          </button>
+        }
+      </div>
+    }
+  </div>
 </div>
 <button
   class="map-button favorites-control"

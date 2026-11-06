@@ -2,6 +2,8 @@ export interface PairingState {
   revision: number;
   owner: string | null;
   members: number;
+  playback?: { type: 'play' | 'select' | 'pause'; stationId?: string; revision: number } | null;
+  viewport?: { latitude: number; longitude: number; zoom: number; revision: number } | null;
 }
 export interface PairingCode {
   code: string;

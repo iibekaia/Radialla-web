@@ -17,16 +17,18 @@ import { LocalizationService } from './localization.service';
     NgOptionComponent,
     NgLabelTemplateDirective,
   ],
-  template: `<div class="language-picker" [title]="i18n.t('Language')">
+  template: `<div class="language-picker" [title]="i18n.t('chooseLanguage')">
       <ng-select
         class="language-select"
-        [ariaLabel]="i18n.t('Language')"
+        [ariaLabel]="i18n.t('chooseLanguage')"
         [ngModel]="i18n.language()"
         (ngModelChange)="i18n.choose($event)"
         [clearable]="false"
         [searchable]="false"
       >
-        <ng-template ng-label-tmp><app-icon name="globe" /></ng-template>
+        <ng-template ng-label-tmp
+          ><app-icon name="globe" /><span>{{ i18n.t('chooseLanguage') }}</span></ng-template
+        >
         @for (language of i18n.languages; track language.id) {
           <ng-option [value]="language.id"
             ><span [lang]="language.id">{{ language.name }}</span></ng-option

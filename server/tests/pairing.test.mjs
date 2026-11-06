@@ -35,8 +35,8 @@ test('groups are isolated, revisions increase, revoked credentials cannot claim,
     event = state;
   });
   const second = c.claim(b.token, 'client-bbbbbbbbbbbb');
-  assert.ok(second.revision > first.revision);
-  assert.equal(event.owner, 'client-bbbbbbbbbbbb');
+  assert.equal(second.revision, first.revision);
+  assert.equal(second.owner, null);
   assert.equal(c.snapshot(outsider.token).owner, null);
   stop();
   c.leave(b.token);
@@ -95,7 +95,7 @@ test('HTTP pairing authenticates, limits guesses, supports explicit CORS, and do
     const wait = await (
       await request('wait', { afterRevision: ownership.revision }, a.token)
     ).json();
-    assert.equal(wait.owner, 'client-bbbbbbbbbbbb');
+    assert.equal(wait.owner, null);
     for (let i = 0; i < 9; i++)
       assert.equal((await request('join', { code: 'invalid' })).status, 404);
     assert.equal((await request('join', { code: 'invalid' })).status, 429);
@@ -109,51 +109,52 @@ async function until(check) {
   }
 }
 
-test('two real clients hand playback over both ways only after playbackStarted, and tabs have distinct owners', () =>
+test('remote controls reach the web without playback claims stopping either client', () =>
   withServer(async (base) => {
-    let pausesA = 0;
-    let pausesB = 0;
-    const a = new PairingClient({ base, pause: () => pausesA++ });
-    const b = new PairingClient({ base, pause: () => pausesB++ });
+    let pauses = 0;
+    const web = new PairingClient({ base, pause: () => pauses++ });
+    const mobile = new PairingClient({ base, pause: () => pauses++ });
     try {
-      const { code } = await a.pair();
-      await b.pair(code);
-      a.playbackStarted();
-      await until(() => a.state.owner === a.clientId && b.state.owner === a.clientId);
-      assert.equal(pausesB, 0); // Merely pairing/loading never steals playback.
-      b.playbackStarted();
-      await until(() => pausesA === 1);
-      assert.equal(pausesB, 0);
-      a.playbackStarted();
-      await until(() => pausesB === 1);
-      assert.notEqual(a.clientId, b.clientId);
-      await b.leave();
-      assert.equal(b.token, null);
-      await until(() => a.state.members === 1);
+      const { code } = await web.pair();
+      await mobile.pair(code);
+      web.playbackStarted();
+      mobile.playbackStarted();
+      await mobile.request('claim', { clientId: mobile.clientId });
+      await mobile.request('command', { type: 'play', stationId: 'station-123' });
+      await mobile.request('command', {
+        type: 'viewport',
+        latitude: 41.7,
+        longitude: 44.8,
+        zoom: 12,
+      });
+      await until(() => web.state.viewport?.zoom === 12);
+      assert.equal(web.state.playback.stationId, 'station-123');
+      assert.equal(pauses, 0);
+      await mobile.request('command', { type: 'pause' });
+      await until(() => web.state.playback?.type === 'pause');
+      await mobile.leave();
+      await until(() => web.state.members === 1);
     } finally {
-      a.destroy();
-      b.destroy();
+      web.destroy();
+      mobile.destroy();
     }
   }));
 
-test('pending local claim suppresses stale ownership, but a newer competing claim still pauses', async () => {
-  let pauses = 0;
-  const c = new PairingClient({ base: '/', token: 'token', pause: () => pauses++ });
-  let complete;
-  c.request = () =>
-    new Promise((resolve) => {
-      complete = resolve;
-    });
-  c.playbackStarted();
-  c.apply({ revision: 2, members: 2, owner: 'other-client' });
-  assert.equal(pauses, 0);
-  complete({ revision: 3, members: 2, owner: c.clientId });
-  await until(() => c.pending === 0);
-  c.apply({ revision: 1, members: 2, owner: 'old-client' });
-  assert.equal(pauses, 0);
-  c.apply({ revision: 4, members: 2, owner: 'new-client' });
-  assert.equal(pauses, 1);
-  c.destroy();
+test('remote controls validate payloads, require credentials and isolate groups', () => {
+  const c = createPairingCoordinator();
+  const web = c.create();
+  const mobile = c.join(web.code);
+  const other = c.create();
+  assert.throws(() => c.command('invalid', { type: 'pause' }), { status: 401 });
+  for (const command of [
+    { type: 'bad' },
+    { type: 'play', stationId: '../bad' },
+    { type: 'viewport', latitude: 91, longitude: 0, zoom: 12 },
+  ])
+    assert.throws(() => c.command(mobile.token, command), { status: 400 });
+  c.command(mobile.token, { type: 'select', stationId: 'station-1' });
+  assert.equal(c.snapshot(web.token).playback.type, 'select');
+  assert.equal(c.snapshot(other.token).playback, null);
 });
 
 test('server restart invalidates saved credentials without affecting playback', async () => {

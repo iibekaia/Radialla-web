@@ -49,10 +49,7 @@ export class PairingClient {
     this.enforce();
   }
   enforce() {
-    if (!this.pending && this.playing && this.state.owner && this.state.owner !== this.clientId) {
-      this.playing = false;
-      this.pause();
-    }
+    // Pairing carries remote controls; it never transfers audio ownership.
   }
   async connect() {
     if (!this.token || this.watching) return;
@@ -92,16 +89,8 @@ export class PairingClient {
     this.token = result.token;
     this.save(this.token);
     this.state = { revision: -1, owner: null, members: 0 };
-    if (this.playing) this.pending++;
     this.apply(result.state);
-    try {
-      if (this.playing) {
-        this.pending--;
-        await this.claim();
-      }
-    } finally {
-      void this.connect();
-    }
+    void this.connect();
     return result;
   }
   async claim() {
@@ -120,7 +109,6 @@ export class PairingClient {
   }
   playbackStarted() {
     this.playing = true;
-    void this.claim().catch(() => {});
   }
   playbackStopped() {
     this.playing = false;

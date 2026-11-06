@@ -227,3 +227,10 @@
     transition: none !important;
   }
 }
+
+@media (max-width: 700px) {
+  .station-list {
+    top: 154px;
+    height: min(390px, calc(100dvh - 280px));
+  }
+}

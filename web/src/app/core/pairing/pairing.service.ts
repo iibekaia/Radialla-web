@@ -1,6 +1,6 @@
 import { Injectable, DestroyRef, effect, inject, signal, computed } from '@angular/core';
 import { CatalogService } from '../catalog/catalog.service';
-import { PairingClient } from './pairing-client.mjs';
+import { PairingState, PairingClient } from './pairing-client.mjs';
 import { readPairing, writePairing } from '../storage/pairing.mjs';
 import { pairingPayload } from './pairing-qr.mjs';
 
@@ -10,7 +10,8 @@ export class PairingService {
   private client?: PairingClient;
   private isPlaying = false;
   private readonly generation = signal(0);
-  onRemotePause: () => void = () => {};
+  readonly remotePlayback = signal<PairingState['playback']>(null);
+  readonly remoteViewport = signal<PairingState['viewport']>(null);
   readonly available = signal(false);
   readonly paired = signal(false);
   readonly connected = signal(false);
@@ -44,6 +45,8 @@ export class PairingService {
       this.connected.set(false);
       this.members.set(0);
       this.code.set('');
+      this.remotePlayback.set(null);
+      this.remoteViewport.set(null);
       if (!base) return;
       const client = new PairingClient({
         base,
@@ -54,10 +57,11 @@ export class PairingService {
           this.paired.set(!!client.token);
           this.connected.set(client.connected);
           this.members.set(client.state.members);
+          this.remotePlayback.set(client.state.playback);
+          this.remoteViewport.set(client.state.viewport);
           if (!client.token) this.code.set('');
         },
         save: (token) => writePairing(base, token),
-        pause: () => this.onRemotePause(),
       });
       this.client = client;
       client.playing = this.isPlaying;
