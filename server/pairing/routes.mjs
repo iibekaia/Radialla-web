@@ -1,4 +1,5 @@
 import { createPairingCoordinator, PairingError } from './coordinator.mjs';
+import { pairingOriginAllowed } from './origin.mjs';
 
 export function createPairingRoutes({
   coordinator = createPairingCoordinator(),
@@ -20,10 +21,7 @@ export function createPairingRoutes({
   return async (req, res, path, webOrigin) => {
     res.setHeader('Cache-Control', 'no-store');
     // Cross-origin browser clients need explicit origin permission. Native apps have no Origin.
-    const origin = req.headers.origin;
-    const sameOrigin = origin && origin === `https://${req.headers.host}`;
-    const localOrigin = origin && origin === `http://${req.headers.host}`;
-    if (origin && origin !== webOrigin && !sameOrigin && !localOrigin) {
+    if (!pairingOriginAllowed(req, webOrigin)) {
       res.writeHead(403);
       res.end('{}');
       return;

@@ -46,7 +46,7 @@ not the `server` or `web` workspace directory.
 5. Verify `https://<generated-domain>/api/health` returns `{"status":"ok"}`,
    then open the root URL and check the catalog and playback.
 
-Device pairing and exclusive playback are implemented in this web/API source;
+Device pairing and remote controls are implemented in this web/API source;
 deploying an older GitHub revision will not include them. The web automatically shows a QR
 invite for an in-app scanner when the devices dialog opens. The iOS
 scanner and playback integration still need to be implemented independently;
@@ -62,11 +62,10 @@ Open the devices button beside the language picker: the QR appears automatically
 A compatible Radialla mobile client scans it inside the app and joins through
 the API. No manual code entry or generation button is shown. Expired QR invites
 refresh automatically while the dialog remains open. Pairing does
-not require an account or matching Wi-Fi networks. A joined group automatically
-uses exclusive playback; starting successful audio on one client pauses the
-other connected players. Loading, autoplay denial, and failed streams do not
-claim playback. Browser tabs have distinct playback IDs, even if they share a
-stored device credential.
+not require an account or matching Wi-Fi networks. The web is the audio receiver;
+the paired phone controls station selection, playback and map navigation.
+Legacy playback claims are harmless no-ops. The native controller must stop its
+local audio when entering controller mode, as described in the pairing contract.
 
 The web receives paired-device updates through an authenticated WebSocket at
 `/api/pairing/socket`, with heartbeats and automatic reconnect. Hosting proxies

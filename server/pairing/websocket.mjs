@@ -1,15 +1,11 @@
 import { WebSocketServer, WebSocket } from 'ws';
+import { pairingOriginAllowed } from './origin.mjs';
 
 // Credentials travel in the first frame, never in a URL or access log.
 export function attachPairingWebSocket(server, coordinator, webOrigin) {
   const sockets = new WebSocketServer({ noServer: true, maxPayload: 2048 });
   server.on('upgrade', (req, socket, head) => {
-    const origin = req.headers.origin;
-    const allowed =
-      !origin ||
-      origin === webOrigin ||
-      origin === `https://${req.headers.host}` ||
-      origin === `http://${req.headers.host}`;
+    const allowed = pairingOriginAllowed(req, webOrigin);
     if (req.url !== '/api/pairing/socket' || !allowed || sockets.clients.size >= 2000) {
       socket.end('HTTP/1.1 403 Forbidden\r\nConnection: close\r\n\r\n');
       return;

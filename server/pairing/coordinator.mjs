@@ -19,7 +19,7 @@ export function createPairingCoordinator({ now = Date.now, maxGroups = 500 } = {
   };
   const state = (g) => ({
     revision: g.revision,
-    owner: g.owner,
+    owner: null,
     members: g.members.size,
     playback: g.playback,
     viewport: g.viewport,
@@ -69,8 +69,6 @@ export function createPairingCoordinator({ now = Date.now, maxGroups = 500 } = {
         members: new Set(),
         listeners: new Set(),
         revision: 0,
-        owner: null,
-        ownerToken: null,
         playback: null,
         viewport: null,
         touched: now(),
@@ -150,10 +148,6 @@ export function createPairingCoordinator({ now = Date.now, maxGroups = 500 } = {
       const g = member(token);
       credentials.delete(token);
       g.members.delete(token);
-      if (g.ownerToken === token) {
-        g.owner = null;
-        g.ownerToken = null;
-      }
       for (const [code, entry] of codes) if (entry.group === g) codes.delete(code);
       notify(g);
       if (!g.members.size) groups.delete(g);

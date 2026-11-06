@@ -31,11 +31,7 @@ export class PlaybackService implements OnDestroy {
   readonly volume = this.volumeLevel.asReadonly();
   readonly muted = computed(() => this.mutedState() || this.volumeLevel() === 0);
   private readonly session = new AudioSession((status) => {
-    const started = status === 'playing' && !this.playing();
     this.playing.set(status === 'playing');
-    if (started) this.pairing.playbackStarted();
-    if (status === 'paused' || status === 'error' || status === 'blocked')
-      this.pairing.playbackStopped();
     this.loading.set(status === 'loading');
     const station = this.active();
     if (status === 'playing' && station) writeLastStation(station);
@@ -96,7 +92,6 @@ export class PlaybackService implements OnDestroy {
   }
 
   select(station: Station) {
-    this.pairing.playbackStopped();
     this.clearMetadata();
     this.session.stop();
     this.playing.set(false);
@@ -135,7 +130,6 @@ export class PlaybackService implements OnDestroy {
   }
 
   pause() {
-    this.pairing.playbackStopped();
     this.clearMetadata();
     this.session.stop();
     this.playing.set(false);
@@ -149,7 +143,6 @@ export class PlaybackService implements OnDestroy {
   }
 
   ngOnDestroy() {
-    this.pairing.playbackStopped();
     this.clearMetadata();
     this.session.stop();
   }

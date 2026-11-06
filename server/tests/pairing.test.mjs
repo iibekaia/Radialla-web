@@ -111,25 +111,21 @@ async function until(check) {
   }
 }
 
-test('remote controls reach the web without playback claims stopping either client', () =>
+test('remote controls reach the web over WebSocket with legacy playback claims', () =>
   withServer(async (base) => {
-    let pauses = 0;
     const requests = [];
     const web = new PairingClient({
       base,
-      pause: () => pauses++,
       fetcher: (url, options) => {
         requests.push(url);
         return fetch(url, options);
       },
     });
-    const mobile = new PairingClient({ base, pause: () => pauses++ });
+    const mobile = new PairingClient({ base });
     try {
       const { code } = await web.pair();
       await mobile.pair(code);
-      web.playbackStarted();
-      mobile.playbackStarted();
-      await mobile.request('claim', { clientId: mobile.clientId });
+      await mobile.request('claim', { clientId: 'legacy-mobile-client' });
       await mobile.request('command', { type: 'play', stationId: 'station-123' });
       await mobile.request('command', {
         type: 'viewport',
@@ -139,7 +135,6 @@ test('remote controls reach the web without playback claims stopping either clie
       });
       await until(() => web.state.viewport?.zoom === 12);
       assert.equal(web.state.playback.stationId, 'station-123');
-      assert.equal(pauses, 0);
       assert.ok(!requests.some((url) => url.endsWith('/wait')));
       await mobile.request('command', { type: 'pause' });
       await until(() => web.state.playback?.type === 'pause');
@@ -168,24 +163,20 @@ test('remote controls validate payloads, require credentials and isolate groups'
   assert.equal(c.snapshot(other.token).playback, null);
 });
 
-test('server restart invalidates saved WebSocket credentials without affecting playback', () =>
+test('server restart invalidates saved WebSocket credentials', () =>
   withServer(async (base) => {
     let saved;
-    let pauses = 0;
     const c = new PairingClient({
       base,
       token: 'a'.repeat(64),
       save: (token) => {
         saved = token;
       },
-      pause: () => pauses++,
     });
     try {
-      c.playing = true;
       await c.connect();
       assert.equal(saved, null);
       assert.equal(c.token, null);
-      assert.equal(pauses, 0);
     } finally {
       c.destroy();
     }

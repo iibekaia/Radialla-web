@@ -1,11 +1,14 @@
 // WebSocket receives paired-device changes; explicit actions use authenticated HTTP.
+import { isPairingState } from './pairing-state.mjs';
+
+const emptyState = () => ({ revision: -1, owner: null, members: 0 });
+
 export class PairingClient {
   constructor({
     base,
     token = null,
     fetcher = (...args) => fetch(...args),
     changed = () => {},
-    pause = () => {},
     save = () => {},
     socketFactory = (url) => new WebSocket(url),
   }) {
@@ -13,15 +16,11 @@ export class PairingClient {
     this.token = token;
     this.fetcher = fetcher;
     this.changed = changed;
-    this.pause = pause;
     this.save = save;
     this.socketFactory = socketFactory;
     this.retryDelay = 500;
-    this.clientId = crypto.randomUUID(); // Separate playback owner for every browser tab.
-    this.state = { revision: -1, owner: null, members: 0 };
+    this.state = emptyState();
     this.connected = false;
-    this.playing = false;
-    this.pending = 0;
     this.controller = new AbortController();
   }
   async request(action, data = {}, token = this.token) {
@@ -44,15 +43,12 @@ export class PairingClient {
     }
     return response.json();
   }
-  apply(state) {
+  apply(state, connected = this.connected) {
+    if (!isPairingState(state)) throw new Error('Invalid pairing state');
     if (state.revision < this.state.revision) return;
+    this.connected = connected;
     this.state = state;
-    this.connected = true;
     this.changed();
-    this.enforce();
-  }
-  enforce() {
-    // Pairing carries remote controls; it never transfers audio ownership.
   }
   connect() {
     if (!this.token || this.socket || this.retryTimer || this.controller.signal.aborted)
@@ -98,8 +94,8 @@ export class PairingClient {
         if (this.socket !== socket || this.controller.signal.aborted) return;
         try {
           const message = JSON.parse(event.data);
-          if (message.type === 'state' && Number.isSafeInteger(message.state?.revision)) {
-            this.apply(message.state);
+          if (message.type === 'state') {
+            this.apply(message.state, true);
             this.retryDelay = 500;
             resolve();
           } else if (message.type !== 'heartbeat') {
@@ -117,13 +113,11 @@ export class PairingClient {
         this.controller.signal.removeEventListener('abort', abort);
         if (this.socket !== socket) return resolve();
         this.socket = undefined;
+        if (this.controller.signal.aborted) return resolve();
         this.connected = false;
         if (event.code === 4401) {
-          this.token = null;
-          this.save(null);
-          this.state = { revision: -1, owner: null, members: 0 };
-        }
-        this.changed();
+          this.clearPairing();
+        } else this.changed();
         retry();
       });
       this.controller.signal.addEventListener('abort', abort, { once: true });
@@ -133,30 +127,10 @@ export class PairingClient {
     const result = await this.request(code ? 'join' : 'create', code ? { code } : {}, null);
     this.token = result.token;
     this.save(this.token);
-    this.state = { revision: -1, owner: null, members: 0 };
+    this.state = emptyState();
     this.apply(result.state);
     void this.connect();
     return result;
-  }
-  async claim() {
-    if (!this.token) return;
-    this.pending++;
-    try {
-      this.apply(await this.request('claim', { clientId: this.clientId }));
-    } catch (error) {
-      this.connected = false;
-      this.changed();
-      throw error;
-    } finally {
-      this.pending--;
-      if (this.connected) this.enforce();
-    }
-  }
-  playbackStarted() {
-    this.playing = true;
-  }
-  playbackStopped() {
-    this.playing = false;
   }
   async newCode() {
     return this.request('code');
@@ -164,16 +138,23 @@ export class PairingClient {
   async leave() {
     // Revoke on the server before forgetting credentials; failed requests can be retried.
     await this.request('leave');
+    this.clearPairing();
+    this.destroy();
+  }
+  clearPairing() {
     this.token = null;
     this.save(null);
     this.connected = false;
-    this.state = { revision: -1, owner: null, members: 0 };
+    this.state = emptyState();
     this.changed();
-    this.destroy();
   }
   destroy() {
     clearTimeout(this.retryTimer);
     this.retryTimer = undefined;
     this.controller.abort();
+    if (this.connected) {
+      this.connected = false;
+      this.changed();
+    }
   }
 }

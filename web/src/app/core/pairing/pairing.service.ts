@@ -8,7 +8,6 @@ import { pairingPayload } from './pairing-qr.mjs';
 export class PairingService {
   private readonly catalog = inject(CatalogService);
   private client?: PairingClient;
-  private isPlaying = false;
   private readonly generation = signal(0);
   readonly remotePlayback = signal<PairingState['playback']>(null);
   readonly remoteViewport = signal<PairingState['viewport']>(null);
@@ -64,7 +63,6 @@ export class PairingService {
         save: (token) => writePairing(base, token),
       });
       this.client = client;
-      client.playing = this.isPlaying;
       this.paired.set(!!client.token);
       void client.connect();
     });
@@ -81,15 +79,6 @@ export class PairingService {
     });
     inject(DestroyRef).onDestroy(() => this.client?.destroy());
   }
-  playbackStarted() {
-    this.isPlaying = true;
-    this.client?.playbackStarted();
-  }
-  playbackStopped() {
-    this.isPlaying = false;
-    this.client?.playbackStopped();
-  }
-
   async act(action: 'create' | 'join' | 'code' | 'leave', code = '') {
     const client = this.client;
     if (!client || this.busy()) return;
