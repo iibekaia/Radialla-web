@@ -8,6 +8,7 @@ COPY web web
 RUN npm run build
 FROM node:22-bookworm-slim
 ENV NODE_ENV=production
+ENV WEB_ORIGIN=https://radialla.ge
 WORKDIR /app
 COPY server server
 COPY --from=build /app/server/node_modules server/node_modules

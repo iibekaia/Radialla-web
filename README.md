@@ -124,7 +124,7 @@ The artist/title line appears only when metadata is available. Unsupported strea
 
 With repository Settings → Pages → Source set to GitHub Actions, successful main-branch builds also publish the Angular frontend to GitHub Pages. The workflow can be started manually from Actions → Radialla platform → Run workflow on `main`. Set the custom domain to `radialla.ge` in Pages settings and enable Enforce HTTPS after DNS validation and certificate issuance.
 
-The Pages artifact uses an empty `apiBaseUrl`, since Pages cannot run the Node API. Direct HTTPS stations, the catalog and local favorites work; HTTP-only station relay and current-song metadata require separately hosted API infrastructure. The normal build artifact and Docker image retain their same-origin API configuration for Render. This Pages build targets the root of the configured custom domain.
+The Pages artifact sets `apiBaseUrl` to `https://radialla-web-production.up.railway.app`, connecting `radialla.ge` to the Railway Node API for device pairing, HTTP-only station relay and current-song metadata. The Docker image allows `https://radialla.ge` through `WEB_ORIGIN` by default; if Railway has an explicit `WEB_ORIGIN` variable, set it to that same origin because service variables override Docker defaults. Direct HTTPS stations, the catalog and local favorites remain available without the API. The normal build artifact and Docker image retain their same-origin API configuration. This Pages build targets the root of the configured custom domain; Railway's free public domain needs no custom-domain upgrade.
 
 ### Full application on Render
 
