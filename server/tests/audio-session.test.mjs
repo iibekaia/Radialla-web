@@ -226,3 +226,49 @@ test('buffering shows loading until audio actually resumes, ignoring retired str
   elements[0].dispatchEvent(new Event('waiting'));
   assert.equal(states.length, count);
 });
+
+test('a silent buffering stall reconnects and stopping cancels the watchdog', async () => {
+  const pending = new Map();
+  const elements = [],
+    states = [];
+  let next = 0;
+  const timers = {
+    setTimeout(fn, delay) {
+      pending.set(++next, { fn, delay });
+      return next;
+    },
+    clearTimeout(id) {
+      pending.delete(id);
+    },
+  };
+  const session = new AudioSession(
+    (s) => states.push(s),
+    () => {
+      const audio = new FakeAudio();
+      elements.push(audio);
+      return audio;
+    },
+    timers,
+  );
+  const started = session.play('https://example.com/live');
+  elements[0].resolve();
+  await started;
+  elements[0].dispatchEvent(new Event('playing'));
+  assert.equal(pending.size, 0);
+  elements[0].dispatchEvent(new Event('waiting'));
+  elements[0].dispatchEvent(new Event('stalled'));
+  assert.equal(pending.size, 1);
+  const [id, watchdog] = pending.entries().next().value;
+  assert.equal(watchdog.delay, 15000);
+  pending.delete(id);
+  watchdog.fn();
+  assert.equal(elements[0].released, true);
+  const [retryId, retry] = pending.entries().next().value;
+  pending.delete(retryId);
+  retry.fn();
+  assert.equal(elements.length, 2);
+  assert.equal(states.at(-1), 'loading');
+  assert.equal(pending.size, 1);
+  session.stop();
+  assert.equal(pending.size, 0);
+});

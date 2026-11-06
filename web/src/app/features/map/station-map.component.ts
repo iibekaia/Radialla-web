@@ -8,6 +8,7 @@ import {
   inject,
   output,
   signal,
+  untracked,
   viewChild,
 } from '@angular/core';
 import { LocalizationService } from '../../core/localization/localization.service';
@@ -71,12 +72,20 @@ export class StationMapComponent implements AfterViewInit, OnDestroy {
     located: (point, automatic) => this.showLocation(point, automatic),
   });
   constructor() {
+    let viewportRevision = -1;
     effect(() => {
       const viewport = this.pairing.remoteViewport();
-      if (viewport) {
-        this.explored = true;
-        this.setAutomaticView([viewport.latitude, viewport.longitude], viewport.zoom);
+      if (!viewport) {
+        viewportRevision = -1;
+        return;
       }
+      if (viewport.revision <= viewportRevision) return;
+      viewportRevision = viewport.revision;
+      this.explored = true;
+      // Leaflet move events read other signals; keep them out of this effect.
+      untracked(() =>
+        this.setAutomaticView([viewport.latitude, viewport.longitude], viewport.zoom),
+      );
     });
     effect(() => {
       const stations = this.stations(),

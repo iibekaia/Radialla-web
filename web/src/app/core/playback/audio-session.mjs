@@ -7,6 +7,7 @@ export class AudioSession {
     this.generation = 0;
     this.audio = null;
     this.retryTimer = null;
+    this.stallTimer = null;
     this.volume = 1;
     this.muted = false;
   }
@@ -38,6 +39,7 @@ export class AudioSession {
       };
       const failed = () => {
         if (!current()) return;
+        this.clearStallTimer();
         // Only reconnect established streams. Initial failures and autoplay denial
         // remain visible, and a manual stop always cancels a pending reconnect.
         if (!connected || retries >= 3) {
@@ -56,22 +58,41 @@ export class AudioSession {
       audio.addEventListener('playing', () => {
         if (!current()) return;
         connected = true;
+        this.clearStallTimer();
         update('playing');
       });
-      audio.addEventListener('waiting', () => update('loading'));
+      const buffering = () => {
+        if (!current()) return;
+        update('loading');
+        // Some streams stall without ever emitting error or ended.
+        if (this.stallTimer !== null) return;
+        this.stallTimer = this.timers.setTimeout(() => {
+          this.stallTimer = null;
+          failed();
+        }, 15000);
+      };
+      audio.addEventListener('waiting', buffering);
+      audio.addEventListener('stalled', buffering);
       audio.addEventListener('error', failed);
       audio.addEventListener('ended', failed);
       audio.addEventListener('pause', () => update('paused'));
       audio.src = url;
-      update('loading');
+      buffering();
       try {
         await audio.play();
       } catch (error) {
-        if (error?.name === 'NotAllowedError') update('blocked');
-        else failed();
+        if (error?.name === 'NotAllowedError') {
+          if (current()) this.clearStallTimer();
+          update('blocked');
+        } else failed();
       }
     };
     await start();
+  }
+
+  clearStallTimer() {
+    if (this.stallTimer !== null) this.timers.clearTimeout(this.stallTimer);
+    this.stallTimer = null;
   }
 
   release(audio) {
@@ -82,6 +103,7 @@ export class AudioSession {
 
   stop() {
     ++this.generation;
+    this.clearStallTimer();
     if (this.retryTimer !== null) this.timers.clearTimeout(this.retryTimer);
     this.retryTimer = null;
     const audio = this.audio;
