@@ -72,6 +72,8 @@ export function createApp(stations, config = {}) {
           '.json': 'application/json',
           '.svg': 'image/svg+xml',
           '.png': 'image/png',
+          '.ico': 'image/x-icon',
+          '.webmanifest': 'application/manifest+json',
         };
         res.setHeader(
           'Content-Type',
