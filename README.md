@@ -26,6 +26,34 @@ Configuration lives in `web/public/config.json`. `/` uses the same-origin API. E
 
 `web/public/stations.json` remains a backend-independent demo fallback. Country counts and station details are requested directly from Radio Browser over HTTPS, with mirror failover and a bounded local cache. See https://docs.radio-browser.info/ for the upstream API contract. Browser codec support and stream availability vary. The backend currently serves a bundled catalog; there is no database, authentication or user synchronization. The browser loads the upstream catalog independently of this server.
 
+## Railway deployment
+
+The root `railway.json` uses the existing multi-stage Dockerfile and checks
+`/api/health` before routing traffic to a deployment. The server already listens
+on `0.0.0.0` and Railway's injected `PORT`. Deploy from the repository root,
+not the `server` or `web` workspace directory.
+
+1. In Railway, select **New Project → Deploy from GitHub repo** and choose
+   `iibekaia/Radialla-web`, after the deployment configuration is pushed.
+2. Keep the Free plan for the trial; do not upgrade to Hobby for this setup.
+   Check the plan and remaining credits in the dashboard. Free credits are
+   limited and do not guarantee an always-running service for the entire month.
+3. Under the service's Networking settings, generate a public domain. Railway
+   serves the Angular app and API together over HTTPS, so the bundled
+   `apiBaseUrl: "/"` requires no change.
+4. If the frontend stays on a separate host, set `WEB_ORIGIN` to its exact
+   origin and configure that frontend's `apiBaseUrl` with the Railway HTTPS URL.
+5. Verify `https://<generated-domain>/api/health` returns `{"status":"ok"}`,
+   then open the root URL and check the catalog and playback.
+
+This deploys the existing web/API only. Device pairing and exclusive playback
+between iOS and the web are not implemented yet. They require a separate
+coordination API plus integration in each client. The iOS project remains
+independent. Audio relayed through `/api/stream` consumes hosting bandwidth;
+direct HTTPS station streams do not pass through this server.
+
+Railway configuration reference: https://docs.railway.com/config-as-code/reference
+
 ## Unavailable station fallback
 
 When playback reports a terminal `streamError`, the explorer waits three seconds and tries the next playable station in the current filtered/visible list. Existing reconnect attempts run first for an interrupted established stream. A failure chain skips stations already attempted and stops when no alternative remains. Successful playback clears the failure history. Manual play/pause, station selection or map/country browsing cancels the pending switch. Browser autoplay denial, loading and paused states do not trigger fallback. HTTP stations are candidates only when the configured API relay and a valid station UUID are available.
