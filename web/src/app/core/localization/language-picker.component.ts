@@ -21,13 +21,12 @@ import { LocalizationService } from './localization.service';
       <ng-select
         class="language-select"
         [ariaLabel]="i18n.t('Language')"
-        [ngModel]="i18n.preference.value()"
+        [ngModel]="i18n.language()"
         (ngModelChange)="i18n.choose($event)"
         [clearable]="false"
         [searchable]="false"
       >
         <ng-template ng-label-tmp><app-icon name="globe" /></ng-template>
-        <ng-option value="auto">{{ i18n.t('auto') }}</ng-option>
         @for (language of i18n.languages; track language.id) {
           <ng-option [value]="language.id"
             ><span [lang]="language.id">{{ language.name }}</span></ng-option
