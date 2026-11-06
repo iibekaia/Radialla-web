@@ -1,4 +1,5 @@
 @import 'leaflet/dist/leaflet.css';
+@import '@ng-select/ng-select/themes/default.theme.css';
 :root {
   --accent: #f15a22;
   --background: #f4f4f4;
@@ -358,7 +359,55 @@ p {
   background: #eef4ff;
 }
 
+/* Shared select styling follows the app's light and dark palettes. */
+.ng-select .ng-select-container {
+  background: transparent;
+  color: var(--text);
+  border: 0;
+  border-radius: 10px;
+}
+.ng-select.ng-select-single .ng-select-container {
+  min-height: 42px;
+}
 .ng-select.ng-select-focused:not(.ng-select-opened) > .ng-select-container {
   border: 0;
   box-shadow: none;
+}
+.ng-select.ng-select-opened > .ng-select-container {
+  background: transparent;
+}
+.ng-select .ng-select-container .ng-value-container .ng-input > input {
+  color: var(--text);
+  font: inherit;
+}
+.ng-dropdown-panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px #0002;
+  color: var(--text);
+}
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option {
+  background: var(--surface);
+  color: var(--text);
+  padding: 10px 12px;
+}
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-marked,
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected,
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected.ng-option-marked {
+  background: var(--line);
+  color: var(--accent);
+}
+.language-select .ng-arrow-wrapper {
+  display: none;
+}
+.language-select .ng-select-container .ng-value-container {
+  padding-left: 7px;
+}
+.language-select .ng-value {
+  display: flex;
+}
+.language-select .ng-dropdown-panel {
+  width: 220px;
+  right: 0;
 }

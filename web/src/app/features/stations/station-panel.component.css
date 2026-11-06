@@ -46,21 +46,10 @@
   width: 18px;
   height: 18px;
 }
-.station-search select {
-  border: 0;
-  outline: none;
-  background: none;
+.station-search ng-select {
   min-width: 0;
   width: 100%;
-  padding: 12px 0;
-  color: var(--text);
-  font: inherit;
   font-size: 12px;
-  cursor: pointer;
-}
-.station-search select option {
-  background: var(--surface);
-  color: var(--text);
 }
 .station-tabs {
   display: flex;

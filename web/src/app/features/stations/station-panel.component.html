@@ -5,20 +5,22 @@
   [attr.aria-label]="vm.i18n.t('stations')"
   [attr.inert]="vm.listCollapsed() ? '' : null"
 >
-  <label class="station-search">
+  <div class="station-search">
     <app-icon name="globe" />
-    <select
-      #countrySelect
-      [attr.aria-label]="vm.i18n.t('countrySelect')"
-      [value]="vm.selectedCountry() || ''"
-      (change)="vm.chooseCountry(countrySelect.value)"
+    <ng-select
+      class="country-select"
+      [ariaLabel]="vm.i18n.t('countrySelect')"
+      [ngModel]="vm.selectedCountry() || ''"
+      (ngModelChange)="vm.chooseCountry($event)"
+      [clearable]="false"
+      [notFoundText]="vm.i18n.t('emptySearch')"
     >
-      <option value="">{{ vm.i18n.t('allCountries') }}</option>
+      <ng-option value="">{{ vm.i18n.t('allCountries') }}</ng-option>
       @for (country of vm.countries(); track country.code) {
-        <option [value]="country.code">{{ country.label }}</option>
+        <ng-option [value]="country.code">{{ country.label }}</ng-option>
       }
-    </select>
-  </label>
+    </ng-select>
+  </div>
   <div class="station-tabs" [attr.aria-label]="vm.i18n.t('filters')">
     <button
       [class.active-tab]="!vm.onlyFavorites()"

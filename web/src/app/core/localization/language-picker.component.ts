@@ -1,30 +1,40 @@
+import { FormsModule } from '@angular/forms';
+import {
+  NgSelectComponent,
+  NgOptionComponent,
+  NgLabelTemplateDirective,
+} from '@ng-select/ng-select';
 import { Component, inject } from '@angular/core';
 import { IconComponent } from '../../shared/ui/icon.component';
 import { LocalizationService } from './localization.service';
 @Component({
   selector: 'app-language-picker',
   standalone: true,
-  imports: [IconComponent],
-  template: `<label class="language-picker" [title]="i18n.t('Language')"
-      ><app-icon name="globe" /><select
-        #languageSelect
-        [attr.aria-label]="i18n.t('Language')"
-        (change)="i18n.choose(languageSelect.value)"
+  imports: [
+    IconComponent,
+    FormsModule,
+    NgSelectComponent,
+    NgOptionComponent,
+    NgLabelTemplateDirective,
+  ],
+  template: `<div class="language-picker" [title]="i18n.t('Language')">
+      <ng-select
+        class="language-select"
+        [ariaLabel]="i18n.t('Language')"
+        [ngModel]="i18n.preference.value()"
+        (ngModelChange)="i18n.choose($event)"
+        [clearable]="false"
+        [searchable]="false"
       >
-        <option value="auto" [selected]="i18n.preference.value() === 'auto'">
-          {{ i18n.t('auto') }}
-        </option>
+        <ng-template ng-label-tmp><app-icon name="globe" /></ng-template>
+        <ng-option value="auto">{{ i18n.t('auto') }}</ng-option>
         @for (language of i18n.languages; track language.id) {
-          <option
-            [value]="language.id"
-            [selected]="i18n.preference.value() === language.id"
-            [lang]="language.id"
+          <ng-option [value]="language.id"
+            ><span [lang]="language.id">{{ language.name }}</span></ng-option
           >
-            {{ language.name }}
-          </option>
         }
-      </select></label
-    >
+      </ng-select>
+    </div>
     @if (i18n.preference.sessionOnly()) {
       <span role="status" class="language-notice">{{ i18n.t('languageSession') }}</span>
     }`,
@@ -45,13 +55,8 @@ import { LocalizationService } from './localization.service';
         width: 20px;
         height: 20px;
       }
-      .language-picker select {
-        position: absolute;
-        inset: 0;
-        opacity: 0;
+      .language-picker ng-select {
         width: 100%;
-        cursor: pointer;
-        font: inherit;
       }
       .language-notice {
         position: absolute;
