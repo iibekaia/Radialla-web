@@ -7,6 +7,7 @@ import { CatalogService } from '../../core/catalog/catalog.service';
 import { LocationPoint } from '../../core/playback/autoplay-station.mjs';
 import { Station } from '../../shared/models/station';
 import { FavoritesService } from '../../core/favorites/favorites.service';
+import { PairingService } from '../../core/pairing/pairing.service';
 import { PlaybackService } from '../../core/playback/playback.service';
 import { StationFailoverController } from '../../core/playback/station-failover.mjs';
 import { MapArea } from '../../shared/stations/station-geometry';
@@ -29,6 +30,7 @@ export class ExplorerService {
   readonly catalog = inject(CatalogService);
   readonly favorites = inject(FavoritesService);
   readonly player = inject(PlaybackService);
+  private readonly pairing = inject(PairingService);
   readonly listCollapsed = signal(false);
   readonly selectedCountry = signal<string | null>(null);
   readonly countries = computed(() =>
@@ -118,6 +120,25 @@ export class ExplorerService {
         playing: this.player.playing(),
       }),
     );
+    // A controller selection has the same priority as a local manual selection.
+    // Stop startup/area playback before it can replace the received station.
+    let remoteRevision = -1;
+    effect(() => {
+      const command = this.pairing.remotePlayback();
+      if (!command) {
+        remoteRevision = -1;
+        return;
+      }
+      if (command.revision <= remoteRevision) return;
+      remoteRevision = command.revision;
+      untracked(() => {
+        this.cancelSharedSelection();
+        this.failover.reset();
+        this.followArea.set(false);
+        this.pendingAutoplay.set(false);
+        this.manualPlayback = true;
+      });
+    });
     void this.catalog.load();
     effect(() => {
       const area = this.area();

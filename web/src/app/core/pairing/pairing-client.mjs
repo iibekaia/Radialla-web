@@ -47,7 +47,20 @@ export class PairingClient {
     if (!isPairingState(state)) throw new Error('Invalid pairing state');
     if (state.revision < this.state.revision) return;
     this.connected = connected;
-    this.state = state;
+    // Full snapshots retain both commands. Preserve unchanged command references so
+    // a map gesture cannot invalidate playback and vice versa.
+    const playback =
+      state.playback && state.playback.revision === this.state.playback?.revision
+        ? this.state.playback
+        : state.playback;
+    const viewport =
+      state.viewport && state.viewport.revision === this.state.viewport?.revision
+        ? this.state.viewport
+        : state.viewport;
+    this.state =
+      playback === state.playback && viewport === state.viewport
+        ? state
+        : { ...state, playback, viewport };
     this.changed();
   }
   connect() {

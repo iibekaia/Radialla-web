@@ -94,3 +94,30 @@ test('invalid WebSocket state closes the connection without replacing the last v
     client.destroy();
   }
 });
+
+test('map command bursts preserve playback identity and playback updates preserve the map', () => {
+  const client = new PairingClient({ base: 'https://api.example' });
+  client.apply(structuredClone(state));
+  const playback = client.state.playback;
+  for (let revision = 4; revision < 104; revision++) {
+    client.apply({
+      ...structuredClone(state),
+      revision,
+      viewport: { ...state.viewport, revision, longitude: 44 + revision / 1000 },
+    });
+    assert.equal(client.state.playback, playback);
+    assert.equal(client.state.viewport.revision, revision);
+  }
+  const viewport = client.state.viewport;
+  client.apply({
+    ...structuredClone(client.state),
+    revision: 104,
+    playback: { type: 'pause', revision: 104 },
+  });
+  assert.equal(client.state.viewport, viewport);
+  assert.equal(client.state.playback.type, 'pause');
+  client.apply({ revision: 105, owner: null, members: 1, playback: null, viewport: null });
+  assert.equal(client.state.playback, null);
+  assert.equal(client.state.viewport, null);
+  client.destroy();
+});

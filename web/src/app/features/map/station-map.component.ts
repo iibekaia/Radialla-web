@@ -64,6 +64,7 @@ export class StationMapComponent implements AfterViewInit, OnDestroy {
   private tiles?: L.TileLayer;
   private markerRenderer?: StationMarkers;
   private observer?: ResizeObserver;
+  private markerFrame?: number;
   private locationMarker?: L.CircleMarker;
   private readonly location = new MapLocationController({
     hasStationFocus: () => this.hasStationFocus(),
@@ -92,15 +93,15 @@ export class StationMapComponent implements AfterViewInit, OnDestroy {
         active = this.activeId();
       this.overviewCountries();
       this.i18n.language();
-      this.renderMarkers(stations, active);
+      untracked(() => this.renderMarkers(stations, active));
     });
     effect(() => {
       const station = this.focusedStation();
-      if (station && this.autoFocus()) this.focus(station);
+      if (station && this.autoFocus()) untracked(() => this.focus(station));
     });
     effect(() => {
       const code = this.countryCode();
-      if (code !== null) this.focusCountry(code);
+      if (code !== null) untracked(() => this.focusCountry(code));
     });
   }
   ngAfterViewInit() {
@@ -152,7 +153,12 @@ export class StationMapComponent implements AfterViewInit, OnDestroy {
     });
   }
   private renderMarkers(stations: Station[], active?: string) {
-    this.markerRenderer?.render(stations, active, this.overviewCountries());
+    if (this.markerFrame !== undefined) cancelAnimationFrame(this.markerFrame);
+    const overview = this.overviewCountries();
+    this.markerFrame = requestAnimationFrame(() => {
+      this.markerFrame = undefined;
+      this.markerRenderer?.render(stations, active, overview);
+    });
   }
 
   focus(s: Station) {
@@ -250,6 +256,7 @@ export class StationMapComponent implements AfterViewInit, OnDestroy {
     else this.autoplayReady.emit(point);
   }
   ngOnDestroy() {
+    if (this.markerFrame !== undefined) cancelAnimationFrame(this.markerFrame);
     this.location.destroy();
     this.markerRenderer?.destroy();
     this.observer?.disconnect();
