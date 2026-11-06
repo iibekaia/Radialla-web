@@ -132,7 +132,10 @@ export class StationMapComponent implements AfterViewInit, OnDestroy {
     const location = mapLocation(s, COUNTRIES);
     if (!location) return;
     this.focusedStationId = s.id;
-    if (location.approximate) {
+    // Once the user has navigated, station selection must keep their zoom level.
+    if (this.explored) {
+      this.setAutomaticView([location.latitude, location.longitude], this.map.getZoom());
+    } else if (location.approximate) {
       const country = COUNTRIES.find((c) =>
         s.countryCode ? c.code === s.countryCode.toUpperCase() : c.name === s.country,
       );
@@ -163,10 +166,10 @@ export class StationMapComponent implements AfterViewInit, OnDestroy {
       this.automaticMove = false;
     }
   }
-  private setAutomaticView(point: L.LatLngExpression) {
+  private setAutomaticView(point: L.LatLngExpression, zoom = FOCUS_ZOOM) {
     this.automaticMove = true;
     try {
-      this.map?.setView(point, FOCUS_ZOOM, { animate: false });
+      this.map?.setView(point, zoom, { animate: false });
     } finally {
       this.automaticMove = false;
     }
