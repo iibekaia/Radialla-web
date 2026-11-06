@@ -24,7 +24,7 @@
   left: 24px;
   /* Keep header menus above the station panel and player stacking contexts. */
   z-index: 20;
-  width: 360px;
+  width: 400px;
   min-height: 76px;
   padding: 16px 18px;
   background: var(--material);
