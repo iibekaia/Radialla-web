@@ -1,8 +1,22 @@
-import { Injectable, inject, signal, computed } from '@angular/core';
+import { DestroyRef, Injectable, inject, signal, computed } from '@angular/core';
 import { CatalogCacheService } from '../storage/catalog-cache.service';
-import { fetchRadioPage } from './radio-browser.mjs';
 import { LocalizationService } from '../localization/localization.service';
+import { CountryLocationService } from '../localization/country-location.service';
 import { Station } from '../../shared/models/station';
+import { MapArea } from '../../shared/stations/station-geometry';
+import { createLiveIndex, fetchLiveIndex, fetchCountryStations } from './live-catalog.mjs';
+import { COUNTRIES } from '../../shared/data/countries';
+import countryRegions from '../../shared/data/country-regions.json';
+import {
+  CATALOG_TTL,
+  INDEX_TTL,
+  CatalogEntry,
+  MapCatalogIndex,
+  ViewportCatalogLoader,
+  countriesInArea,
+  overviewArea,
+  validCatalogIndex,
+} from './viewport-catalog.mjs';
 export interface Config {
   apiBaseUrl: string;
   iosUrl: string;
@@ -12,6 +26,8 @@ export interface Config {
 export class CatalogService {
   readonly stations = signal<Station[]>([]);
   private readonly i18n = inject(LocalizationService);
+  private readonly location = inject(CountryLocationService);
+  private readonly cache = inject(CatalogCacheService);
   private readonly status = signal<{ key: string; count?: number }>({ key: 'demo' });
   readonly mode = computed(() => {
     const status = this.status();
@@ -19,19 +35,68 @@ export class CatalogService {
       ? this.i18n.t(status.key)
       : this.i18n.t(status.key, status.count);
   });
-  private setMode(key: string, count?: number) {
-    this.status.set({ key, count });
-  }
-  private readonly globalLoading = signal(false);
-  private readonly pendingCountries = signal(0);
-  readonly loading = computed(() => this.globalLoading() || this.pendingCountries() > 0);
-  private readonly loadedCountries = new Set<string>();
-  private readonly countryRequests = new Map<string, Promise<void>>();
+  private readonly initializing = signal(false);
+  private readonly detailsLoading = signal(false);
+  readonly loading = computed(() => this.initializing() || this.detailsLoading());
+  readonly index = signal<MapCatalogIndex>(createLiveIndex(COUNTRIES, countryRegions));
   readonly playbackReady = signal(false);
   readonly isDemo = signal(true);
-  private readonly cache = inject(CatalogCacheService);
-  private started = false;
   readonly config = signal<Config>({ apiBaseUrl: '', iosUrl: '', androidUrl: '' });
+  private started = false;
+  private ready = false;
+  private destroyed = false;
+  private readonly controller = new AbortController();
+  private freshness: Record<string, number> = {};
+  private viewport: { area: MapArea | null; country: string | null; favorites: boolean } = {
+    area: null,
+    country: null,
+    favorites: false,
+  };
+  private readonly loader = new ViewportCatalogLoader({
+    fetch: (entry, signal) => this.fetchCountry(entry, signal),
+    cached: (entry) => {
+      const timestamp = this.freshness[entry.cacheKey];
+      if (
+        !Number.isFinite(timestamp) ||
+        timestamp > Date.now() ||
+        Date.now() - timestamp >= CATALOG_TTL
+      )
+        return null;
+      return this.stations().filter(
+        (s) => s.countryCode === entry.code || (!s.countryCode && s.country === entry.name),
+      );
+    },
+    received: (entry, stations, fresh) => {
+      if (fresh) {
+        this.replaceCountry(entry, stations);
+        this.freshness[entry.cacheKey] = Date.now();
+        this.persist();
+      }
+      this.status.set({ key: 'კატალოგი ჩაიტვირთა: %@ სადგური', count: this.stations().length });
+    },
+    loading: (value) => this.detailsLoading.set(value),
+    failed: () =>
+      this.status.set({
+        key: this.isDemo() ? 'catalogUnavailable' : 'catalogStopped',
+        count: this.stations().length,
+      }),
+  });
+  private indexRequest?: Promise<void>;
+  private readonly refresh = () => {
+    if (this.ready && document.visibilityState === 'visible')
+      void this.refreshIndex().finally(() => this.scheduleViewport());
+  };
+  constructor() {
+    const refreshTimer = setInterval(this.refresh, 60000);
+    document.addEventListener('visibilitychange', this.refresh);
+    inject(DestroyRef).onDestroy(() => {
+      clearInterval(refreshTimer);
+      document.removeEventListener('visibilitychange', this.refresh);
+      this.destroyed = true;
+      this.controller.abort();
+      this.loader.destroy();
+    });
+  }
   private valid(value: unknown): value is Station[] {
     return (
       Array.isArray(value) &&
@@ -47,27 +112,48 @@ export class CatalogService {
       )
     );
   }
-  private async json(url: string) {
-    const r = await fetch(url, { signal: AbortSignal.timeout(4000) });
-    if (!r.ok) throw Error('HTTP ' + r.status);
-    return r.json();
+  private async json(url: string, signal = this.controller.signal) {
+    const response = await fetch(url, {
+      signal: AbortSignal.any([signal, AbortSignal.timeout(10000)]),
+    });
+    if (!response.ok) throw Error('HTTP ' + response.status);
+    return response.json();
   }
   async load() {
     if (this.started) return;
     this.started = true;
-    this.globalLoading.set(true);
+    this.initializing.set(true);
     try {
       const saved = this.cache.read();
-      if (this.valid(saved) && saved.length) {
-        this.stations.set(saved);
-        this.isDemo.set(!saved.some((s) => s.streamUrl));
-        this.setMode('cached');
+      const snapshot =
+        saved && typeof saved === 'object' && !Array.isArray(saved)
+          ? (saved as Record<string, unknown>)
+          : null;
+      const stations = snapshot?.['stations'] || saved;
+      if (this.valid(stations) && stations.length) {
+        this.stations.set(stations);
+        this.isDemo.set(!stations.some((s) => s.streamUrl));
+        this.status.set({ key: 'cached' });
       }
-      if (!this.stations().length)
+      if (snapshot?.['version'] === 3) {
+        if (validCatalogIndex(snapshot['index'])) this.index.set(snapshot['index']);
+        const files = snapshot['countries'];
+        if (files && typeof files === 'object' && !Array.isArray(files))
+          this.freshness = Object.fromEntries(
+            Object.entries(files).filter(
+              ([file, time]) =>
+                /^[A-Z]{2}:(?:[0-9]+|unknown)$/.test(file) &&
+                typeof time === 'number' &&
+                Number.isFinite(time),
+            ),
+          );
+      }
+      if (!this.stations().length) {
         try {
           const demo = await this.json('stations.json');
           if (this.valid(demo)) this.stations.set(demo);
         } catch {}
+      }
       try {
         const c = await this.json('config.json');
         this.config.set({
@@ -77,75 +163,103 @@ export class CatalogService {
         });
       } catch {}
       this.playbackReady.set(true);
-      if (this.config().apiBaseUrl)
+      // The Node API remains optional: catalog and browsing also work on static hosting.
+      if (this.config().apiBaseUrl && this.isDemo()) {
         try {
           const data = await this.json(
             this.config().apiBaseUrl.replace(/\/$/, '') + '/api/stations',
           );
-          if (this.valid(data) && data.length && (this.isDemo() || data.some((s) => s.streamUrl))) {
-            this.stations.set(data);
-            this.isDemo.set(!data.some((s) => s.streamUrl));
-          }
+          if (this.valid(data) && data.some((s) => s.streamUrl)) this.merge(data);
         } catch {}
-      this.setMode('რადიოები იტვირთება…');
-      // Country requests also serve the picker, independently of worldwide pagination.
-      await this.loadCountry('GE');
-      let offset = 0;
-      while (true) {
-        const page = await fetchRadioPage(offset);
-        this.merge(page.stations);
-        offset += page.count;
-        this.setMode('იტვირთება კატალოგი: %@ სადგური…', this.stations().length);
-        if (offset % 2000 === 0) this.cache.write(this.stations());
-        if (page.count < 500) break;
       }
-      this.setMode('კატალოგი ჩაიტვირთა: %@ სადგური', this.stations().length);
+      await this.refreshIndex();
+      await this.location.detect();
     } catch {
-      this.setMode(this.isDemo() ? 'catalogUnavailable' : 'catalogStopped', this.stations().length);
+      this.status.set({
+        key: this.isDemo() ? 'catalogUnavailable' : 'catalogStopped',
+        count: this.stations().length,
+      });
     } finally {
-      this.playbackReady.set(true);
-      this.globalLoading.set(false);
-      this.cache.write(this.stations());
-    }
-  }
-  loadCountry(code: string): Promise<void> {
-    if (!/^[A-Z]{2}$/.test(code) || this.loadedCountries.has(code)) return Promise.resolve();
-    const existing = this.countryRequests.get(code);
-    if (existing) return existing;
-    this.pendingCountries.update((count) => count + 1);
-    const request = this.fetchCountry(code).finally(() => {
-      this.countryRequests.delete(code);
-      this.pendingCountries.update((count) => count - 1);
-      this.cache.write(this.stations());
-    });
-    this.countryRequests.set(code, request);
-    return request;
-  }
-  private async fetchCountry(code: string) {
-    try {
-      let offset = 0;
-      while (true) {
-        const page = await fetchRadioPage(offset, 200, code);
-        this.merge(page.stations);
-        offset += page.count;
-        if (page.count < 200) break;
+      if (!this.destroyed) {
+        this.ready = true;
+        this.playbackReady.set(true);
+        this.initializing.set(false);
+        this.scheduleViewport();
+        this.persist();
       }
-      this.loadedCountries.add(code);
-    } catch {
-      // Retain local data and allow the next country selection to retry.
     }
+  }
+  setViewport(area: MapArea | null, country: string | null, favorites = false) {
+    this.viewport = { area, country, favorites };
+    if (this.ready) this.scheduleViewport();
+  }
+  private scheduleViewport() {
+    const { area, country, favorites } = this.viewport;
+    const entries = this.index()?.countries || [];
+    let wanted: CatalogEntry[];
+    if (favorites) wanted = [];
+    else if (country) wanted = entries.filter((e) => e.code === country);
+    else if (!overviewArea(area)) wanted = countriesInArea(entries, area);
+    else wanted = entries.filter((e) => e.code === (this.location.country() || 'GE'));
+    this.loader.update(wanted);
+  }
+  private refreshIndex(): Promise<void> {
+    if (this.destroyed) return Promise.resolve();
+    const timestamp = Date.parse(this.index().generatedAt);
+    if (Number.isFinite(timestamp) && timestamp <= Date.now() && Date.now() - timestamp < INDEX_TTL)
+      return Promise.resolve();
+    return (this.indexRequest ||= fetchLiveIndex(
+      COUNTRIES,
+      countryRegions,
+      fetch,
+      this.controller.signal,
+    )
+      .then((index) => {
+        if (!this.destroyed) {
+          this.index.set(index);
+          this.persist();
+        }
+      })
+      .catch(() => {
+        // Keep the last counts and cached stations; country requests can still retry live.
+      })
+      .finally(() => {
+        this.indexRequest = undefined;
+      }));
+  }
+  private fetchCountry(entry: CatalogEntry, signal: AbortSignal): Promise<Station[]> {
+    return fetchCountryStations(entry.code, fetch, signal);
+  }
+  private replaceCountry(entry: CatalogEntry, page: Station[]) {
+    const existing = this.isDemo()
+      ? []
+      : this.stations().filter((s) =>
+          s.countryCode ? s.countryCode !== entry.code : s.country !== entry.name,
+        );
+    const merged = new Map(existing.map((s) => [s.id, s]));
+    for (const station of page) merged.set(station.id, station);
+    this.stations.set([...merged.values()]);
+    this.isDemo.set(false);
   }
   private merge(page: Station[]) {
     if (!page.length) return;
     const merged = new Map((this.isDemo() ? [] : this.stations()).map((s) => [s.id, s]));
-    for (const s of page) merged.set(s.id, s);
+    for (const station of page) merged.set(station.id, station);
     this.stations.set([...merged.values()]);
     this.isDemo.set(false);
   }
+  private persist() {
+    this.cache.write({
+      version: 3,
+      stations: this.stations(),
+      countries: this.freshness,
+      index: this.index(),
+    });
+  }
   private storeUrl(value: unknown, host: string) {
     try {
-      const u = new URL(String(value));
-      return u.protocol === 'https:' && u.hostname === host ? u.href : '';
+      const url = new URL(String(value));
+      return url.protocol === 'https:' && url.hostname === host ? url.href : '';
     } catch {
       return '';
     }

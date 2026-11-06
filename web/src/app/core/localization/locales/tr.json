@@ -103,5 +103,6 @@
   "mute": "Sesi kapat",
   "unmute": "Sesi aç",
   "returnToTab": "Sekmeye dön",
-  "returnPlayer": "Oynatıcıyı bu sekmeye taşı"
+  "returnPlayer": "Oynatıcıyı bu sekmeye taşı",
+  "countryOverview": "%@ katalog kaydı — ülkeyi yüklemek için seçin"
 }

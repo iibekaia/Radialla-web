@@ -103,5 +103,6 @@
   "mute": "Mute",
   "unmute": "Unmute",
   "returnToTab": "Back to tab",
-  "returnPlayer": "Return player to this tab"
+  "returnPlayer": "Return player to this tab",
+  "countryOverview": "%@ catalog entries — select to load this country"
 }

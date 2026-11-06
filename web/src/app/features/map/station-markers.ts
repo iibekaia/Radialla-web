@@ -2,6 +2,7 @@ import * as L from 'leaflet';
 import { Station } from '../../shared/models/station';
 import { mapLocation } from '../../shared/stations/map-location.mjs';
 import { COUNTRIES } from '../../shared/data/countries';
+import { CatalogEntry } from '../../core/catalog/viewport-catalog.mjs';
 
 import { LocalizationService } from '../../core/localization/localization.service';
 
@@ -20,15 +21,41 @@ export class StationMarkers {
     private readonly map: L.Map,
     private readonly i18n: LocalizationService,
     private readonly onSelect: (station: Station) => void,
+    private readonly onSelectCountry: (code: string) => void,
   ) {
     this.markers = L.layerGroup().addTo(map);
   }
-  render(stations: Station[], active?: string) {
+  render(stations: Station[], active?: string, overview: CatalogEntry[] = []) {
     this.markers.clearLayers();
     const map = this.map,
       bounds = map.getBounds().pad(0.1),
       groups = new Map<string, Placement[]>();
+    for (const country of overview) {
+      if (!COUNTRIES.some((c) => c.code === country.code)) continue;
+      const longitude =
+        country.longitude + 360 * Math.round((map.getCenter().lng - country.longitude) / 360);
+      if (!bounds.contains([country.latitude, longitude]) || country.count <= 0) continue;
+      const label = `${this.i18n.country(country.name, country.code)} — ${this.i18n.t('countryOverview', country.count)}`;
+      const content = document.createElement('span');
+      content.textContent = this.i18n.number(country.count);
+      const marker = L.marker([country.latitude, longitude], {
+        title: label,
+        alt: label,
+        icon: L.divIcon({
+          className: 'station-pin cluster country-overview',
+          html: content,
+          iconSize: [40, 40],
+          iconAnchor: [20, 20],
+        }),
+      });
+      const tooltip = document.createElement('span');
+      tooltip.textContent = label;
+      marker.bindTooltip(tooltip, { direction: 'top' });
+      marker.on('click', () => this.onSelectCountry(country.code));
+      marker.addTo(this.markers);
+    }
     for (const station of stations) {
+      if (overview.length && (station.id !== active || !station.streamUrl)) continue;
       const location = mapLocation(station, COUNTRIES);
       if (!location) continue;
       const s = { station, ...location };

@@ -47,26 +47,57 @@ export function normalizeStation(raw) {
     ...(hasCoordinates ? { latitude, longitude } : {}),
   };
 }
-export async function fetchRadioPage(offset, limit = 500, country, fetcher = fetch) {
+async function radioJson(path, parameters, fetcher, signal) {
   let lastError;
   for (const host of RADIO_HOSTS) {
-    const url = new URL(`https://${host}/json/stations/search`);
-    url.search = new URLSearchParams({
+    const url = new URL(`https://${host}/json/${path}`);
+    url.search = new URLSearchParams(parameters).toString();
+    try {
+      if (signal?.aborted) throw signal.reason || Error('Aborted');
+      const timeout = AbortSignal.timeout(20000);
+      const response = await fetcher(url.href, {
+        signal: signal ? AbortSignal.any([signal, timeout]) : timeout,
+      });
+      if (!response.ok) throw Error('HTTP ' + response.status);
+      const rows = await response.json();
+      if (!Array.isArray(rows)) throw Error('Invalid radio catalog');
+      return rows;
+    } catch (error) {
+      if (signal?.aborted) throw error;
+      lastError = error;
+    }
+  }
+  throw lastError;
+}
+
+export async function fetchRadioPage(offset, limit = 500, country, fetcher = fetch, signal) {
+  const rows = await radioJson(
+    'stations/search',
+    {
       hidebroken: 'true',
       order: 'name',
       limit: String(limit),
       offset: String(offset),
       ...(country ? { countrycode: country } : {}),
-    }).toString();
-    try {
-      const response = await fetcher(url.href, { signal: AbortSignal.timeout(20000) });
-      if (!response.ok) throw Error('HTTP ' + response.status);
-      const rows = await response.json();
-      if (!Array.isArray(rows)) throw Error('Invalid radio catalog');
-      return { stations: rows.map(normalizeStation).filter(Boolean), count: rows.length };
-    } catch (error) {
-      lastError = error;
-    }
-  }
-  throw lastError;
+    },
+    fetcher,
+    signal,
+  );
+  return { stations: rows.map(normalizeStation).filter(Boolean), count: rows.length };
+}
+
+export async function fetchCountryCounts(fetcher = fetch, signal) {
+  const rows = await radioJson(
+    'countrycodes',
+    { hidebroken: 'true', limit: '1000' },
+    fetcher,
+    signal,
+  );
+  return rows.flatMap((row) => {
+    const code = typeof row?.name === 'string' ? row.name.toUpperCase() : '';
+    const count = Number(row?.stationcount);
+    return /^[A-Z]{2}$/.test(code) && Number.isSafeInteger(count) && count >= 0
+      ? [{ code, count }]
+      : [];
+  });
 }

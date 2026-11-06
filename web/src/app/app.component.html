@@ -22,6 +22,8 @@
   </header>
   <app-station-map
     [stations]="vm.mapStations()"
+    [overviewCountries]="vm.overviewCountries()"
+    (selectCountry)="vm.chooseCountry($event)"
     [activeId]="vm.selected()?.id"
     [focusedStation]="vm.player.active()"
     [autoFocus]="!vm.followArea()"

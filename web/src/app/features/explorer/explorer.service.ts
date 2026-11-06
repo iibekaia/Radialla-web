@@ -13,6 +13,7 @@ import { mapLocation } from '../../shared/stations/map-location.mjs';
 import { stationInArea } from '../../shared/stations/station-area.mjs';
 import { LocalizationService } from '../../core/localization/localization.service';
 import { COUNTRIES } from '../../shared/data/countries';
+import { overviewArea } from '../../core/catalog/viewport-catalog.mjs';
 import {
   filterStations,
   startupStation,
@@ -36,6 +37,11 @@ export class ExplorerService {
   readonly onlyFavorites = signal(false);
   readonly area = signal<MapArea | null>(null);
   readonly followArea = signal(false);
+  readonly overviewCountries = computed(() =>
+    !this.selectedCountry() && !this.onlyFavorites() && overviewArea(this.area())
+      ? this.catalog.index().countries.filter((c) => c.count >= 0)
+      : [],
+  );
   private manualPlayback = false;
   private autoplayStarted = false;
   private readonly pendingAutoplay = signal(!!this.player.active());
@@ -88,6 +94,12 @@ export class ExplorerService {
   constructor() {
     void this.catalog.load();
     effect(() => {
+      const area = this.area();
+      const country = this.selectedCountry();
+      const favorites = this.onlyFavorites();
+      untracked(() => this.catalog.setViewport(area, country, favorites));
+    });
+    effect(() => {
       if (!this.pendingAutoplay() || !this.catalog.playbackReady()) return;
       const station = startupStation(
         this.catalog.stations(),
@@ -127,7 +139,6 @@ export class ExplorerService {
   chooseCountry(code: string) {
     this.beginAreaPlayback();
     this.selectedCountry.set(code);
-    void this.catalog.loadCountry(code);
   }
   browseArea() {
     // Null removes the country restriction without moving the map to the world view.

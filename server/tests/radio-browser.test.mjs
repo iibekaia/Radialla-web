@@ -86,3 +86,23 @@ test('country queries retain Uzbekistan and Turkmenistan streams without inventi
     assert.equal(result.stations[0].longitude, undefined);
   }
 });
+
+test('cancelled country navigation does not fail over to a second API mirror', async () => {
+  const controller = new AbortController();
+  let calls = 0;
+  await assert.rejects(
+    fetchRadioPage(
+      0,
+      1000,
+      'GE',
+      async () => {
+        calls++;
+        controller.abort();
+        throw Error('Aborted');
+      },
+      controller.signal,
+    ),
+    /Aborted/,
+  );
+  assert.equal(calls, 1);
+});

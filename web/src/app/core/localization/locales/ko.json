@@ -103,5 +103,6 @@
   "mute": "음소거",
   "unmute": "음소거 해제",
   "returnToTab": "탭으로 돌아가기",
-  "returnPlayer": "플레이어를 이 탭으로 이동"
+  "returnPlayer": "플레이어를 이 탭으로 이동",
+  "countryOverview": "카탈로그 항목 %@개 — 선택하여 국가 불러오기"
 }

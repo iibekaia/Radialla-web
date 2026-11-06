@@ -270,7 +270,7 @@
     animation-duration: 2.4s;
   }
   .track-bars i {
-    animation-name: equalizer-gentle;
+    /* Keep the scoped animation name; only slow it down in this media query. */
     animation-duration: 1.8s;
   }
   .track-bars i:nth-child(2) {
@@ -278,14 +278,6 @@
   }
   .track-bars i:nth-child(3) {
     animation-duration: 2.4s;
-  }
-}
-@keyframes equalizer-gentle {
-  from {
-    transform: scaleY(0.65);
-  }
-  to {
-    transform: scaleY(1);
   }
 }
 /* Override map docking and narrow-screen layout inside the separate PiP document. */

@@ -20,6 +20,7 @@ import { COUNTRIES } from '../../shared/data/countries';
 import { StationMarkers } from './station-markers';
 import { mapLocation } from '../../shared/stations/map-location.mjs';
 import { MapLocationController } from './map-location-controller';
+import { CatalogEntry } from '../../core/catalog/viewport-catalog.mjs';
 
 import { FOCUS_ZOOM, LOCATION_ZOOM, MAP_LAYERS } from './map-layers';
 
@@ -33,6 +34,8 @@ import { FOCUS_ZOOM, LOCATION_ZOOM, MAP_LAYERS } from './map-layers';
 export class StationMapComponent implements AfterViewInit, OnDestroy {
   readonly i18n = inject(LocalizationService);
   readonly stations = input<Station[]>([]);
+  readonly overviewCountries = input<CatalogEntry[]>([]);
+  readonly selectCountry = output<string>();
   readonly activeId = input<string>();
   readonly focusedStation = input<Station | null>(null);
   readonly autoFocus = input(true);
@@ -68,6 +71,7 @@ export class StationMapComponent implements AfterViewInit, OnDestroy {
     effect(() => {
       const stations = this.stations(),
         active = this.activeId();
+      this.overviewCountries();
       this.i18n.language();
       this.renderMarkers(stations, active);
     });
@@ -87,8 +91,11 @@ export class StationMapComponent implements AfterViewInit, OnDestroy {
       minZoom: 2,
       maxZoom: 18,
     }).setView([30, 35], 2);
-    this.markerRenderer = new StationMarkers(this.map, this.i18n, (s) =>
-      this.selectStation.emit(s),
+    this.markerRenderer = new StationMarkers(
+      this.map,
+      this.i18n,
+      (s) => this.selectStation.emit(s),
+      (code) => this.selectCountry.emit(code),
     );
     this.setLayer('standard');
     this.map.on('movestart', () => {
@@ -124,7 +131,7 @@ export class StationMapComponent implements AfterViewInit, OnDestroy {
     });
   }
   private renderMarkers(stations: Station[], active?: string) {
-    this.markerRenderer?.render(stations, active);
+    this.markerRenderer?.render(stations, active, this.overviewCountries());
   }
 
   focus(s: Station) {

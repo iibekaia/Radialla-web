@@ -301,7 +301,8 @@ p {
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  *:not(.playback-spinner),
+  /* Playback indicators define their own gentler reduced-motion animations. */
+  *:not(.playback-spinner):not(.track-bars > i),
   *::before,
   *::after {
     animation: none !important;
