@@ -121,3 +121,30 @@ test('map command bursts preserve playback identity and playback updates preserv
   assert.equal(client.state.viewport, null);
   client.destroy();
 });
+
+test('invalid and retired pairing responses cannot save credentials or publish state', async () => {
+  const result = {
+    token: 'a'.repeat(64),
+    code: '12345678',
+    expiresAt: Date.now() + 300_000,
+    state,
+  };
+  let reply = { ...result, state: { ...state, members: 'bad' } };
+  const saved = [];
+  const client = new PairingClient({
+    base: 'https://api.example',
+    fetcher: async () => ({ ok: true, json: async () => reply }),
+    save: (token) => saved.push(token),
+  });
+  await assert.rejects(client.pair(), /Invalid pairing response/);
+  reply = { ...result, code: 12345678 };
+  await assert.rejects(client.pair(), /Invalid pairing response/);
+  await assert.rejects(client.newCode(), /Invalid pairing code/);
+  reply = result;
+  const pending = client.pair();
+  client.destroy();
+  await assert.rejects(pending, { name: 'AbortError' });
+  assert.deepEqual(saved, []);
+  assert.equal(client.token, null);
+  assert.equal(client.state.revision, -1);
+});

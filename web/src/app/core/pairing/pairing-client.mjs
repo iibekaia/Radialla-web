@@ -8,6 +8,10 @@ const INITIAL_RETRY_MS = 500;
 const MAX_RETRY_MS = 8_000;
 
 const emptyState = () => ({ revision: -1, owner: null, members: 0 });
+const validCode = (result) =>
+  typeof result?.code === 'string' &&
+  /^\d{8}$/.test(result.code) &&
+  Number.isFinite(result.expiresAt);
 
 export class PairingClient {
   constructor({
@@ -144,6 +148,14 @@ export class PairingClient {
   }
   async pair(code) {
     const result = await this.request(code ? 'join' : 'create', code ? { code } : {}, null);
+    this.controller.signal.throwIfAborted();
+    if (
+      typeof result?.token !== 'string' ||
+      !/^[a-f0-9]{64}$/.test(result.token) ||
+      !isPairingState(result.state) ||
+      (!code && !validCode(result))
+    )
+      throw new Error('Invalid pairing response');
     this.token = result.token;
     this.save(this.token);
     this.state = emptyState();
@@ -151,12 +163,15 @@ export class PairingClient {
     void this.connect();
     return result;
   }
-  newCode() {
-    return this.request('code');
+  async newCode() {
+    const result = await this.request('code');
+    if (!validCode(result)) throw new Error('Invalid pairing code');
+    return result;
   }
   async leave() {
     // Revoke on the server before forgetting credentials; failed requests can be retried.
     await this.request('leave');
+    this.controller.signal.throwIfAborted();
     this.clearPairing();
     this.destroy();
   }

@@ -1,17 +1,8 @@
+import { isStationRecord } from '../../shared/stations/station-record.mjs';
+
 const KEY = 'radialla.lastStation';
 function valid(station) {
-  if (
-    !station ||
-    typeof station.id !== 'string' ||
-    !station.id ||
-    typeof station.name !== 'string' ||
-    !station.name.trim() ||
-    typeof station.country !== 'string' ||
-    typeof station.genre !== 'string' ||
-    typeof station.frequency !== 'string' ||
-    typeof station.streamUrl !== 'string'
-  )
-    return false;
+  if (!isStationRecord(station) || !station.streamUrl) return false;
   try {
     const url = new URL(station.streamUrl);
     return ['http:', 'https:'].includes(url.protocol) && !url.username && !url.password;

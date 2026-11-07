@@ -1,21 +1,8 @@
 import { fetchRadioPage, fetchCountryCounts } from './radio-browser.mjs';
+import { isStationRecord } from '../../shared/stations/station-record.mjs';
 
 export function validStationCatalog(value) {
-  return (
-    Array.isArray(value) &&
-    value.every(
-      (station) =>
-        station &&
-        typeof station.id === 'string' &&
-        station.id.length > 0 &&
-        typeof station.name === 'string' &&
-        station.name.trim().length > 0 &&
-        typeof station.country === 'string' &&
-        typeof station.genre === 'string' &&
-        typeof station.frequency === 'string' &&
-        (station.streamUrl === null || typeof station.streamUrl === 'string'),
-    )
-  );
+  return Array.isArray(value) && value.every(isStationRecord);
 }
 
 export function createLiveIndex(countries, regions, counts = null, now = Date.now()) {

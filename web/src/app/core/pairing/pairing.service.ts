@@ -60,6 +60,9 @@ export class PairingService {
     this.connected.set(false);
     this.members.set(0);
     this.code.set('');
+    this.expiresAt.set(0);
+    this.busy.set(false);
+    this.error.set('');
     this.remotePlayback.set(null);
     this.remoteViewport.set(null);
     if (!base) return;
@@ -93,6 +96,7 @@ export class PairingService {
     try {
       if (action === 'leave') {
         await client.leave();
+        if (client !== this.client) return;
         // Fresh client without a revoked token, ready for a future pairing.
         this.generation.update((value) => value + 1);
       } else {
@@ -100,11 +104,13 @@ export class PairingService {
           action === 'code'
             ? await client.newCode()
             : await client.pair(action === 'join' ? code.replace(/\s/g, '') : undefined);
+        if (client !== this.client) return;
         this.code.set(result.code || '');
         this.expiresAt.set(result.expiresAt || 0);
       }
     } catch (error) {
-      const status = (error as { status?: number }).status;
+      if (client !== this.client) return;
+      const status = (error as { status?: number } | null)?.status;
       this.error.set(
         status === 405
           ? 'pairServerOutdated'
@@ -115,7 +121,7 @@ export class PairingService {
               : 'pairError',
       );
     } finally {
-      this.busy.set(false);
+      if (client === this.client) this.busy.set(false);
     }
   }
 }

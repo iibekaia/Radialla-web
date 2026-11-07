@@ -21,6 +21,7 @@ export class PlaybackService implements OnDestroy {
   private readonly catalog = inject(CatalogService);
   private readonly pairing = inject(PairingService);
   private metadataStation: string | null = null;
+  private playbackRequest = 0;
   readonly active = signal<Station | null>(readLastStation());
   readonly playing = signal(false);
   readonly loading = signal(false);
@@ -46,23 +47,26 @@ export class PlaybackService implements OnDestroy {
 
   constructor() {
     let revision = -1;
-    let request = 0;
     effect(() => {
       const command = this.pairing.remotePlayback();
       if (!command) {
         revision = -1;
-        request++;
         return;
       }
       if (command.revision <= revision) return;
       revision = command.revision;
-      const current = ++request;
       if (command.type === 'pause') {
         this.pause();
         return;
       }
+      const request = ++this.playbackRequest;
       void this.catalog.findStation(command.stationId).then((station) => {
-        if (!station || current !== request) return;
+        if (
+          !station ||
+          request !== this.playbackRequest ||
+          command !== this.pairing.remotePlayback()
+        )
+          return;
         if (command.type === 'play') void this.play(station);
         else this.select(station);
       });
@@ -92,12 +96,8 @@ export class PlaybackService implements OnDestroy {
   }
 
   select(station: Station) {
-    this.clearMetadata();
-    this.session.stop();
-    this.playing.set(false);
-    this.loading.set(false);
+    this.pause();
     this.active.set(station);
-    this.message.set(STATUS_MESSAGES.paused);
   }
 
   async play(station: Station) {
@@ -108,6 +108,10 @@ export class PlaybackService implements OnDestroy {
     }
     try {
       const url = new URL(station.streamUrl);
+      if (url.username || url.password || !['http:', 'https:'].includes(url.protocol)) {
+        this.message.set('ამ სადგურის ბმული არასწორია');
+        return;
+      }
       if (url.protocol === 'http:') {
         const base = this.catalog.config().apiBaseUrl;
         if (!base || !/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(station.id)) {
@@ -119,10 +123,6 @@ export class PlaybackService implements OnDestroy {
         );
         return;
       }
-      if (url.protocol !== 'https:' || url.username || url.password) {
-        this.message.set('ამ სადგურის ბმული არასწორია');
-        return;
-      }
       await this.session.play(url.href);
     } catch {
       this.message.set('ამ სადგურის ბმული არასწორია');
@@ -130,6 +130,7 @@ export class PlaybackService implements OnDestroy {
   }
 
   pause() {
+    this.playbackRequest++;
     this.clearMetadata();
     this.session.stop();
     this.playing.set(false);
@@ -143,6 +144,7 @@ export class PlaybackService implements OnDestroy {
   }
 
   ngOnDestroy() {
+    this.playbackRequest++;
     this.clearMetadata();
     this.session.stop();
   }

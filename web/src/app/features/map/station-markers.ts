@@ -31,10 +31,10 @@ export class StationMarkers {
     const map = this.map,
       bounds = map.getBounds().pad(0.1),
       groups = new Map<string, Placement[]>();
+    const center = map.getCenter().lng;
     for (const country of overview) {
       if (!COUNTRIES.some((c) => c.code === country.code)) continue;
-      const longitude =
-        country.longitude + 360 * Math.round((map.getCenter().lng - country.longitude) / 360);
+      const longitude = country.longitude + 360 * Math.round((center - country.longitude) / 360);
       if (!bounds.contains([country.latitude, longitude]) || country.count <= 0) continue;
       const label = `${this.i18n.country(country.name, country.code)} — ${this.i18n.t('countryOverview', country.count)}`;
       const content = document.createElement('span');
@@ -59,8 +59,8 @@ export class StationMarkers {
       if (overview.length && (station.id !== active || !station.streamUrl)) continue;
       const location = mapLocation(station, COUNTRIES);
       if (!location) continue;
-      const s = { station, ...location };
-      const longitude = s.longitude + 360 * Math.round((map.getCenter().lng - s.longitude) / 360);
+      const longitude = location.longitude + 360 * Math.round((center - location.longitude) / 360);
+      const s = { station, ...location, longitude };
       if (!bounds.contains([s.latitude, longitude])) continue;
       const p = map.latLngToContainerPoint([s.latitude, longitude]);
       // Keep country placements separate from precise station clusters.
@@ -84,7 +84,7 @@ export class StationMarkers {
         (approximate
           ? ` — ${this.i18n.t('approximateLocation')}${s.capital ? ` (${s.capital})` : ''}`
           : '');
-      const marker = L.marker([lat, lon + 360 * Math.round((map.getCenter().lng - lon) / 360)], {
+      const marker = L.marker([lat, lon], {
         title: labelText,
         alt: labelText,
         icon: L.divIcon({

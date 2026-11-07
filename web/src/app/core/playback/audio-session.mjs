@@ -44,15 +44,15 @@ export class AudioSession {
       const failed = () => {
         if (!current()) return;
         this.clearStallTimer();
+        this.audio = null;
+        this.release(audio);
         // Only reconnect established streams. Initial failures and autoplay denial
         // remain visible, and a manual stop always cancels a pending reconnect.
         if (!connected || retries >= MAX_RETRIES) {
-          update('error');
+          this.onStatus('error');
           return;
         }
         const delay = INITIAL_RETRY_MS * 2 ** retries++;
-        this.audio = null;
-        this.release(audio);
         this.onStatus('loading');
         this.retryTimer = this.timers.setTimeout(() => {
           this.retryTimer = null;
@@ -76,7 +76,9 @@ export class AudioSession {
         }, BUFFER_TIMEOUT_MS);
       };
       audio.addEventListener('waiting', buffering);
-      audio.addEventListener('stalled', buffering);
+      audio.addEventListener('stalled', () => {
+        if (audio.readyState < audio.HAVE_FUTURE_DATA) buffering();
+      });
       audio.addEventListener('error', failed);
       audio.addEventListener('ended', failed);
       audio.addEventListener('pause', () => update('paused'));
@@ -85,9 +87,10 @@ export class AudioSession {
       try {
         await audio.play();
       } catch (error) {
+        if (!current()) return;
         if (error?.name === 'NotAllowedError') {
-          if (current()) this.clearStallTimer();
-          update('blocked');
+          this.stop();
+          this.onStatus('blocked');
         } else failed();
       }
     };

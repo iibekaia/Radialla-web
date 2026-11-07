@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import { AudioSession } from '../../web/src/app/core/playback/audio-session.mjs';
 
 class FakeAudio extends EventTarget {
+  HAVE_FUTURE_DATA = 3;
+  readyState = 0;
   src = '';
   paused = false;
   released = false;
@@ -63,6 +65,10 @@ test('current stream errors are reported and a stopped pending stream cannot res
   const pending = session.play('https://example.com/live');
   audio.dispatchEvent(new Event('error'));
   assert.equal(states.at(-1), 'error');
+  assert.equal(audio.released, true);
+  audio.dispatchEvent(new Event('playing'));
+  audio.dispatchEvent(new Event('waiting'));
+  assert.equal(states.at(-1), 'error');
   session.stop();
   audio.dispatchEvent(new Event('playing'));
   audio.resolve();
@@ -81,6 +87,7 @@ test('autoplay denial is reported as blocked rather than an unavailable stream',
   audio.reject(Object.assign(Error('User activation required'), { name: 'NotAllowedError' }));
   await pending;
   assert.deepEqual(states, ['loading', 'blocked']);
+  assert.equal(audio.released, true);
   session.stop();
 });
 
@@ -255,6 +262,11 @@ test('a silent buffering stall reconnects and stopping cancels the watchdog', as
   await started;
   elements[0].dispatchEvent(new Event('playing'));
   assert.equal(pending.size, 0);
+  elements[0].readyState = elements[0].HAVE_FUTURE_DATA;
+  elements[0].dispatchEvent(new Event('stalled'));
+  assert.equal(states.at(-1), 'playing');
+  assert.equal(pending.size, 0);
+  elements[0].readyState = 0;
   elements[0].dispatchEvent(new Event('waiting'));
   elements[0].dispatchEvent(new Event('stalled'));
   assert.equal(pending.size, 1);

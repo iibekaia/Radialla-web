@@ -65,6 +65,8 @@ test('cache restoration rejects malformed stations and sanitizes freshness metad
     { stations: [null] },
     { stations: [{ id: 'bad' }] },
     { stations: [{ ...station('one', 'GE'), name: '   ' }] },
+    { stations: [{ ...station('one', 'GE'), countryCode: 123 }] },
+    { stations: [{ ...station('one', 'GE'), duplicateIds: 'alias' }] },
   ])
     assert.equal(restoreCatalogSnapshot(value), null);
   const result = restoreCatalogSnapshot({
