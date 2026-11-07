@@ -245,11 +245,14 @@ test('WebSocket reconnect restores missed state and revoked tokens disconnect ev
       const { code } = await web.pair();
       await mobile.pair(code);
       await until(() => web.connected && mobile.connected);
+      assert.equal(mobile.state.receiverOnline, true);
       connections[0].close();
-      await until(() => !web.connected);
+      await until(() => !web.connected && mobile.state.receiverOnline === false);
+      assert.equal(mobile.state.members, 2);
       await mobile.request('command', { type: 'play', stationId: 'missed-station' });
       await until(() => web.connected && web.state.playback?.stationId === 'missed-station');
       assert.ok(connections.length >= 2);
+      await until(() => mobile.state.receiverOnline === true);
       await web.request('leave');
       await until(() => web.token === null);
       assert.equal(web.connected, false);

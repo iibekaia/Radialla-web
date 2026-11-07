@@ -21,6 +21,7 @@ export function createPairingCoordinator({ now = Date.now, maxGroups = 500 } = {
     revision: g.revision,
     owner: null,
     members: g.members.size,
+    receiverOnline: g.receiverConnections > 0,
     playback: g.playback,
     viewport: g.viewport,
   });
@@ -67,6 +68,8 @@ export function createPairingCoordinator({ now = Date.now, maxGroups = 500 } = {
       if (groups.size >= maxGroups) fail(503, 'Pairing capacity reached');
       const g = {
         members: new Set(),
+        receiverToken: null,
+        receiverConnections: 0,
         listeners: new Set(),
         revision: 0,
         playback: null,
@@ -75,6 +78,7 @@ export function createPairingCoordinator({ now = Date.now, maxGroups = 500 } = {
       };
       groups.add(g);
       const token = add(g);
+      g.receiverToken = token;
       return { token, ...codeFor(g), state: state(g) };
     },
     join(code) {
@@ -141,6 +145,20 @@ export function createPairingCoordinator({ now = Date.now, maxGroups = 500 } = {
       g.listeners.add(listener);
       return () => g.listeners.delete(listener);
     },
+    connectReceiver(token) {
+      const g = member(token);
+      if (token !== g.receiverToken) return () => {};
+      g.receiverConnections++;
+      if (g.receiverConnections === 1) notify(g);
+      let active = true;
+      return () => {
+        if (!active) return;
+        active = false;
+        const wasOnline = g.receiverConnections > 0;
+        g.receiverConnections = Math.max(0, g.receiverConnections - 1);
+        if (wasOnline && g.receiverConnections === 0) notify(g);
+      };
+    },
     snapshot(token) {
       return state(member(token));
     },
@@ -148,6 +166,7 @@ export function createPairingCoordinator({ now = Date.now, maxGroups = 500 } = {
       const g = member(token);
       credentials.delete(token);
       g.members.delete(token);
+      if (token === g.receiverToken) g.receiverConnections = 0;
       for (const [code, entry] of codes) if (entry.group === g) codes.delete(code);
       notify(g);
       if (!g.members.size) groups.delete(g);

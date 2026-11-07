@@ -15,6 +15,7 @@ export function attachPairingWebSocket(server, coordinator, webOrigin) {
   sockets.on('connection', (ws) => {
     let token;
     let unsubscribe = () => {};
+    let disconnectReceiver = () => {};
     let alive = true;
     const authTimer = setTimeout(() => ws.close(4401, 'Authentication required'), 5000);
     const send = (message) => {
@@ -42,6 +43,7 @@ export function attachPairingWebSocket(server, coordinator, webOrigin) {
           return ws.close(4401, 'Invalid credentials');
         coordinator.snapshot(message.token);
         token = message.token;
+        disconnectReceiver = coordinator.connectReceiver(token);
         unsubscribe = coordinator.subscribe(token, publish);
         clearTimeout(authTimer);
         publish();
@@ -68,6 +70,7 @@ export function attachPairingWebSocket(server, coordinator, webOrigin) {
       clearTimeout(authTimer);
       clearInterval(heartbeat);
       unsubscribe();
+      disconnectReceiver();
     });
   });
   server.on('close', () => {
