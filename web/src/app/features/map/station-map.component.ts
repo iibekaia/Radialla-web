@@ -166,15 +166,12 @@ export class StationMapComponent implements AfterViewInit, OnDestroy {
     const location = mapLocation(s, COUNTRIES);
     if (!location) return;
     this.focusedStationId = s.id;
-    // Once the user has navigated, station selection must keep their zoom level.
-    if (this.explored) {
-      this.setAutomaticView([location.latitude, location.longitude], this.map.getZoom());
-    } else if (location.approximate) {
-      const country = COUNTRIES.find((c) =>
-        s.countryCode ? c.code === s.countryCode.toUpperCase() : c.name === s.country,
-      );
-      if (country) this.focusCountry(country.code);
-    } else this.setAutomaticView([location.latitude, location.longitude]);
+    this.automaticMove = true;
+    try {
+      this.map.panTo([location.latitude, location.longitude], { animate: false });
+    } finally {
+      this.automaticMove = false;
+    }
   }
 
   private focusCountry(code: string) {
@@ -200,7 +197,7 @@ export class StationMapComponent implements AfterViewInit, OnDestroy {
       this.automaticMove = false;
     }
   }
-  private setAutomaticView(point: L.LatLngExpression, zoom = FOCUS_ZOOM) {
+  private setAutomaticView(point: L.LatLngExpression, zoom: number) {
     this.automaticMove = true;
     try {
       this.map?.setView(point, zoom, { animate: false });
@@ -240,7 +237,6 @@ export class StationMapComponent implements AfterViewInit, OnDestroy {
     // A late location response must not override a station or a user-selected area.
     if (!automatic || (!this.hasStationFocus() && !this.explored)) {
       this.setAutomaticView(coordinates, LOCATION_ZOOM);
-      // Keep this closer zoom when location-based autoplay selects a station.
       this.explored = true;
     }
     this.locationMarker?.remove();
